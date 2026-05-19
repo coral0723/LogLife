@@ -47,9 +47,9 @@
 | AD-08 | 공유 URL | **`/u/[username]` + `/b/[token]`** | 사용자 페이지는 SEO 유리한 username 경로, 개별 버킷리스트는 추측 불가 토큰 (link-only 공유 겸용) |
 | AD-09 | 버킷리스트 상태 | **`achieved` boolean + `achievedAt` timestamp** | 단순. `achievedAt - createdAt`으로 모든 통계 처리 |
 | AD-10 | 달성 처리 UX | **토글 즉시 달성 + 축하 팝업** | 마찰 최소화. 사진 업로드/소감은 v1 제외 (비용·복잡도) |
-| AD-11 | 공유 페이지 렌더링 | **Server Component + fetch cache + revalidatePath** | Next 16 추세. 사용자가 수정 시 server action에서 `revalidatePath`/`revalidateTag` 호출 |
+| AD-11 | 공유 페이지 렌더링 | **Server Component + Server Action + `updateTag` / `revalidateTag(tag, 'max')`** | Next 16에서 `revalidateTag`는 2번째 인자(cacheLife profile) 필수. 본인 변경(달성 토글·CRUD)은 즉시 반영이 중요 → Server Action 안에서 `updateTag`(read-your-own-writes). 친구·공개 데이터는 `revalidateTag(tag, 'max')`로 stale-while-revalidate. tag 미부여 라우트는 `revalidatePath` fallback |
 | AD-12 | 통계 집계 | **매 요청 Prisma aggregate** | 개인 단위 소규모 데이터셋. 조기 최적화 회피, 추후 materialized view 이행 가능 |
-| AD-13 | 카드 라우팅 | **Parallel + Intercepting Routes** | `(.)b/[id]` 인터셉트 + `@modal` 슬롯 + `/b/[token]` 풀 페이지 fallback. 공유/딥링크/새로고침 모두 자연 처리 |
+| AD-13 | 카드 라우팅 | **Parallel + Intercepting Routes** | `(.)b/[id]` 인터셉트 + `@modal` 슬롯 + `/b/[token]` 풀 페이지 fallback. 공유/딥링크/새로고침 모두 자연 처리. **Next 16**: 모든 parallel slot에 `default.js` 의무(`app/(app)/@modal/default.tsx`에서 `null` 반환). 없으면 빌드 실패 |
 | AD-14 | 위치 검색 UX | **Places Autocomplete only (지도 클릭 X)** | 비용 절감 (session token으로 single transaction 과금). 미세 위치는 본문 텍스트로 보완 |
 | AD-15 | 친구 페이지 v1 | **친구 리스트 + 검색/정렬 + 3개 위젯** | 공통 버킷리스트 매칭, 친구들의 핫 플레이스 Top 5, 함께 달성 모먼트 — LogLife 차별화 핵심 |
 | AD-16 | PWA 오프라인 | **온라인 필수** | 네트워크 미연결 시 풀스크린 안내 팝업으로 모든 인터랙션 차단. Serwist는 manifest/installable만 사용 |
@@ -109,6 +109,7 @@ app/
     friends/page.tsx               # 4. 친구 페이지
     create/page.tsx                # 3. 버킷리스트 작성
     @modal/
+      default.tsx                  # Next 16 의무: 매칭 안될 때 null 반환
       (.)b/[token]/page.tsx        # 카드 인터셉팅 모달
   u/[username]/
     page.tsx                       # 5. 사용자 페이지 (공개 globe)
@@ -120,6 +121,12 @@ app/
       autocomplete/route.ts        # session token 관리
     auth/[...nextauth]/route.ts
 ```
+
+> **Next 16 라우트 작성 규칙 (모든 page/layout에 공통 적용)**
+> - `params`, `searchParams`, `cookies()`, `headers()` 전부 **async** → 반드시 `await`. 동기 접근 제거됨.
+> - 페이지 컴포넌트는 `async function Page(props: PageProps<'/u/[username]'>) { const { username } = await props.params }` 패턴 사용.
+> - `PageProps` / `LayoutProps` / `RouteContext` 헬퍼는 `next dev` 또는 `next typegen` 실행 시 전역 생성됨 → import 불필요.
+> - 미들웨어 대신 **`proxy.ts`** 사용 (`middleware` 파일·named export 모두 deprecated). proxy 런타임은 nodejs 고정 (edge 불가). NextAuth v5 미들웨어 사용 시 edge 패턴 제약 확인.
 
 ## 6. 페이지별 사양 요약
 
@@ -185,7 +192,7 @@ app/
 - **Vercel Hobby**: Bandwidth 100GB/월, Image Optimization 5,000회/월 — 개인 프로젝트 규모 충분
 - **Google Maps Platform**: 매월 $200 무료 크레딧
   - Autocomplete (session token) + Place Details = 1 트랜잭션으로 과금 ($0.017/건) → 월 약 **11,700 버킷리스트 등록**까지 무료
-  - Place Photos는 `/api/places/photo` 프록시 → Next Image 캐시로 사진당 1회만 호출
+  - Place Photos는 `/api/places/photo` 프록시 → Next Image 캐시로 사진당 1회만 호출. **Next 16에서 `images.minimumCacheTTL` 기본값이 60s → 14400s(4h)로 상향되어 LogLife 사진 캐시 효율에 호재**. Places 사진은 거의 안 바뀌므로 기본값 유지 권장
   - 위치 등록 시점에 `placeId + 좌표 + 행정 계층`을 모두 저장 → 이후 reverse geocode 호출 없음
 - **NextAuth Google/Kakao**: 무료
 - **카카오 디벨로퍼스 OAuth**: 무료
@@ -201,6 +208,8 @@ app/
 - [ ] Vercel 사용량 80% 도달 시 이메일 알림 설정
 - [ ] Supabase 프로젝트 health check ping — GitHub Actions cron (`*/3 * * *`)으로 일시 정지 방지
 - [ ] `next.config` 의 `images` 설정에서 `unoptimized` 옵션 사용 금지 (= Image Optimization 캐시 보장)
+- [ ] `next.config.images.remotePatterns`에 Google Places photo 프록시 도메인은 **불필요**(same-origin `/api/places/photo`). 외부 호스트 직접 임베드 시에만 등록 — `images.domains`는 Next 16에서 deprecated
+- [ ] Next 16 기본값으로 `images.qualities = [75]`만 허용 → 다른 quality 값 쓰는 컴포넌트가 있다면 `images.qualities` 명시
 - [ ] `.env`의 API key가 클라이언트 번들에 노출되지 않는지 확인 (`NEXT_PUBLIC_` 접두사 없는지)
 
 ### 7.3 Vercel Pro 업그레이드 트리거
@@ -265,12 +274,50 @@ app/
 
 본 스펙이 가정한 Next 16 API들:
 - App Router의 **Parallel + Intercepting Routes** (`@modal`, `(.)`/`(..)` 규칙)
-- Server Components + **fetch cache** + `revalidatePath` / `revalidateTag`
-- Server Actions
+- Server Components + Server Actions + `updateTag` / `revalidateTag(tag, profile)`
 - `next/image` 캐싱 동작
 - NextAuth v5 (beta) 통합
 
-위 API들은 구현 시점에 16의 deprecation/breaking change 노트를 반드시 확인할 것.
+### 11.1 v16에서 반영해야 하는 breaking changes
+
+| 영역 | v15 → v16 변화 | LogLife 영향 |
+|---|---|---|
+| Async Request APIs | `params`, `searchParams`, `cookies()`, `headers()`, `draftMode()` 동기 접근 **완전 제거** | 모든 page/layout/route handler에서 `await` 적용. `PageProps<'/u/[username]'>` 헬퍼 사용 |
+| `revalidateTag` 시그니처 | 2번째 인자(cacheLife profile) **필수** | `revalidateTag('friend-feed', 'max')` 형태로 호출 |
+| `updateTag` (신규) | Server Action 전용, 즉시 만료 = read-your-own-writes | 버킷리스트 작성/달성 토글 등 본인 변경에 사용 (AD-11) |
+| `refresh()` (신규) | Server Action 안에서 클라이언트 라우터 새로고침 | 알림 카운트 등 곁가지 갱신 |
+| Parallel slots `default.js` | 모든 slot에 의무화. 없으면 빌드 실패 | `app/(app)/@modal/default.tsx` 필수 (AD-13) |
+| `middleware` → `proxy` | 파일·named export 모두 rename. **proxy 런타임 nodejs 고정 (edge 불가)** | NextAuth v5 미들웨어 사용 시 edge 패턴 검토 |
+| `next/image` 기본값 | `minimumCacheTTL` 60s→14400s, `qualities` `[75]` only, `images.domains` deprecated | AD-04 캐시 효율 호재. 다른 quality 값 쓰면 명시 |
+| Turbopack 기본 | `next dev`/`next build`에 기본 사용 | `package.json` 스크립트에서 `--turbopack` 플래그 제거. webpack 커스텀 설정 있으면 빌드 실패 |
+| Node 20.9+ | Node 18 미지원, TS 5.1+ | Vercel 빌드 노드 버전 확인 |
+| `next lint` 제거 | ESLint Flat Config 기본 | `pnpm lint`는 ESLint 직접 호출로 구성 |
+| `serverRuntimeConfig`/`publicRuntimeConfig` 제거 | env 변수만 사용 | 이미 plan-spec과 일치 |
+| `experimental.dynamicIO` → `cacheComponents` | top-level 옵션으로 승격 | 11.2 참조 |
+| `experimental_ppr` 세그먼트 옵션 제거 | PPR은 `cacheComponents`로 일원화 | 11.2 참조 |
+
+### 11.2 Cache Components 채택 여부
+
+`next.config.ts`의 `cacheComponents: true`는 v16의 새 캐시/PPR 모델. 활성화 시:
+
+- `fetch`는 **기본적으로 캐시되지 않음** → 캐시하려면 함수에 `'use cache'` 디렉티브 + `cacheLife()` 필수
+- 캐시도 안 되고 `<Suspense>`로도 안 감싼 컴포넌트는 빌드 시 `Uncached data was accessed outside of <Suspense>` 에러
+- `cacheTag(tag)` + `updateTag(tag)` / `revalidateTag(tag, profile)`로 무효화
+
+**LogLife v1 방침**: `cacheComponents: false` 로 시작. 이유:
+- 개인 데이터 위주(타이틀 페이지마다 사용자별 동적) → PPR 이득이 크지 않음
+- NextAuth v5 + Prisma 학습 곡선이 이미 있음. 캐시 모델까지 신규 도입은 위험
+- 1차 배포 후 globe·랜딩 같은 정적/캐시 가능 영역이 확장되면 마이그레이션 가이드(`migrating-to-cache-components.md`) 따라 전환
+
+### 11.3 작성 패턴 체크리스트
+
+코드 작성 전마다 확인:
+- [ ] page/layout 컴포넌트는 `async` + `await props.params` / `await props.searchParams`
+- [ ] `cookies()` / `headers()` 호출 시 `await`
+- [ ] Server Action에서 본인 변경은 `updateTag`, 친구·공개 데이터 갱신은 `revalidateTag(tag, 'max')`
+- [ ] 새로 추가하는 parallel slot에는 `default.tsx` 동봉
+- [ ] 미들웨어 필요 시 `proxy.ts`로 작성 (edge 런타임 의존성 점검)
+- [ ] 이미지 quality 75 외 값 사용 시 `next.config.images.qualities` 추가
 
 ## 12. 미결 / 추후 결정 사항
 
