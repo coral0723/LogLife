@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh issue *)",
+      "Bash(pnpm exec *)",
+      "Bash(git commit -m ' *)",
+      "Bash(pnpm dev *)",
+      "Bash(pnpm test *)",
+      "Bash(git check-ignore *)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory"
+    ]
+  },
+  "enabledPlugins": {}
+}
