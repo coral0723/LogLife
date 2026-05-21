@@ -9,6 +9,8 @@
 
 ### 기타
 
+- 초기 DB 마이그레이션 적용 (2574adb)
+- Prisma Client 초기화 (dd4f76a)
 - Prisma ORM 및 데이터 모델 스키마 추가 (2dbdf47)
 - Claude Code 런타임 폴더 gitignore 추가 (bc41291)
 - 프론트엔드 기초 기술 스택 설치 (9a081ee)
