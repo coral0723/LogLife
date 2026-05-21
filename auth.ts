@@ -3,23 +3,13 @@ import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
 import { prisma } from "@/lib/prisma";
+import { generateUsername } from "@/lib/username";
 
-async function generateUsername(email: string): Promise<string> {
-  const base = email.split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g, "_");
-  const normalized = base.length >= 3 ? base : `user_${base}`;
-  let username = normalized;
-  let suffix = 0;
-  while (
-    await prisma.user.findUnique({
-      where: { username },
-      select: { id: true },
-    })
-  ) {
-    suffix += 1;
-    username = `${normalized}_${suffix}`;
-  }
-  return username;
-}
+const usernameExists = async (username: string) =>
+  (await prisma.user.findUnique({
+    where: { username },
+    select: { id: true },
+  })) !== null;
 
 const baseAdapter = PrismaAdapter(prisma) as Adapter;
 
@@ -30,7 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!user.email) {
         throw new Error("이메일이 없는 OAuth 응답은 처리할 수 없습니다.");
       }
-      const username = await generateUsername(user.email);
+      const username = await generateUsername(user.email, usernameExists);
       const created = await prisma.user.create({
         data: {
           email: user.email,
