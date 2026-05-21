@@ -6,7 +6,11 @@
       "Bash(git commit -m ' *)",
       "Bash(pnpm dev *)",
       "Bash(pnpm test *)",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(gh api *)",
+      "PowerShell(gh api repos/multica-ai/andrej-karpathy-skills/contents/ --jq '.[].name')",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "additionalDirectories": [
       "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory"
