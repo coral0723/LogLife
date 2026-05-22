@@ -45,6 +45,7 @@ export function PlacesAutocomplete({
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const sessionTokenRef = useRef<string>(crypto.randomUUID());
+  const skipNextFetchRef = useRef(false);
   const listboxId = useId();
 
   useEffect(() => {
@@ -52,6 +53,10 @@ export function PlacesAutocomplete({
     if (trimmed.length === 0) {
       setSuggestions([]);
       setError(null);
+      return;
+    }
+    if (skipNextFetchRef.current) {
+      skipNextFetchRef.current = false;
       return;
     }
     const ac = new AbortController();
@@ -106,7 +111,8 @@ export function PlacesAutocomplete({
         const place = (await res.json()) as NormalizedPlace;
         onSelect(place);
         sessionTokenRef.current = crypto.randomUUID();
-        setQuery(place.displayName);
+        skipNextFetchRef.current = true;
+        setQuery(suggestion.text);
         setSuggestions([]);
         setActiveIndex(-1);
       } catch (e) {
