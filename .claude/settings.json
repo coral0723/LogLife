@@ -20,7 +20,8 @@
       "Bash(pnpm build:*)",
       "Bash(npx prisma:*)",
       "Bash(pnpm exec prisma:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(findstr /i \"env\")"
     ],
     "additionalDirectories": [
       "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory"
