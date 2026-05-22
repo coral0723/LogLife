@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { auth } from "@/auth";
+import { consumeRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -11,23 +12,6 @@ const requestSchema = z.object({
   languageCode: z.string().min(2).max(10).default("ko"),
   regionCode: z.string().min(2).max(3).optional(),
 });
-
-const RATE_LIMIT_MAX = 30;
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const buckets = new Map<string, number[]>();
-
-function consumeRateLimit(userId: string): boolean {
-  const now = Date.now();
-  const arr = buckets.get(userId) ?? [];
-  const recent = arr.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-  if (recent.length >= RATE_LIMIT_MAX) {
-    buckets.set(userId, recent);
-    return false;
-  }
-  recent.push(now);
-  buckets.set(userId, recent);
-  return true;
-}
 
 type Suggestion = { placeId: string; text: string };
 
@@ -47,7 +31,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   }
 
-  if (!consumeRateLimit(userId)) {
+  if (!consumeRateLimit(`places:${userId}`, 30, 60_000)) {
     return NextResponse.json(
       { error: "요청이 너무 많습니다." },
       { status: 429 },
