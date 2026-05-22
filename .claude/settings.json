@@ -10,7 +10,18 @@
       "Bash(gh api *)",
       "PowerShell(gh api repos/multica-ai/andrej-karpathy-skills/contents/ --jq '.[].name')",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "PowerShell(gh issue list --state all --limit 5)",
+      "Bash(pnpm:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build:*)",
+      "Bash(npx prisma:*)",
+      "Bash(pnpm exec prisma:*)",
+      "Bash(git:*)",
+      "Bash(findstr /i \"env\")"
     ],
     "additionalDirectories": [
       "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory"
