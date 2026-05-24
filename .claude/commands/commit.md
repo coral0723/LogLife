@@ -1,0 +1,53 @@
+---
+description: 현재 변경사항을 한국어 양식으로 커밋 (yes/no 확인 후 실행)
+---
+
+현재 변경사항을 한국어 커밋 메시지 양식으로 제안하고, 사용자 확인 후에만 커밋한다. 토큰을 아끼는 게 우선이므로 아래 절차만 정확히 따른다. 부수 작업(테스트, 빌드, lint) 금지.
+
+## 절차
+
+1. **변경사항 확인**
+   - `git status --short` 실행.
+   - 출력이 비어 있으면 "커밋할 변경사항 없음"만 출력하고 종료.
+
+2. **민감 파일 차단**
+   - 변경 목록에 다음 패턴이 있으면 사용자에게 경고하고 스테이징에서 제외:
+     `.env`, `.env.*`, `*.pem`, `*.key`, `credentials*`, `*secret*`
+   - 제외 후 남은 파일이 0개면 "커밋할 안전한 파일 없음" 출력 후 종료.
+
+3. **스테이징**
+   - 남은 변경 파일을 명시적으로 `git add <file1> <file2> ...` 으로 나열해서 추가.
+   - `git add -A`, `git add .` 사용 금지 (민감 파일 우회 방지).
+
+4. **양식 로드**
+   - `C:\Users\user\.claude\projects\c--Users-user-Documents-LogLife\memory\templates\commit_message_format.md` 을 Read 도구로 읽어 양식 확인.
+   - 양식: `{tag}: {한국어 제목}` + 빈 줄 + `- 본문 불릿` 리스트.
+   - 태그는 `feat`, `fix`, `chore`, `docs`, `style`, `refactor` 중 변경 성격에 맞는 것 선택.
+
+5. **메시지 초안 작성**
+   - `git diff --staged` 로 실제 변경 내용 확인.
+   - 위 양식대로 한국어 메시지 작성.
+   - 본문 불릿은 2~5개 권장, "왜" 위주.
+
+6. **사용자 확인 (객관식)**
+   - `AskUserQuestion` 도구로 묻기:
+     - question: `다음 커밋 메시지로 커밋할까?\n\n<생성한 메시지 전문>`
+     - header: `Commit`
+     - options:
+       - `Yes` — 이 메시지로 현재 브랜치에 커밋
+       - `No` — 커밋 취소
+     - multiSelect: false
+
+7. **분기 처리**
+   - **Yes**: `git commit -m "$(cat <<'EOF' ... EOF)"` 형식의 HEREDOC 으로 커밋 실행 (줄바꿈/한국어 보존). 성공 후 `git log -1 --oneline` 한 줄만 출력.
+   - **No**: "커밋을 취소합니다." 한 문장만 출력하고 즉시 종료. 이유를 묻지 말 것 — 사용자가 다음 턴에 직접 말함.
+
+## 금지
+
+- `git add -A` / `git add .` 금지 (민감 파일 노출 위험).
+- `--no-verify`, `--amend`, `--no-gpg-sign` 등 hook/서명 우회 플래그 금지.
+- `Co-Authored-By` 푸터 추가 금지 (사용자 커밋 스타일에 없음).
+- `git push` 금지 (사용자가 직접 함).
+- 빌드/테스트/lint 부수 실행 금지.
+- yes/no 외 다른 선택지 추가 금지.
+- "No" 분기에서 이유를 묻지 말 것.
