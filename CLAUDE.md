@@ -1,1 +1,108 @@
-@AGENTS.md
+# LogLife — Project Map
+
+## ⚠️ This is NOT the Next.js you know
+Next.js 16은 breaking changes 다수. 코드 작성 전 `node_modules/next/dist/docs/`의 관련 가이드 확인 필수. deprecation 경고를 절대 무시하지 않는다.
+
+## Engineering Guidelines
+
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+
+## 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+## 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+## 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+## 어디서 무엇을 읽을지
+
+### 🔵 작업 직전 항상
+- 비즈니스 / 도메인 / ADR / 페이지 사양 → [docs/plan_spec.md](docs/plan_spec.md)
+- 0원 운영 제약 → [docs/cost_constraint.md](docs/cost_constraint.md)
+
+### 🟢 상황별 룰 ([.claude/rules/](.claude/rules/))
+- 코드 작성 시 → [code_style.md](.claude/rules/code_style.md)
+- 테스트 작성/수정 시 → [testing_guide.md](.claude/rules/testing_guide.md)
+- auth / api / .env 만질 때 → [security.md](.claude/rules/security.md)
+- 배포 / next.config / Vercel 관련 → [deploy.md](.claude/rules/deploy.md)
+
+### 🟡 양식 ([docs/templates/](docs/templates/))
+- 커밋 메시지 → [commit_message.md](docs/templates/commit_message.md)
+- 이슈 → [issue_template.md](docs/templates/issue_template.md)
+- PR → [pr_template.md](docs/templates/pr_template.md)
+
+### 🟠 슬래시 명령 ([.claude/commands/](.claude/commands/))
+- `/commit`, `/pr`, `/changelog`
+
+### 🟣 AI 작업 흔적 ([.dev/](.dev/))
+- 브랜치 작업 정리 → [work-logs/](.dev/work-logs/)
+- 새로 알게 된 패턴 / 주의점 → [learnings/](.dev/learnings/)
+- 오류 · 재현 기록 → [troubleshooting/](.dev/troubleshooting/)
+- 임시 메모 → [scratchpad/](.dev/scratchpad/)
+
+## 산출물 / 검증
+- 빌드: `pnpm build`, 결과 `.next/` (정적 export 시 `out/`)
+- 테스트: `pnpm test` (Vitest) — 인프라는 `tests/`. E2E는 Playwright
+- Lint: `pnpm lint`
+
+## 영구 금지
+- `git add -A` / `git add .` (민감 파일 우회 위험)
+- `--no-verify`, `--amend`, `--no-gpg-sign`
+- `.env.example` 제외 `.env.*` 직접 수정
+- API key에 `NEXT_PUBLIC_` 접두사
+- OMC `ralph` / `ralplan` 스킬 추천 · 실행 (토큰 비용)

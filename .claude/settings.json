@@ -1,19 +1,28 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gh issue *)",
-      "Bash(pnpm exec *)",
-      "Bash(git commit -m ' *)",
-      "Bash(pnpm dev *)",
-      "Bash(pnpm test *)",
-      "Bash(git check-ignore *)",
-      "Bash(gh api *)",
-      "PowerShell(gh api repos/multica-ai/andrej-karpathy-skills/contents/ --jq '.[].name')",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "Bash(*)",
+      "PowerShell(*)",
+      "WebFetch(*)",
+      "WebSearch(*)"
     ],
     "additionalDirectories": [
-      "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory"
+      "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory",
+      "c:\\Users\\user\\Documents\\LogLife",
+      "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"Get-Content '.claude/rules/cli_security.md' -Raw\""
+          }
+        ]
+      }
     ]
   },
   "enabledPlugins": {}

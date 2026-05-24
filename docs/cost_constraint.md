@@ -1,8 +1,6 @@
 ---
 name: LogLife 비용 0원 운영 원칙
-description: LogLife는 자비 0원 운영. 안전장치는 배포 직전 일괄 적용, 광고/결제 도입 시 Vercel Pro 필요
-type: project
-originSessionId: 802af141-d902-4326-acba-d5a5dc64ae81
+description: 자비 0원 운영. 안전장치는 배포 직전 일괄 적용, 광고/결제 도입 시 Vercel Pro 필요
 ---
 LogLife 프로젝트의 모든 아키텍처 결정은 **자비 지출 0원** 제약을 만족해야 한다.
 
@@ -20,7 +18,7 @@ LogLife 프로젝트의 모든 아키텍처 결정은 **자비 지출 0원** 제
 - Google Maps API 일일 quota 하드 캡 + HTTP referrer 제한
 - API Routes rate limiting + 인증 검증
 - Vercel 사용량 알림, Supabase health check ping
-- 자세한 체크리스트는 `docs/plan-spec.md` 섹션 7.2
+- 자세한 체크리스트는 `docs/plan_spec.md` 섹션 7.2
 
 **Vercel Pro 업그레이드 트리거** — 다음 기능 도입 시 Hobby 약관 위반이므로 Pro ($20/월) 필수임을 사용자에게 즉시 알릴 것:
 - 광고 게시 (AdSense 등)

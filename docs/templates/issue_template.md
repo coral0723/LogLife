@@ -1,10 +1,6 @@
 ---
-name: issue-template-style
-description: "LogLife 이슈 템플릿 작성 양식 — 간결한 한국어, AI 느낌 배제, Todo는 5개 내외의 구체적 액션"
-metadata: 
-  node_type: memory
-  type: feedback
-  originSessionId: 4f28b335-d43f-4c67-a6f6-7ae678fdc882
+name: 이슈 템플릿 양식
+description: LogLife 이슈 템플릿 — 간결한 한국어, AI 느낌 배제, Todo는 5개 내외의 구체적 액션
 ---
 
 이슈 템플릿 작성 시 아래 양식을 지킨다.
