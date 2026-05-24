@@ -1,5 +1,20 @@
 # Changelog
 
+## [2026-05-24]
+
+### 변경
+
+- AI 문서·규칙 폴더 구조 재설계 (1e339f5)
+
+### 기타
+
+- Bash·PowerShell 실행 전 CLI 보안 규칙 자동 주입 훅 추가 (5e04c0f)
+- Claude Code 권한 허용 목록을 와일드카드로 단순화 (5b40968)
+- 파일명 네이밍 규칙 통일 (PascalCase·camelCase·snake_case) (72040a5)
+- /handoff 슬래시 커맨드 추가 (c672feb)
+- /pr 슬래시 커맨드 추가 (ebbaaee)
+- /commit 슬래시 커맨드 추가 (8689f9e)
+
 ## [2026-05-22]
 
 ### 추가
