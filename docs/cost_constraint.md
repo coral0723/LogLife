@@ -18,7 +18,7 @@ LogLife 프로젝트의 모든 아키텍처 결정은 **자비 지출 0원** 제
 - Google Maps API 일일 quota 하드 캡 + HTTP referrer 제한
 - API Routes rate limiting + 인증 검증
 - Vercel 사용량 알림, Supabase health check ping
-- 자세한 체크리스트는 `docs/plan-spec.md` 섹션 7.2
+- 자세한 체크리스트는 `docs/plan_spec.md` 섹션 7.2
 
 **Vercel Pro 업그레이드 트리거** — 다음 기능 도입 시 Hobby 약관 위반이므로 Pro ($20/월) 필수임을 사용자에게 즉시 알릴 것:
 - 광고 게시 (AdSense 등)

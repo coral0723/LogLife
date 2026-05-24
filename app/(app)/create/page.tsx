@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 
-import { CreateBucketListForm } from "./create-form";
+import { CreateBucketListForm } from "./CreateForm";
 
 export default async function CreateBucketListPage() {
   const session = await auth();

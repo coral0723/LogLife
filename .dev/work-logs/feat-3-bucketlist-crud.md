@@ -27,12 +27,12 @@ R/U/D 액션 함수는 같은 파일에 미리 만들어 뒀지만 UI는 아직 
 | 파일 | 종류 | 역할 |
 |---|---|---|
 | [app/(app)/create/page.tsx](../../app/(app)/create/page.tsx) | 신규 (RSC) | 작성 페이지 라우트, 인증 가드 |
-| [app/(app)/create/create-form.tsx](../../app/(app)/create/create-form.tsx) | 신규 (CC) | 폼 상태 + Server Action 호출 |
+| [app/(app)/create/CreateForm.tsx](../../app/(app)/create/CreateForm.tsx) | 신규 (CC) | 폼 상태 + Server Action 호출 |
 | [app/(app)/create/actions.ts](../../app/(app)/create/actions.ts) | 신규 (Server Action) | 버킷리스트 CRUD + 캐시 무효화 |
-| [components/places-autocomplete.tsx](../../components/places-autocomplete.tsx) | 신규 (CC) | 자동완성 입력 + 키보드 a11y |
+| [components/PlacesAutocomplete.tsx](../../components/PlacesAutocomplete.tsx) | 신규 (CC) | 자동완성 입력 + 키보드 a11y |
 | [app/api/places/autocomplete/route.ts](../../app/api/places/autocomplete/route.ts) | 신규 (Route Handler) | Google `places:autocomplete` 프록시 |
 | [app/api/places/details/route.ts](../../app/api/places/details/route.ts) | 신규 (Route Handler) | Google Place Details 프록시 + 정규화 |
-| [lib/rate-limit.ts](../../lib/rate-limit.ts) | 신규 | in-memory 슬라이딩 윈도우 레이트 리밋 |
+| [lib/rateLimit.ts](../../lib/rateLimit.ts) | 신규 | in-memory 슬라이딩 윈도우 레이트 리밋 |
 | [.env.example](../../.env.example) | 수정 | `GOOGLE_MAPS_API_KEY` → `GOOGLE_PLACES_API_KEY` |
 | [prisma.config.ts](../../prisma.config.ts) | 수정 | `.env` → `.env.local` 로드 |
 | [package.json](../../package.json) | 수정 | `zod` 추가 |
@@ -43,9 +43,9 @@ R/U/D 액션 함수는 같은 파일에 미리 만들어 뒀지만 UI는 아직 
 ```
 [브라우저]
   └─ /create  (RSC: page.tsx)
-       └─ <CreateBucketListForm>  (CC: create-form.tsx)
+       └─ <CreateBucketListForm>  (CC: CreateForm.tsx)
             ├─ 폼 입력 (제목/내용/마감/난이도/설레임/공개범위)
-            ├─ <PlacesAutocomplete>  (CC: components/places-autocomplete.tsx)
+            ├─ <PlacesAutocomplete>  (CC: components/PlacesAutocomplete.tsx)
             │    ├─ debounce 300ms 후 fetch
             │    │    └─ POST /api/places/autocomplete  → Google Places API (Autocomplete)
             │    └─ 항목 선택 시 fetch
@@ -69,7 +69,7 @@ R/U/D 액션 함수는 같은 파일에 미리 만들어 뒀지만 UI는 아직 
 - **인증 가드**: `auth()` 호출 후 세션이 없으면 `/login`으로 redirect.
 - **렌더**: 제목 + `<CreateBucketListForm />` 만 포함. 폼 상태는 클라이언트에 위임.
 
-### `app/(app)/create/create-form.tsx`
+### `app/(app)/create/CreateForm.tsx`
 
 - **역할**: 폼 상태와 제출 흐름을 담당하는 Client Component.
 - **위치 데이터**: `useState<NormalizedPlace | null>`로 보관, `<PlacesAutocomplete onSelect={setPlace} />` 콜백으로 주입.
@@ -95,7 +95,7 @@ R/U/D 액션 함수는 같은 파일에 미리 만들어 뒀지만 UI는 아직 
 - **권한 모델**: `updateMany/deleteMany + where: { id, userId }`로 **타 유저 데이터 변경 차단**. (id 추측만으론 못 건드림)
 - **태그 네이밍**: `bucketlist:user:${userId}` — 유저 단위로 묶어 무효화.
 
-### `components/places-autocomplete.tsx`
+### `components/PlacesAutocomplete.tsx`
 
 - **목적**: Google Places 비용 최적화를 위한 **session token 기반 자동완성**.
 - **session token**: `crypto.randomUUID()`로 생성, 항목 선택 직후 새 토큰으로 회전 (Google 권장 — Autocomplete + 1회 Details까지 single transaction 과금).
@@ -124,7 +124,7 @@ R/U/D 액션 함수는 같은 파일에 미리 만들어 뒀지만 UI는 아직 
   - 필수값(`placeId`, `displayName`, `lat`, `lng`, `country`) 누락 시 502.
 - **저장될 형태**: 이 normalize 결과가 `BucketList`의 위치 컬럼 그대로 들어감 (AD-03 정합).
 
-### `lib/rate-limit.ts`
+### `lib/rateLimit.ts`
 
 - **구현**: `Map<key, number[]>` 기반 슬라이딩 윈도우.
 - **공유**: autocomplete + details 라우트가 **같은 `places:${userId}` 키**로 합산 카운트. (한쪽 폭주가 다른 쪽도 차단)
@@ -178,7 +178,7 @@ async function getMyBucketLists(userId: string) {
 
 ### 5-2. 레이트 리밋은 단일 인스턴스 한정
 
-[lib/rate-limit.ts](../../lib/rate-limit.ts)는 in-memory. 배포가 멀티 인스턴스로 확장되면 Upstash Redis / Vercel KV 등으로 이행해야 한다. v1 무료 운영 범위에선 충분.
+[lib/rateLimit.ts](../../lib/rateLimit.ts)는 in-memory. 배포가 멀티 인스턴스로 확장되면 Upstash Redis / Vercel KV 등으로 이행해야 한다. v1 무료 운영 범위에선 충분.
 
 ### 5-3. TanStack Query 도입 시점
 

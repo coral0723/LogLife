@@ -15,7 +15,7 @@ globs:
 
 - [ ] Google Cloud Console에서 Maps API **일일 quota 하드 캡** (예: 일 500 호출)
 - [ ] Google Maps API key의 **HTTP referrer 제한** — 배포 도메인만 허용
-- [ ] API Routes rate limiting — `/api/places/*`는 인증된 사용자 IP당 분당 30회 (`lib/rate-limit.ts`)
+- [ ] API Routes rate limiting — `/api/places/*`는 인증된 사용자 IP당 분당 30회 (`lib/rateLimit.ts`)
 - [ ] `/api/places/*` 진입 시 `auth()` 검증 통과 후에만 외부 API 호출 (비로그인 차단)
 - [ ] Vercel 사용량 80% 도달 시 이메일 알림 설정
 - [ ] Supabase 프로젝트 health check ping — GitHub Actions cron (`*/3 * * *`)으로 일시 정지 방지
@@ -23,7 +23,7 @@ globs:
 - [ ] `images.qualities`에 75 외 값을 쓰는 컴포넌트가 있다면 명시 (Next 16 기본값은 `[75]`만)
 - [ ] `.env`의 API key가 클라이언트 번들에 노출되지 않는지 확인 (`NEXT_PUBLIC_` 없는지)
 
-원본: [`docs/plan-spec.md`](../../docs/plan-spec.md) §7.2
+원본: [`docs/plan_spec.md`](../../docs/plan_spec.md) §7.2
 
 ## 무료 한도 한계 (의식만 — 도달 시 알림)
 
@@ -42,7 +42,7 @@ globs:
 - 유료 멤버십 / 프리미엄 기능
 - B2B 비즈니스 용도 / 의뢰 받은 외주
 
-원본: [`docs/cost-constraint.md`](../../docs/cost-constraint.md)
+원본: [`docs/cost_constraint.md`](../../docs/cost_constraint.md)
 
 ## Next 16 빌드 주의
 

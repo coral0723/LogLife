@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { auth } from "@/auth";
-import { consumeRateLimit } from "@/lib/rate-limit";
+import { consumeRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 

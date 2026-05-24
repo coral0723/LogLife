@@ -34,5 +34,5 @@ globs:
 
 ## 참고
 
-- 상세 기술 스택은 [`docs/plan-spec.md`](../../docs/plan-spec.md) §2 참조.
+- 상세 기술 스택은 [`docs/plan_spec.md`](../../docs/plan_spec.md) §2 참조.
 - 테스트 미작성 항목은 같은 문서의 §"알려진 한계" 또는 [`work-logs`](../../.dev/work-logs/) 참조.

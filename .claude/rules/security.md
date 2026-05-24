@@ -5,7 +5,7 @@ globs:
   - "proxy.ts"
   - "app/api/**"
   - "app/(auth)/**"
-  - "lib/rate-limit.ts"
+  - "lib/rateLimit.ts"
   - ".env*"
   - "prisma/**"
 ---
@@ -34,11 +34,11 @@ globs:
 ## 외부 API 호출 순서
 
 1. `auth()` 통과
-2. `lib/rate-limit.ts`의 `checkRateLimit` 통과 (키: `places:${userId}` 등)
+2. `lib/rateLimit.ts`의 `checkRateLimit` 통과 (키: `places:${userId}` 등)
 3. 외부 fetch
 4. 응답 정규화 (Google 원형 응답 그대로 클라이언트에 노출 금지)
 
 ## 참고
 
-- 인증/세션 모델 (AD-05) → [`docs/plan-spec.md`](../../docs/plan-spec.md)
+- 인증/세션 모델 (AD-05) → [`docs/plan_spec.md`](../../docs/plan_spec.md)
 - Places 프록시 / 레이트 리밋 구현 패턴 → [`.dev/work-logs/feat-3-bucketlist-crud.md`](../../.dev/work-logs/feat-3-bucketlist-crud.md) §3

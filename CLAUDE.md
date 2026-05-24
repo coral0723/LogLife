@@ -72,12 +72,12 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ## 어디서 무엇을 읽을지
 
 ### 🔵 작업 직전 항상
-- 비즈니스 / 도메인 / ADR / 페이지 사양 → [docs/plan-spec.md](docs/plan-spec.md)
-- 0원 운영 제약 → [docs/cost-constraint.md](docs/cost-constraint.md)
+- 비즈니스 / 도메인 / ADR / 페이지 사양 → [docs/plan_spec.md](docs/plan_spec.md)
+- 0원 운영 제약 → [docs/cost_constraint.md](docs/cost_constraint.md)
 
 ### 🟢 상황별 룰 ([.claude/rules/](.claude/rules/))
-- 코드 작성 시 → [code-style.md](.claude/rules/code-style.md)
-- 테스트 작성/수정 시 → [testing-guide.md](.claude/rules/testing-guide.md)
+- 코드 작성 시 → [code_style.md](.claude/rules/code_style.md)
+- 테스트 작성/수정 시 → [testing_guide.md](.claude/rules/testing_guide.md)
 - auth / api / .env 만질 때 → [security.md](.claude/rules/security.md)
 - 배포 / next.config / Vercel 관련 → [deploy.md](.claude/rules/deploy.md)
 
