@@ -21,10 +21,12 @@
       "Bash(npx prisma:*)",
       "Bash(pnpm exec prisma:*)",
       "Bash(git:*)",
-      "Bash(findstr /i \"env\")"
+      "Bash(findstr /i \"env\")",
+      "Bash(git branch *)"
     ],
     "additionalDirectories": [
-      "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory"
+      "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory",
+      "c:\\Users\\user\\Documents\\LogLife"
     ]
   },
   "enabledPlugins": {}
