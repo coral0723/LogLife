@@ -81,14 +81,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - auth / api / .env 만질 때 → [security.md](.claude/rules/security.md)
 - 배포 / next.config / Vercel 관련 → [deploy.md](.claude/rules/deploy.md)
 
-### 🟡 양식 ([docs/templates/](docs/templates/))
-- 커밋 메시지 → [commit_message.md](docs/templates/commit_message.md)
-- 이슈 → [issue_template.md](docs/templates/issue_template.md)
-- PR → [pr_template.md](docs/templates/pr_template.md)
-
-### 🟠 슬래시 명령 ([.claude/commands/](.claude/commands/))
-- `/commit`, `/pr`, `/changelog`
-
 ### 🟣 AI 작업 흔적 ([.dev/](.dev/))
 - 브랜치 작업 정리 → [work-logs/](.dev/work-logs/)
 - 새로 알게 된 패턴 / 주의점 → [learnings/](.dev/learnings/)
