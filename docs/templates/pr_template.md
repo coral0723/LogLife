@@ -1,10 +1,6 @@
 ---
-name: pr-template-style
-description: "LogLife PR 템플릿 작성 양식 — Related Issue / Description / Screenshot / Notes 4섹션, 간결한 한국어, 카테고리 그룹화"
-metadata: 
-  node_type: memory
-  type: feedback
-  originSessionId: 30f60450-0146-49ef-8011-34b40cdf743b
+name: PR 템플릿 양식
+description: LogLife PR 템플릿 — Related Issue / Description / Screenshot / Notes 4섹션, 카테고리 그룹화
 ---
 
 PR 본문 작성 시 아래 양식을 지킨다. 템플릿 파일은 `.github/PULL_REQUEST_TEMPLATE.md`.

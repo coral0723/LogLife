@@ -1,5 +1,0 @@
-- [커밋 메시지 양식](templates/commit_message_format.md) — `tag: 한국어 제목` + 빈 줄 + 한국어 불릿 본문 (feat/fix/chore/docs/style/refactor)
-- [이슈 템플릿 양식](templates/issue_template_style.md) — 간결한 한국어, AI 느낌 배제, Todo는 5개 내외 구체적 액션
-- [PR 템플릿 양식](templates/pr_template_style.md) — Related Issue / Description / Screenshot / Notes 4섹션, 카테고리 굵은 글씨 그룹 + bullet
-- [LogLife 비용 0원 원칙](project/loglife_cost_constraint.md) — 자비 지출 0원, Supabase Storage·사용자 사진 업로드 금지, Places API 호출량 최소화
-- [Ralph 스킬 사용 안 함](workflow/avoid_ralph_skill.md) — OMC ralph/ralplan 추천 금지, Ruby missing 경고 무시. 사유: 토큰 비용

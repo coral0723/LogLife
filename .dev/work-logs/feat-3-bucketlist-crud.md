@@ -26,17 +26,17 @@ R/U/D 액션 함수는 같은 파일에 미리 만들어 뒀지만 UI는 아직 
 
 | 파일 | 종류 | 역할 |
 |---|---|---|
-| [app/(app)/create/page.tsx](../app/(app)/create/page.tsx) | 신규 (RSC) | 작성 페이지 라우트, 인증 가드 |
-| [app/(app)/create/create-form.tsx](../app/(app)/create/create-form.tsx) | 신규 (CC) | 폼 상태 + Server Action 호출 |
-| [app/(app)/create/actions.ts](../app/(app)/create/actions.ts) | 신규 (Server Action) | 버킷리스트 CRUD + 캐시 무효화 |
-| [components/places-autocomplete.tsx](../components/places-autocomplete.tsx) | 신규 (CC) | 자동완성 입력 + 키보드 a11y |
-| [app/api/places/autocomplete/route.ts](../app/api/places/autocomplete/route.ts) | 신규 (Route Handler) | Google `places:autocomplete` 프록시 |
-| [app/api/places/details/route.ts](../app/api/places/details/route.ts) | 신규 (Route Handler) | Google Place Details 프록시 + 정규화 |
-| [lib/rate-limit.ts](../lib/rate-limit.ts) | 신규 | in-memory 슬라이딩 윈도우 레이트 리밋 |
-| [.env.example](../.env.example) | 수정 | `GOOGLE_MAPS_API_KEY` → `GOOGLE_PLACES_API_KEY` |
-| [prisma.config.ts](../prisma.config.ts) | 수정 | `.env` → `.env.local` 로드 |
-| [package.json](../package.json) | 수정 | `zod` 추가 |
-| [.claude/settings.json](../.claude/settings.json) | 수정 | 도구 권한 허용 목록 확장 |
+| [app/(app)/create/page.tsx](../../app/(app)/create/page.tsx) | 신규 (RSC) | 작성 페이지 라우트, 인증 가드 |
+| [app/(app)/create/create-form.tsx](../../app/(app)/create/create-form.tsx) | 신규 (CC) | 폼 상태 + Server Action 호출 |
+| [app/(app)/create/actions.ts](../../app/(app)/create/actions.ts) | 신규 (Server Action) | 버킷리스트 CRUD + 캐시 무효화 |
+| [components/places-autocomplete.tsx](../../components/places-autocomplete.tsx) | 신규 (CC) | 자동완성 입력 + 키보드 a11y |
+| [app/api/places/autocomplete/route.ts](../../app/api/places/autocomplete/route.ts) | 신규 (Route Handler) | Google `places:autocomplete` 프록시 |
+| [app/api/places/details/route.ts](../../app/api/places/details/route.ts) | 신규 (Route Handler) | Google Place Details 프록시 + 정규화 |
+| [lib/rate-limit.ts](../../lib/rate-limit.ts) | 신규 | in-memory 슬라이딩 윈도우 레이트 리밋 |
+| [.env.example](../../.env.example) | 수정 | `GOOGLE_MAPS_API_KEY` → `GOOGLE_PLACES_API_KEY` |
+| [prisma.config.ts](../../prisma.config.ts) | 수정 | `.env` → `.env.local` 로드 |
+| [package.json](../../package.json) | 수정 | `zod` 추가 |
+| [.claude/settings.json](../../.claude/settings.json) | 수정 | 도구 권한 허용 목록 확장 |
 
 ## 2. 호출 그래프
 
@@ -178,7 +178,7 @@ async function getMyBucketLists(userId: string) {
 
 ### 5-2. 레이트 리밋은 단일 인스턴스 한정
 
-[lib/rate-limit.ts](../lib/rate-limit.ts)는 in-memory. 배포가 멀티 인스턴스로 확장되면 Upstash Redis / Vercel KV 등으로 이행해야 한다. v1 무료 운영 범위에선 충분.
+[lib/rate-limit.ts](../../lib/rate-limit.ts)는 in-memory. 배포가 멀티 인스턴스로 확장되면 Upstash Redis / Vercel KV 등으로 이행해야 한다. v1 무료 운영 범위에선 충분.
 
 ### 5-3. TanStack Query 도입 시점
 
@@ -207,7 +207,7 @@ async function getMyBucketLists(userId: string) {
 |---|---|---|
 | `GOOGLE_PLACES_API_KEY` | `.env.local` (서버 전용) | Places Autocomplete / Details 호출 |
 
-> 기존 `GOOGLE_MAPS_API_KEY`는 [.env.example](../.env.example)에서 제거. **`NEXT_PUBLIC_` 접두어 금지** (브라우저 노출 시 키 도용 위험).
+> 기존 `GOOGLE_MAPS_API_KEY`는 [.env.example](../../.env.example)에서 제거. **`NEXT_PUBLIC_` 접두어 금지** (브라우저 노출 시 키 도용 위험).
 
 ### 새 패키지
 

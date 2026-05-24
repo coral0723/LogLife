@@ -22,11 +22,13 @@
       "Bash(pnpm exec prisma:*)",
       "Bash(git:*)",
       "Bash(findstr /i \"env\")",
-      "Bash(git branch *)"
+      "Bash(git branch *)",
+      "PowerShell($item = Get-Item 'C:\\\\Users\\\\user\\\\.claude\\\\projects\\\\c--Users-user-Documents-LogLife\\\\memory' -Force; Write-Output \"Mode: $\\($item.Mode\\)\"; Write-Output \"LinkType: $\\($item.LinkType\\)\"; Write-Output \"Target: $\\($item.Target\\)\")"
     ],
     "additionalDirectories": [
       "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory",
-      "c:\\Users\\user\\Documents\\LogLife"
+      "c:\\Users\\user\\Documents\\LogLife",
+      "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife"
     ]
   },
   "enabledPlugins": {}

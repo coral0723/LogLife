@@ -40,7 +40,7 @@ yarn-error.log*
 # claude
 .claude/*
 !.claude/commands/
-!.claude/memory/
+!.claude/rules/
 !.claude/settings.json
 .claude/settings.local.json
 .omc/

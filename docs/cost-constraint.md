@@ -1,8 +1,6 @@
 ---
 name: LogLife 비용 0원 운영 원칙
-description: LogLife는 자비 0원 운영. 안전장치는 배포 직전 일괄 적용, 광고/결제 도입 시 Vercel Pro 필요
-type: project
-originSessionId: 802af141-d902-4326-acba-d5a5dc64ae81
+description: 자비 0원 운영. 안전장치는 배포 직전 일괄 적용, 광고/결제 도입 시 Vercel Pro 필요
 ---
 LogLife 프로젝트의 모든 아키텍처 결정은 **자비 지출 0원** 제약을 만족해야 한다.
 

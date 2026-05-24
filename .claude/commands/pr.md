@@ -21,7 +21,7 @@ description: 현재 브랜치 커밋으로 LogLife PR 양식 초안 생성 (제�
    - 본문에 포함된 `Co-Authored-By:` 푸터는 분석에서 무시한다.
 
 4. **양식 로드**
-   - `.claude/memory/templates/pr_template_style.md` 를 Read 도구로 읽어 4섹션 구조와 톤 규칙 확인.
+   - `docs/templates/pr_template.md` 를 Read 도구로 읽어 4섹션 구조와 톤 규칙 확인.
    - 섹션 헤더(이모지 포함)는 `.github/PULL_REQUEST_TEMPLATE.md` 원본을 그대로 사용.
 
 5. **PR 제목 생성**

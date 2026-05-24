@@ -20,7 +20,7 @@ description: 현재 변경사항을 한국어 양식으로 커밋 (yes/no 확인
    - `git add -A`, `git add .` 사용 금지 (민감 파일 우회 방지).
 
 4. **양식 로드**
-   - `C:\Users\user\.claude\projects\c--Users-user-Documents-LogLife\memory\templates\commit_message_format.md` 을 Read 도구로 읽어 양식 확인.
+   - `docs/templates/commit_message.md` 을 Read 도구로 읽어 양식 확인.
    - 양식: `{tag}: {한국어 제목}` + 빈 줄 + `- 본문 불릿` 리스트.
    - 태그는 `feat`, `fix`, `chore`, `docs`, `style`, `refactor` 중 변경 성격에 맞는 것 선택.
 
