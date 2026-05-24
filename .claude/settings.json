@@ -12,5 +12,18 @@
       "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife"
     ]
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -Command \"Get-Content '.claude/rules/cli_security.md' -Raw\""
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {}
 }
