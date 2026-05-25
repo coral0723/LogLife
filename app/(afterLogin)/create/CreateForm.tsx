@@ -42,7 +42,7 @@ export function CreateBucketListForm() {
           excitement,
           ...place,
         });
-        router.push("/");
+        router.push("/main");
       } catch (e) {
         setError(e instanceof Error ? e.message : "저장에 실패했습니다.");
       }
