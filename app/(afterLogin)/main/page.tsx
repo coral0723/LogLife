@@ -29,9 +29,9 @@ export default async function MainPage() {
   const pins = buildCountryPins(byCountry, byAchieved);
 
   return (
-    <main className="relative h-dvh w-full overflow-hidden">
+    <main className="relative h-dvh w-full overflow-hidden bg-[#d6eaff]">
       <GlobeClient pins={pins} />
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#110e09]/70 to-transparent" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#d6eaff]/70 to-transparent" />
       {pins.length === 0 && <EmptyState />}
     </main>
   );

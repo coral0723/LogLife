@@ -17,7 +17,7 @@ function createOceanTexture(): string {
   canvas.width = 4;
   canvas.height = 4;
   const ctx = canvas.getContext("2d")!;
-  ctx.fillStyle = "#1a4a7a";
+  ctx.fillStyle = "#3d75f7";
   ctx.fillRect(0, 0, 4, 4);
   return canvas.toDataURL();
 }
@@ -105,13 +105,13 @@ export function GlobeView({ pins, onPinClick }: Props) {
           ref={globeRef}
           width={size.width}
           height={size.height}
-          backgroundColor="#0a0805"
+          backgroundColor="#7ccdff"
           showAtmosphere
-          atmosphereColor="#7ab8f5"
+          atmosphereColor="#80eaff"
           atmosphereAltitude={0.2}
           globeImageUrl={oceanTexture}
           polygonsData={polygons}
-          polygonCapColor={() => "#4ade80"}
+          polygonCapColor={() => "#76f278"}
           polygonSideColor={() => "rgba(0,0,0,0)"}
           polygonStrokeColor={() => "rgba(0,0,0,0)"}
           polygonAltitude={0.006}
