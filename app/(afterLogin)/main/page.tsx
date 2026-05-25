@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
+import { buildCountryPins } from "@/lib/countryPins";
 import { prisma } from "@/lib/prisma";
 
 import { GlobeClient } from "./_components/GlobeClient";
@@ -10,17 +11,22 @@ export default async function MainPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const pins = await prisma.bucketList.findMany({
-    where: { userId: session.user.id },
-    select: {
-      id: true,
-      title: true,
-      lat: true,
-      lng: true,
-      achieved: true,
-      displayName: true,
-    },
-  });
+  const userId = session.user.id;
+
+  const [byCountry, byAchieved] = await Promise.all([
+    prisma.bucketList.groupBy({
+      by: ["countryCode"],
+      where: { userId },
+      _count: { _all: true },
+    }),
+    prisma.bucketList.groupBy({
+      by: ["countryCode"],
+      where: { userId, achieved: true },
+      _count: { _all: true },
+    }),
+  ]);
+
+  const pins = buildCountryPins(byCountry, byAchieved);
 
   return (
     <main className="relative h-dvh w-full overflow-hidden">
