@@ -45,10 +45,10 @@ function getLandColor(d: object): string {
   const lat = feat.bbox ? (feat.bbox[1] + feat.bbox[3]) / 2 : 0;
   const t = Math.abs(lat) / 90; // 0=적도, 1=극지방
 
-  // 적도: #81db7b = rgb(129,219,123) → 극지방: 쿨한 민트 rgb(120,190,158)
-  const r = Math.round(129 - t * 29);
-  const g = Math.round(219 - t * 33);
-  const b = Math.round(123 + t * 12);
+  // 적도: #96ff99 = rgb(150,255,153) → 극지방: 쿨한 민트 rgb(120,190,158)
+  const r = Math.round(150 - t * 29);
+  const g = Math.round(255 - t * 33);
+  const b = Math.round(153 + t * 12);
   return `rgb(${r},${g},${b})`;
 }
 
@@ -128,6 +128,16 @@ export function GlobeView({ pins, onPinClick }: Props) {
     globeRef.current.pointOfView({ lat: 25, lng: 30, altitude: 2.5 }, 0);
   }, [size.width]);
 
+  // react-globe.gl 기본 조명이 어두워 밝기 보정
+  useEffect(() => {
+    if (!globeRef.current || polygons.length === 0) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    globeRef.current.scene().traverse((obj: any) => {
+      if (obj.isAmbientLight) obj.intensity = 4.8;
+      if (obj.isDirectionalLight) obj.intensity = 3.4;
+    });
+  }, [polygons]);
+
   return (
     <div ref={containerRef} className="h-full w-full">
       {size.width > 0 && (
@@ -135,14 +145,14 @@ export function GlobeView({ pins, onPinClick }: Props) {
           ref={globeRef}
           width={size.width}
           height={size.height}
-          backgroundColor="#D0DAE6"
+          backgroundColor="rgba(0,0,0,0)"
           atmosphereAltitude={0.15}
           globeImageUrl={oceanTexture}
           polygonsData={polygons}
           polygonCapColor={getLandColor}
           polygonSideColor={() => "rgba(50,75,40,0.75)"}
           polygonStrokeColor={() => "rgba(255,255,255,0.04)"}
-          polygonAltitude={0.012}
+          polygonAltitude={0.016}
           htmlElementsData={pins}
           htmlLat="lat"
           htmlLng="lng"

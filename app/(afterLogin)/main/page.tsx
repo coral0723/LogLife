@@ -6,6 +6,7 @@ import { buildCountryPins } from "@/lib/countryPins";
 import { prisma } from "@/lib/prisma";
 
 import { GlobeClient } from "./_components/GlobeClient";
+import { StarField } from "./_components/StarField";
 
 export default async function MainPage() {
   const session = await auth();
@@ -29,9 +30,10 @@ export default async function MainPage() {
   const pins = buildCountryPins(byCountry, byAchieved);
 
   return (
-    <main className="relative h-dvh w-full overflow-hidden bg-[#d6eaff]">
+    <main className="relative h-dvh w-full overflow-hidden bg-[#060d1f]">
+      <StarField />
       <GlobeClient pins={pins} />
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#d6eaff]/70 to-transparent" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#060d1f]/70 to-transparent" />
       {pins.length === 0 && <EmptyState />}
     </main>
   );
