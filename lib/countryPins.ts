@@ -6,6 +6,7 @@ export interface CountryPin {
   lng: number;
   count: number;
   achievedCount: number;
+  hasExpiredDeadline: boolean;
 }
 
 interface GroupByResult {
@@ -15,11 +16,13 @@ interface GroupByResult {
 
 export function buildCountryPins(
   byCountry: GroupByResult[],
-  byAchieved: GroupByResult[]
+  byAchieved: GroupByResult[],
+  byExpired: GroupByResult[]
 ): CountryPin[] {
   const achievedMap = new Map(
     byAchieved.map((r) => [r.countryCode, r._count._all])
   );
+  const expiredSet = new Set(byExpired.map((r) => r.countryCode));
   return byCountry.flatMap((r) => {
     const centroid = getCountryCentroid(r.countryCode);
     if (!centroid) return [];
@@ -30,6 +33,7 @@ export function buildCountryPins(
         lng: centroid.lng,
         count: r._count._all,
         achievedCount: achievedMap.get(r.countryCode) ?? 0,
+        hasExpiredDeadline: expiredSet.has(r.countryCode),
       },
     ];
   });

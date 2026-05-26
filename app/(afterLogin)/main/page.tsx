@@ -14,7 +14,7 @@ export default async function MainPage() {
 
   const userId = session.user.id;
 
-  const [byCountry, byAchieved] = await Promise.all([
+  const [byCountry, byAchieved, byExpired] = await Promise.all([
     prisma.bucketList.groupBy({
       by: ["countryCode"],
       where: { userId },
@@ -25,9 +25,14 @@ export default async function MainPage() {
       where: { userId, achieved: true },
       _count: { _all: true },
     }),
+    prisma.bucketList.groupBy({
+      by: ["countryCode"],
+      where: { userId, achieved: false, deadlineAt: { lte: new Date() } },
+      _count: { _all: true },
+    }),
   ]);
 
-  const pins = buildCountryPins(byCountry, byAchieved);
+  const pins = buildCountryPins(byCountry, byAchieved, byExpired);
 
   return (
     <main className="relative h-dvh w-full overflow-hidden bg-[#060d1f]">
