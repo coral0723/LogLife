@@ -26,7 +26,7 @@ export function GlobeClient({ pins }: Props) {
       onClick={() => setSelectedPin(null)}
     >
       {!isReady && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white">
           <LoadingSpinner />
         </div>
       )}
