@@ -162,7 +162,7 @@ export function GlobeView({ pins, onPinClick }: Props) {
   // 초기 카메라 — 동아시아 기준으로 세계가 보이는 고도
   useEffect(() => {
     if (!globeRef.current || size.width === 0) return;
-    globeRef.current.pointOfView({ lat: 25, lng: 30, altitude: 2.5 }, 0);
+    globeRef.current.pointOfView({ lat: 36, lng: 128, altitude: 2.5 }, 0);
   }, [size.width]);
 
   // react-globe.gl 기본 조명이 어두워 밝기 보정
