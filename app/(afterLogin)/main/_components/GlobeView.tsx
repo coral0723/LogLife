@@ -11,15 +11,45 @@ interface Props {
   onPinClick: (pin: CountryPin) => void;
 }
 
-// 브라우저 canvas로 단색 ocean 텍스처 생성 (SSR 없는 클라이언트 전용)
+// 512×256 그라데이션 ocean 텍스처 — 위도별 깊이감 표현
 function createOceanTexture(): string {
   const canvas = document.createElement("canvas");
-  canvas.width = 4;
-  canvas.height = 4;
+  canvas.width = 512;
+  canvas.height = 256;
   const ctx = canvas.getContext("2d")!;
-  ctx.fillStyle = "#3d75f7";
-  ctx.fillRect(0, 0, 4, 4);
+
+  // 극지방(#0675AB) → 적도(#38d3ff) → 극지방
+  const latGrad = ctx.createLinearGradient(0, 0, 0, 256);
+  latGrad.addColorStop(0,    "#0675AB");
+  latGrad.addColorStop(0.25, "#1fa4d5");
+  latGrad.addColorStop(0.5,  "#38d3ff");
+  latGrad.addColorStop(0.75, "#1fa4d5");
+  latGrad.addColorStop(1,    "#0675AB");
+  ctx.fillStyle = latGrad;
+  ctx.fillRect(0, 0, 512, 256);
+
+  // 경도 양끝 약한 암화로 구면 깊이감 보조
+  const lngGrad = ctx.createLinearGradient(0, 0, 512, 0);
+  lngGrad.addColorStop(0,   "rgba(0,40,60,0.12)");
+  lngGrad.addColorStop(0.5, "rgba(0,0,0,0)");
+  lngGrad.addColorStop(1,   "rgba(0,40,60,0.12)");
+  ctx.fillStyle = lngGrad;
+  ctx.fillRect(0, 0, 512, 256);
+
   return canvas.toDataURL();
+}
+
+// 위도 중심에 따른 클레이 톤 육지 색상 — 적도(따뜻한 세이지) → 극지방(쿨한 올리브)
+function getLandColor(d: object): string {
+  const feat = d as { bbox?: [number, number, number, number] };
+  const lat = feat.bbox ? (feat.bbox[1] + feat.bbox[3]) / 2 : 0;
+  const t = Math.abs(lat) / 90; // 0=적도, 1=극지방
+
+  // 적도: #81db7b = rgb(129,219,123) → 극지방: 쿨한 민트 rgb(120,190,158)
+  const r = Math.round(129 - t * 29);
+  const g = Math.round(219 - t * 33);
+  const b = Math.round(123 + t * 12);
+  return `rgb(${r},${g},${b})`;
 }
 
 function createPinElement(pin: CountryPin, onPinClick: (p: CountryPin) => void): HTMLElement {
@@ -105,16 +135,14 @@ export function GlobeView({ pins, onPinClick }: Props) {
           ref={globeRef}
           width={size.width}
           height={size.height}
-          backgroundColor="#7ccdff"
-          showAtmosphere
-          atmosphereColor="#80eaff"
-          atmosphereAltitude={0.2}
+          backgroundColor="#D0DAE6"
+          atmosphereAltitude={0.15}
           globeImageUrl={oceanTexture}
           polygonsData={polygons}
-          polygonCapColor={() => "#76f278"}
-          polygonSideColor={() => "rgba(0,0,0,0)"}
-          polygonStrokeColor={() => "rgba(0,0,0,0)"}
-          polygonAltitude={0.006}
+          polygonCapColor={getLandColor}
+          polygonSideColor={() => "rgba(50,75,40,0.75)"}
+          polygonStrokeColor={() => "rgba(255,255,255,0.04)"}
+          polygonAltitude={0.012}
           htmlElementsData={pins}
           htmlLat="lat"
           htmlLng="lng"

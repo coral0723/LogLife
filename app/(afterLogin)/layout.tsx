@@ -13,7 +13,7 @@ export default async function AfterLoginLayout({
   if (!session?.user?.id) redirect("/login");
 
   return (
-    <div className="relative min-h-[100dvh] bg-[#08090d]">
+    <div className="relative min-h-[100dvh] bg-[#D0DAE6]">
       {children}
       <BottomNav />
     </div>
