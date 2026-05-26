@@ -74,21 +74,28 @@ function createPinElement(pin: CountryPin, onPinClick: (p: CountryPin) => void):
 
   const fontSize = pin.count >= 10 ? 10.5 : 13;
 
+  // CSS2DRenderer가 transform을 매 프레임 직접 덮어쓰므로, 외부 컨테이너에는
+  // transition을 두지 않는다. hover 애니메이션은 내부 래퍼에서 별도로 처리.
   const el = document.createElement("div");
   el.style.cssText = [
     "width:28px",
     "height:40px",
     "margin-top:-20px",  // 꼬리 끝이 좌표를 가리키도록 위로 오프셋
-    "cursor:pointer",
-    "transition:transform 0.15s cubic-bezier(0.16,1,0.3,1)",
-    "will-change:transform",
     "user-select:none",
     "pointer-events:all",
+  ].join(";");
+
+  const inner = document.createElement("div");
+  inner.style.cssText = [
+    "width:100%",
+    "height:100%",
+    "cursor:pointer",
+    "transition:transform 0.15s cubic-bezier(0.16,1,0.3,1)",
     "transform-origin:center bottom",
     `filter:${glow}`,
   ].join(";");
 
-  el.innerHTML = `
+  inner.innerHTML = `
     <svg width="28" height="40" viewBox="0 0 28 40" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="${id}-body" cx="38%" cy="28%" r="72%">
@@ -117,12 +124,14 @@ function createPinElement(pin: CountryPin, onPinClick: (p: CountryPin) => void):
     </svg>
   `;
 
-  el.onmouseenter = () => { el.style.transform = "scale(1.2)"; };
-  el.onmouseleave = () => { el.style.transform = "scale(1)"; };
+  el.onmouseenter = () => { inner.style.transform = "scale(1.2)"; };
+  el.onmouseleave = () => { inner.style.transform = ""; };
   el.onclick = (e) => {
     e.stopPropagation();
     onPinClick(pin);
   };
+
+  el.appendChild(inner);
   return el;
 }
 
