@@ -37,8 +37,8 @@
 
 | # | 결정 사항 | 선택 | 핵심 이유 |
 |---|---|---|---|
-| AD-01 | Globe LOD 전환 | **줌 + 핀 밀도 적응형** | 현재 시야의 핀 개수 임계치 초과 시 한 단계 상위 행정 단위로 자동 합침 |
-| AD-02 | 마커 클러스터링 | **행정구역 기반** | `country_code → admin1 → city` 단위 GROUP BY. "한국에 깃발, 서울에 깃발" 컨셉에 정합 |
+| AD-01 | Globe LOD 전환 | **나라 단위 고정** | 줌 레벨 무관하게 나라별 핀 하나만 표시. 줌 기반 전환은 구현 복잡도 대비 UX 이득이 불확실하여 제외 |
+| AD-02 | 마커 클러스터링 | **country_code 기반** | 나라당 핀 1개. `GROUP BY countryCode`. 핀에 해당 나라의 버킷리스트 개수 표시 |
 | AD-03 | 위치 데이터 모델 | **place_id + 좌표 + 정규화된 행정 계층** | 클러스터링/통계/필터 인덱스 가능, Places API 재호출 최소화 |
 | AD-04 | Places 사진 | **서버 API route 프록시 + Next Image 캐시** | `/api/places/photo?ref=...` 응답을 Next Image가 자동 캐시. ToS 준수 + 추가 비용 0 |
 | AD-05 | 인증/세션 | **NextAuth v5 + Prisma Adapter + JWT session** | PWA 장기 로그인, OAuth 전용 → 강제 로그아웃 시나리오 거의 없음. 추후 `tokenVersion` 패턴으로 semi-stateful 확장 가능 |
@@ -49,7 +49,7 @@
 | AD-10 | 달성 처리 UX | **토글 즉시 달성 + 축하 팝업** | 마찰 최소화. 사진 업로드/소감은 v1 제외 (비용·복잡도) |
 | AD-11 | 공유 페이지 렌더링 | **Server Component + Server Action + `updateTag` / `revalidateTag(tag, 'max')`** | Next 16에서 `revalidateTag`는 2번째 인자(cacheLife profile) 필수. 본인 변경(달성 토글·CRUD)은 즉시 반영이 중요 → Server Action 안에서 `updateTag`(read-your-own-writes). 친구·공개 데이터는 `revalidateTag(tag, 'max')`로 stale-while-revalidate. tag 미부여 라우트는 `revalidatePath` fallback |
 | AD-12 | 통계 집계 | **매 요청 Prisma aggregate** | 개인 단위 소규모 데이터셋. 조기 최적화 회피, 추후 materialized view 이행 가능 |
-| AD-13 | 카드 라우팅 | **Parallel + Intercepting Routes** | `(.)b/[id]` 인터셉트 + `@modal` 슬롯 + `/b/[token]` 풀 페이지 fallback. 공유/딥링크/새로고침 모두 자연 처리. **Next 16**: 모든 parallel slot에 `default.js` 의무(`app/(app)/@modal/default.tsx`에서 `null` 반환). 없으면 빌드 실패 |
+| AD-13 | 카드 라우팅 | **메인 globe: 슬라이드업 패널 / 기타: Parallel + Intercepting Routes** | 메인 globe 핀 클릭은 슬라이드업 패널(목록→상세 인라인 전환). 프로필·사용자 페이지 카드 클릭은 `(.)b/[id]` 인터셉트 + `@modal` 슬롯 + `/b/[token]` 풀페이지 fallback. **Next 16**: 모든 parallel slot에 `default.js` 의무(`app/(app)/@modal/default.tsx`에서 `null` 반환). 없으면 빌드 실패 |
 | AD-14 | 위치 검색 UX | **Places Autocomplete only (지도 클릭 X)** | 비용 절감 (session token으로 single transaction 과금). 미세 위치는 본문 텍스트로 보완 |
 | AD-15 | 친구 페이지 v1 | **친구 리스트 + 검색/정렬 + 3개 위젯** | 공통 버킷리스트 매칭, 친구들의 핫 플레이스 Top 5, 함께 달성 모먼트 — LogLife 차별화 핵심 |
 | AD-16 | PWA 오프라인 | **온라인 필수** | 네트워크 미연결 시 풀스크린 안내 팝업으로 모든 인터랙션 차단. Serwist는 manifest/installable만 사용 |
@@ -131,11 +131,14 @@ app/
 ## 6. 페이지별 사양 요약
 
 ### 1) 메인 페이지 — `/`
-- 정중앙 globe.gl (html-markers, 어두운 단색 배경, 별 없음)
+- 정중앙 react-globe.gl (html-markers, 어두운 단색 배경)
 - 본인의 모든 버킷리스트 핀 (visibility 무관)
-- 달성/미달성 핀 모양 구분
-- LOD: 줌 + 시야 핀 밀도 기준 자동 행정 클러스터링 (AD-01, AD-02)
-- 핀 클릭 → 인터셉팅 모달 (`/b/[token]`, 모바일은 풀스크린, 데스크톱은 팝업)
+- **나라별 핀 하나** — 핀에 해당 나라의 버킷리스트 개수 표시 (AD-01, AD-02)
+- 핀 클릭 → **슬라이드업 패널** (아래에서 위로 올라옴):
+  1. 해당 나라의 버킷리스트 목록
+  2. 목록 아이템 클릭 → 패널 내용이 해당 버킷리스트 상세로 전환
+  3. 상세에서 좌상단 뒤로가기 버튼 → 목록 복귀
+  4. 패널 상단 드래그 다운 또는 화살표 아이콘 클릭 → 패널 닫힘 (데스크톱은 화살표 아이콘만)
 - 하단 중앙 네비 버튼 (양쪽 둥근 캡슐): `프로필 | 메인 | 친구`
 
 ### 2) 프로필 페이지 — `/profile`
