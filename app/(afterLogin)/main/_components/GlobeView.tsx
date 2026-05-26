@@ -9,6 +9,7 @@ import type { CountryPin } from "@/lib/countryPins";
 interface Props {
   pins: CountryPin[];
   onPinClick: (pin: CountryPin) => void;
+  onReady?: () => void;
 }
 
 // 512×256 그라데이션 ocean 텍스처 — 위도별 깊이감 표현
@@ -135,10 +136,12 @@ function createPinElement(pin: CountryPin, onPinClick: (p: CountryPin) => void):
   return el;
 }
 
-export function GlobeView({ pins, onPinClick }: Props) {
+export function GlobeView({ pins, onPinClick, onReady }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
   const [polygons, setPolygons] = useState<object[]>([]);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [oceanTexture] = useState(createOceanTexture);
@@ -174,7 +177,7 @@ export function GlobeView({ pins, onPinClick }: Props) {
     globeRef.current.pointOfView({ lat: 36, lng: 128, altitude: 2.5 }, 0);
   }, [size.width]);
 
-  // react-globe.gl 기본 조명이 어두워 밝기 보정
+  // react-globe.gl 기본 조명이 어두워 밝기 보정 + 지구본 준비 완료 알림
   useEffect(() => {
     if (!globeRef.current || polygons.length === 0) return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -182,6 +185,7 @@ export function GlobeView({ pins, onPinClick }: Props) {
       if (obj.isAmbientLight) obj.intensity = 4.8;
       if (obj.isDirectionalLight) obj.intensity = 3.4;
     });
+    onReadyRef.current?.();
   }, [polygons]);
 
   return (

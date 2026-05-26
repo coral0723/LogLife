@@ -1,9 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import type { CountryPin } from "@/lib/countryPins";
+import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
 
 interface Props {
   pins: CountryPin[];
@@ -16,13 +17,20 @@ const GlobeView = dynamic(
 
 export function GlobeClient({ pins }: Props) {
   const [selectedPin, setSelectedPin] = useState<CountryPin | null>(null);
+  const [isReady, setIsReady] = useState(false);
+  const handleReady = useCallback(() => setIsReady(true), []);
 
   return (
     <div
       className="relative h-full w-full"
       onClick={() => setSelectedPin(null)}
     >
-      <GlobeView pins={pins} onPinClick={setSelectedPin} />
+      {!isReady && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white">
+          <LoadingSpinner />
+        </div>
+      )}
+      <GlobeView pins={pins} onPinClick={setSelectedPin} onReady={handleReady} />
 
       {selectedPin && (
         <div
