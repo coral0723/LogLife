@@ -2,9 +2,8 @@ name: Chromatic
 
 on:
   push:
-    branches: [main]
+    branches-ignore: []
   pull_request:
-    branches: [main]
 
 jobs:
   chromatic:
