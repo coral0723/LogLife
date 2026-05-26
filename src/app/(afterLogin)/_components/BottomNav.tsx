@@ -2,21 +2,31 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, UserCircle, UsersThree } from "@phosphor-icons/react";
+import { Globe, UserCircle, UsersThree, type Icon } from "@phosphor-icons/react";
 
-const NAV_ITEMS = [
+export type NavItem = {
+  href: string;
+  icon: Icon;
+  label: string;
+};
+
+const NAV_ITEMS: NavItem[] = [
   { href: "/profile", icon: UserCircle, label: "프로필" },
   { href: "/main", icon: Globe, label: "메인" },
   { href: "/friends", icon: UsersThree, label: "친구" },
-] as const;
+];
 
-export function BottomNav() {
+type Props = {
+  items?: NavItem[];
+};
+
+export function BottomNav({ items = NAV_ITEMS }: Props) {
   const pathname = usePathname();
 
   return (
     <nav className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
       <ul className="flex gap-1 rounded-full border border-gray-200 bg-white/90 px-2 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl">
-        {NAV_ITEMS.map(({ href, icon: Icon, label }) => {
+        {items.map(({ href, icon: Icon, label }) => {
           const active = pathname === href;
           return (
             <li key={href}>
