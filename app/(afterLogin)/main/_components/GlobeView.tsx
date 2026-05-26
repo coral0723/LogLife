@@ -171,11 +171,20 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
       });
   }, []);
 
-  // 초기 카메라 — 동아시아 기준으로 세계가 보이는 고도
+  // 초기 카메라 — 동아시아 기준, 지구본 양옆 최소 8px 여백 보장
+  // globe.gl: FOV=50°(수직), 지구 반지름=100, 카메라거리=100*(1+altitude)
+  // 시각 지름(px) = (2 * arcsin(1/(1+alt)) / 50°) * height
   useEffect(() => {
-    if (!globeRef.current || size.width === 0) return;
-    globeRef.current.pointOfView({ lat: 36, lng: 128, altitude: 2.5 }, 0);
-  }, [size.width]);
+    if (!globeRef.current || size.width === 0 || size.height === 0) return;
+
+    const MARGIN = 8;
+    const maxDiameter = size.width - MARGIN * 2;
+    const halfAngleRad = (maxDiameter / size.height) * (25 * Math.PI / 180);
+    const minAltitude = 1 / Math.sin(halfAngleRad) - 1;
+    const altitude = Math.max(2.5, minAltitude);
+
+    globeRef.current.pointOfView({ lat: 36, lng: 128, altitude }, 0);
+  }, [size.width, size.height]);
 
   // react-globe.gl 기본 조명이 어두워 밝기 보정 + 지구본 준비 완료 알림
   useEffect(() => {
