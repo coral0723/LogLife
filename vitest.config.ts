@@ -14,7 +14,7 @@ const dirname =
 export default defineConfig({
   resolve: {
     alias: {
-      '@': path.resolve(dirname, './'),
+      '@': path.resolve(dirname, './src'),
     },
   },
   test: {
