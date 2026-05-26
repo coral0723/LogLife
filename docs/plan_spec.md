@@ -102,11 +102,15 @@ app/
     page.tsx                       # 6. 랜딩 페이지 (SSG, 디자인 후순위)
   (auth)/
     login/page.tsx                 # Google/Kakao 버튼
-  (app)/                           # 인증 필요 그룹
-    layout.tsx                     # 하단 네비 (프로필 | 메인 | 친구)
-    page.tsx                       # 1. 메인 globe
-    profile/page.tsx               # 2. 프로필 (본인)
-    friends/page.tsx               # 4. 친구 페이지
+  (afterLogin)/                    # 인증 필요 그룹
+    layout.tsx                     # 인증 공통 레이아웃
+    (withNav)/                     # 항상 BottomNav가 표시되는 페이지 그룹
+      layout.tsx                   # BottomNav 포함 레이아웃
+      profile/page.tsx             # 2. 프로필 (본인)
+      friends/page.tsx             # 4. 친구 페이지
+    main/
+      layout.tsx                   # BottomNav 없음 — 빈 상태 예외 처리
+      page.tsx                     # 1. 메인 globe — 핀 있을 때만 BottomNav 렌더
     create/page.tsx                # 3. 버킷리스트 작성
     @modal/
       default.tsx                  # Next 16 의무: 매칭 안될 때 null 반환
@@ -121,6 +125,10 @@ app/
       autocomplete/route.ts        # session token 관리
     auth/[...nextauth]/route.ts
 ```
+
+> **`(withNav)` 그룹 분리 이유**
+> `profile`, `friends`는 항상 BottomNav를 표시하므로 `(withNav)/layout.tsx` 한 곳에서 선언한다.
+> `main`은 버킷리스트 데이터가 없는 신규 유저 진입 시 BottomNav를 숨겨야 하므로 `(withNav)` 밖에 두고, `page.tsx`에서 `pins.length > 0`일 때만 조건부 렌더링한다.
 
 > **Next 16 라우트 작성 규칙 (모든 page/layout에 공통 적용)**
 > - `params`, `searchParams`, `cookies()`, `headers()` 전부 **async** → 반드시 `await`. 동기 접근 제거됨.
