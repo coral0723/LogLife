@@ -6,7 +6,7 @@ import { useState, useTransition } from "react";
 import {
   PlacesAutocomplete,
   type NormalizedPlace,
-} from "@/components/PlacesAutocomplete";
+} from "@/app/(afterLogin)/_components/PlacesAutocomplete";
 
 import { createBucketList } from "./actions";
 
