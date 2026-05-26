@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { buildCountryPins } from "@/lib/countryPins";
 import { prisma } from "@/lib/prisma";
+import { CirclePlusIcon } from "@/app/(afterLogin)/_components/CirclePlusIcon";
 
 import { GlobeClient } from "./_components/GlobeClient";
 import { StarField } from "./_components/StarField";
@@ -41,23 +42,27 @@ export default async function MainPage() {
   return (
     <main className="relative h-dvh w-full overflow-hidden bg-[#060d1f]">
       <StarField />
-      <GlobeClient pins={pins} />
+      {pins.length > 0 ? (
+        <GlobeClient pins={pins} />
+      ) : (
+        <EmptyState />
+      )}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#060d1f]/70 to-transparent" />
-      {pins.length === 0 && <EmptyState />}
     </main>
   );
 }
 
 function EmptyState() {
   return (
-    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-4">
-      <p className="text-sm text-zinc-400">아직 등록한 장소가 없어요.</p>
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
       <Link
         href="/create"
-        className="pointer-events-auto rounded-full border border-amber-400/50 px-5 py-2 text-sm font-medium text-amber-400 transition-colors duration-200 hover:bg-amber-400/10"
+        aria-label="첫 장소 추가하기"
+        className="transition-opacity duration-200 hover:opacity-75"
       >
-        첫 장소 추가하기
+        <CirclePlusIcon size={96} />
       </Link>
+      <p className="text-sm text-zinc-400">첫 버킷리스트를 추가해보세요</p>
     </div>
   );
 }
