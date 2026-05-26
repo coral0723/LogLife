@@ -27,7 +27,11 @@ export default async function MainPage() {
     }),
     prisma.bucketList.groupBy({
       by: ["countryCode"],
-      where: { userId, achieved: false, deadlineAt: { lte: new Date() } },
+      where: {
+        userId,
+        achieved: false,
+        deadlineAt: { lt: new Date(new Date().setHours(0, 0, 0, 0)) },
+      },
       _count: { _all: true },
     }),
   ]);
