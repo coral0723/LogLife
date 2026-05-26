@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import * as topojson from "topojson-client";
 
@@ -76,7 +76,7 @@ function createPinElement(pin: CountryPin, onPinClick: (p: CountryPin) => void):
   const fontSize = pin.count >= 10 ? 10.5 : 13;
 
   // CSS2DRenderer가 transform을 매 프레임 직접 덮어쓰므로, 외부 컨테이너에는
-  // transition을 두지 않는다. hover 애니메이션은 내부 래퍼에서 별도로 처리.
+  // transition을 두지 않는다. zoom 스케일은 scaleWrapper, hover 애니메이션은 inner에서 처리.
   const el = document.createElement("div");
   el.style.cssText = [
     "width:28px",
@@ -84,6 +84,16 @@ function createPinElement(pin: CountryPin, onPinClick: (p: CountryPin) => void):
     "margin-top:-20px",  // 꼬리 끝이 좌표를 가리키도록 위로 오프셋
     "user-select:none",
     "pointer-events:all",
+  ].join(";");
+
+  // zoom 스케일 전용 래퍼 — CSS2DRenderer가 el.transform을 덮어쓰므로 한 단계 아래에 위치
+  const scaleWrapper = document.createElement("div");
+  scaleWrapper.className = "pin-scale-wrapper";
+  scaleWrapper.style.cssText = [
+    "width:100%",
+    "height:100%",
+    "transform-origin:center bottom",
+    "transition:transform 0.2s ease-out",
   ].join(";");
 
   const inner = document.createElement("div");
@@ -132,7 +142,8 @@ function createPinElement(pin: CountryPin, onPinClick: (p: CountryPin) => void):
     onPinClick(pin);
   };
 
-  el.appendChild(inner);
+  scaleWrapper.appendChild(inner);
+  el.appendChild(scaleWrapper);
   return el;
 }
 
@@ -142,6 +153,30 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
+  const currentScaleRef = useRef(1);
+
+  // altitude 1.5 이상: scale=1, 0.3 이하: scale=2, 그 사이: 선형 보간
+  const handleZoom = useCallback(
+    ({ altitude }: { lat: number; lng: number; altitude: number }) => {
+      const SCALE_START = 1.5;
+      const SCALE_END = 0.3;
+      const newScale =
+        altitude >= SCALE_START
+          ? 1
+          : altitude <= SCALE_END
+            ? 2
+            : 1 + (SCALE_START - altitude) / (SCALE_START - SCALE_END);
+
+      currentScaleRef.current = newScale;
+      const scaleStr = newScale.toFixed(3);
+      containerRef.current
+        ?.querySelectorAll<HTMLElement>(".pin-scale-wrapper")
+        .forEach((el) => {
+          el.style.transform = `scale(${scaleStr})`;
+        });
+    },
+    []
+  );
   const [polygons, setPolygons] = useState<object[]>([]);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [oceanTexture] = useState(createOceanTexture);
@@ -216,9 +251,20 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
           htmlLat="lat"
           htmlLng="lng"
           htmlAltitude={0.02}
-          htmlElement={(d: object) =>
-            createPinElement(d as CountryPin, onPinClick)
-          }
+          htmlElement={(d: object) => {
+            const el = createPinElement(d as CountryPin, onPinClick);
+            // 핀 생성 시점의 현재 줌 스케일 즉시 적용 (transition 없이)
+            if (currentScaleRef.current !== 1) {
+              const sw = el.querySelector<HTMLElement>(".pin-scale-wrapper");
+              if (sw) {
+                sw.style.transition = "none";
+                sw.style.transform = `scale(${currentScaleRef.current.toFixed(3)})`;
+                requestAnimationFrame(() => { sw.style.transition = ""; });
+              }
+            }
+            return el;
+          }}
+          onZoom={handleZoom}
         />
       )}
     </div>
