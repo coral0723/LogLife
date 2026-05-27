@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { generateUsername } from "./username";
+import { generateUsername } from "../username";
 
 const noConflict = async () => false;
 const conflictSet = (taken: Set<string>) => async (u: string) => taken.has(u);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getCountryCentroid } from "./countryCentroids";
+import { getCountryCentroid } from "../countryCentroids";
 
 describe("getCountryCentroid", () => {
   it("KR 좌표 반환", () => {
@@ -31,7 +31,7 @@ describe("getCountryCentroid", () => {
   });
 
   it("200개 이상 국가 데이터 포함", async () => {
-    const { COUNTRY_CENTROIDS } = await import("./countryCentroids");
+    const { COUNTRY_CENTROIDS } = await import("../countryCentroids");
     expect(Object.keys(COUNTRY_CENTROIDS).length).toBeGreaterThanOrEqual(200);
   });
 });

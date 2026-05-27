@@ -26,6 +26,7 @@ export default defineConfig({
           name: 'unit',
           environment: 'jsdom',
           globals: true,
+          pool: 'vmThreads',
           setupFiles: ['./vitest.setup.ts'],
           include: ['**/*.{test,spec}.{ts,tsx}'],
           exclude: ['**/node_modules/**', '**/.next/**', '**/*.stories.{ts,tsx}'],
