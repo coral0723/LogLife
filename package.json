@@ -71,11 +71,6 @@
     "workerDirectory": [
       "public"
     ]
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/engines",
-      "prisma"
-    ]
   }
+
 }
