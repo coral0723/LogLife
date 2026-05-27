@@ -38,7 +38,7 @@ description: 현재 변경사항을 한국어 양식으로 커밋 (yes/no 확인
        - `No` — 커밋 취소
      - multiSelect: false
 
-7. **분기 처리**
+7. **분기 처리** ← AskUserQuestion 응답을 받은 즉시 이 단계를 반드시 실행한다. 멈추지 말 것.
    - **Yes**: `git commit -m "$(cat <<'EOF' ... EOF)"` 형식의 HEREDOC 으로 커밋 실행 (줄바꿈/한국어 보존). 성공 후 `git log -1 --oneline` 한 줄만 출력.
    - **No**: "커밋을 취소합니다." 한 문장만 출력하고 즉시 종료. 이유를 묻지 말 것 — 사용자가 다음 턴에 직접 말함.
 
