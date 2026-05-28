@@ -29,8 +29,8 @@ export default defineConfig({
     baseURL: 'http://localhost:3001',
     trace: 'on-first-retry',
   },
-  globalSetup: './tests/e2e/global.setup.ts',
-  globalTeardown: './tests/e2e/global.teardown.ts',
+  globalSetup: './tests/e2e/setup/global.setup.ts',
+  globalTeardown: './tests/e2e/setup/global.teardown.ts',
   projects: [
     {
       name: 'auth-setup',

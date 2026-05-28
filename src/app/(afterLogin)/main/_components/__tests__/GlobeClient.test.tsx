@@ -1,18 +1,25 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 
-import { GlobeClient } from "./GlobeClient";
+import { GlobeClient } from "../GlobeClient";
 
 // next/dynamic을 동기 컴포넌트로 대체 — Three.js DOM 의존성 제거
 vi.mock("next/dynamic", () => ({
-  default: (_: any, __?: any) => {
+  default: () => {
     const MockGlobeView = ({
       onReady,
       onPinClick,
     }: {
       onReady: () => void;
-      onPinClick: (pin: any) => void;
-      pins: any[];
+      onPinClick: (pin: {
+        countryCode: string;
+        lat: number;
+        lng: number;
+        count: number;
+        achievedCount: number;
+        hasExpiredDeadline: boolean;
+      }) => void;
+      pins: unknown[];
     }) => (
       <div>
         <button data-testid="trigger-ready" onClick={onReady}>

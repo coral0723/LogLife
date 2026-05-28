@@ -1,11 +1,13 @@
+import type { ComponentProps } from "react";
+
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 
-import { BottomNav, type NavItem } from "./BottomNav";
+import { BottomNav, type NavItem } from "../BottomNav";
 
 vi.mock("next/navigation", () => ({ usePathname: vi.fn() }));
 vi.mock("next/link", () => ({
-  default: ({ href, children, ...props }: any) => (
+  default: ({ href, children, ...props }: ComponentProps<"a">) => (
     <a href={href} {...props}>
       {children}
     </a>

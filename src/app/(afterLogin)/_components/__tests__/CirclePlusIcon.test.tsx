@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 
-import { CirclePlusIcon } from "./CirclePlusIcon";
+import { CirclePlusIcon } from "../CirclePlusIcon";
 
 describe("CirclePlusIcon", () => {
   it("기본값 — size=80, circleColor=#f3f4f6, plusColor=#060d1f", () => {

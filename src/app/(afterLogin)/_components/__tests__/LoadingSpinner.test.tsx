@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner";
 
 describe("LoadingSpinner", () => {
   it("기본값 미지정 시 md 크기 — 48px 렌더링", () => {
