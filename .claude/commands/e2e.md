@@ -20,6 +20,7 @@ description: E2E 시나리오 제안 → 사용자 승인 → 테스트 작성 �
    - 이미 작성된 스펙이 있으면(`tests/e2e/specs/`) 내용을 읽어 중복 시나리오를 피한다.
 
 2. **시나리오 제안 및 선택**
+   - `oh-my-claudecode:test-engineer` 에이전트에 대상 파일 내용과 기존 스펙을 전달해 시나리오 도출을 위임한다.
    - `AskUserQuestion` 도구로 묻기:
      - question: `어떤 시나리오를 E2E로 테스트할까요? (복수 선택 가능)`
      - header: `E2E 시나리오`
@@ -32,6 +33,7 @@ description: E2E 시나리오 제안 → 사용자 승인 → 테스트 작성 �
    - 1개 이상 선택하면 4단계로 진행.
 
 4. **스펙 파일 작성**
+   - `oh-my-claudecode:test-engineer` 에이전트에 선택된 시나리오 목록, 관련 컴포넌트 내용, 저장 경로를 전달해 파일 작성을 위임한다.
    - 저장 위치: `tests/e2e/specs/<기능명>.spec.ts`
    - 기존 스펙 파일이 있으면 새 시나리오를 추가(Edit), 없으면 새 파일 생성(Write).
    - global.setup.ts에서 시드된 테스트 데이터(KR·JP 버킷리스트, 테스트 유저)를 활용한다.
