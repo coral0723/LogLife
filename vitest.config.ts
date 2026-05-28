@@ -29,7 +29,7 @@ export default defineConfig({
           pool: 'vmThreads',
           setupFiles: ['./vitest.setup.ts'],
           include: ['**/*.{test,spec}.{ts,tsx}'],
-          exclude: ['**/node_modules/**', '**/.next/**', '**/*.stories.{ts,tsx}'],
+          exclude: ['**/node_modules/**', '**/.next/**', '**/*.stories.{ts,tsx}', '**/e2e/**'],
         },
       },
       {
