@@ -32,6 +32,13 @@
 - MSW (API 모킹)
 - Playwright (E2E)
 - Storybook 10
+- Chromatic (Storybook 시각 회귀 CI — GitHub Actions 자동 배포)
+
+**테스트 파일 배치 규칙 (feat/5에서 확립)**
+- lib 함수 테스트: `src/lib/__tests__/*.test.ts`
+- 컴포넌트 테스트: 해당 `_components/__tests__/*.test.tsx` (co-location)
+- E2E 시나리오: `tests/e2e/specs/*.spec.ts`
+- E2E 인프라 (globalSetup/Teardown/auth): `tests/e2e/setup/`
 
 ## 3. 핵심 아키텍처 의사결정 (ADR)
 
@@ -45,7 +52,7 @@
 | AD-06 | 친구 관계 | **양방향 friend (request → accept)** | 비공개 컨텐츠 + "인생 경험 아카이브" 성격에 정합 |
 | AD-07 | 공개 범위 | **3단계: private / friends / public** | 항목별 가시성 제어 |
 | AD-08 | 공유 URL | **`/u/[username]` + `/b/[token]`** | 사용자 페이지는 SEO 유리한 username 경로, 개별 버킷리스트는 추측 불가 토큰 (link-only 공유 겸용) |
-| AD-09 | 버킷리스트 상태 | **`achieved` boolean + `achievedAt` timestamp** | 단순. `achievedAt - createdAt`으로 모든 통계 처리 |
+| AD-09 | 버킷리스트 상태 | **`achieved` boolean + `achievedAt` timestamp** | 단순. `achievedAt - createdAt`으로 모든 통계 처리. 만료 판정은 UTC 자정 기준(`new Date(new Date().setUTCHours(0,0,0,0))`)으로 수행하여 타임존 편차를 방지 |
 | AD-10 | 달성 처리 UX | **토글 즉시 달성 + 축하 팝업** | 마찰 최소화. 사진 업로드/소감은 v1 제외 (비용·복잡도) |
 | AD-11 | 공유 페이지 렌더링 | **Server Component + Server Action + `updateTag` / `revalidateTag(tag, 'max')`** | Next 16에서 `revalidateTag`는 2번째 인자(cacheLife profile) 필수. 본인 변경(달성 토글·CRUD)은 즉시 반영이 중요 → Server Action 안에서 `updateTag`(read-your-own-writes). 친구·공개 데이터는 `revalidateTag(tag, 'max')`로 stale-while-revalidate. tag 미부여 라우트는 `revalidatePath` fallback |
 | AD-12 | 통계 집계 | **매 요청 Prisma aggregate** | 개인 단위 소규모 데이터셋. 조기 최적화 회피, 추후 materialized view 이행 가능 |
@@ -97,9 +104,8 @@
 ## 5. 라우트 구조 (App Router)
 
 ```
-app/
-  (landing)/
-    page.tsx                       # 6. 랜딩 페이지 (SSG, 디자인 후순위)
+src/app/
+  page.tsx                         # 6. 랜딩 페이지 (SSG, 디자인 후순위)
   (auth)/
     login/page.tsx                 # Google/Kakao 버튼
   (afterLogin)/                    # 인증 필요 그룹
@@ -130,6 +136,12 @@ app/
 > `profile`, `friends`는 항상 BottomNav를 표시하므로 `(withNav)/layout.tsx` 한 곳에서 선언한다.
 > `main`은 버킷리스트 데이터가 없는 신규 유저 진입 시 BottomNav를 숨겨야 하므로 `(withNav)` 밖에 두고, `page.tsx`에서 `pins.length > 0`일 때만 조건부 렌더링한다.
 
+> **폴더링 확장 가이드 (TODO)**
+> 현재는 메인 페이지 1개라 `_components/` 하나에 모든 공유 컴포넌트를 배치 중.
+> 페이지가 4개 이상으로 늘어나거나 같은 폴더에 컴포넌트/함수가 10개를 초과하면
+> 도메인·기능 단위 서브폴더 분리(예: `_components/nav/`, `_components/globe/`,
+> `src/lib/bucketlist/`, `src/lib/user/`)를 검토한다.
+
 > **Next 16 라우트 작성 규칙 (모든 page/layout에 공통 적용)**
 > - `params`, `searchParams`, `cookies()`, `headers()` 전부 **async** → 반드시 `await`. 동기 접근 제거됨.
 > - 페이지 컴포넌트는 `async function Page(props: PageProps<'/u/[username]'>) { const { username } = await props.params }` 패턴 사용.
@@ -138,10 +150,14 @@ app/
 
 ## 6. 페이지별 사양 요약
 
-### 1) 메인 페이지 — `/`
+### 1) 메인 페이지 — `/main`
 - 정중앙 react-globe.gl (html-markers, 어두운 단색 배경)
 - 본인의 모든 버킷리스트 핀 (visibility 무관)
 - **나라별 핀 하나** — 핀에 해당 나라의 버킷리스트 개수 표시 (AD-01, AD-02)
+
+> **구현 상태**: feat/5(작업순서 3번)에서는 팝업 카드(고정 위치, 나라 코드·개수·달성 수만 표시)로 임시 구현됨.
+> 슬라이드업 패널(목록→상세 전환)은 작업순서 4번(카드 인터셉팅 라우트)에서 완성한다.
+
 - 핀 클릭 → **슬라이드업 패널** (아래에서 위로 올라옴):
   1. 해당 나라의 버킷리스트 목록
   2. 목록 아이템 클릭 → 패널 내용이 해당 버킷리스트 상세로 전환
@@ -266,10 +282,10 @@ app/
 
 ## 10. 작업 순서 제안
 
-1. 인증 + 데이터 모델 + Prisma 마이그레이션 (NextAuth v5 + Google 우선)
-2. 버킷리스트 CRUD + 작성 페이지 (Places Autocomplete + Place Details)
-3. 메인 globe 페이지 (핀 표시만, 클러스터링은 후순위)
-4. 카드 인터셉팅 라우트 (`@modal/(.)b/[token]` + 풀페이지 fallback)
+✅ 1. 인증 + 데이터 모델 + Prisma 마이그레이션 (NextAuth v5 + Google 우선)
+✅ 2. 버킷리스트 CRUD + 작성 페이지 (Places Autocomplete + Place Details)
+✅ 3. 메인 globe 페이지 — 핀 표시 + 팝업 카드 임시 구현 (슬라이드업 패널은 4번에서 완성)
+4. 카드 인터셉팅 라우트 (`@modal/(.)b/[token]` + 풀페이지 fallback + 슬라이드업 패널 완성)
 5. 프로필 페이지 대시보드 (Prisma aggregate)
 6. 친구 시스템 (request / accept) + 친구 리스트 UI
 7. 친구 페이지 위젯 — 검색/정렬, 공통 매칭, 핫 플레이스 Top 5, 함께 달성 모먼트
