@@ -49,6 +49,7 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
   onReadyRef.current = onReady;
   const currentScaleRef = useRef(1);
   const [isGlobeMounted, setIsGlobeMounted] = useState(false);
+  const hasSetInitialPov = useRef(false);
 
   // globeRef와 isGlobeMounted를 동시에 갱신하는 callback ref
   // useRef 단독으로는 Globe 마운트 시 effect 재실행이 트리거되지 않아 race condition 발생
@@ -125,7 +126,14 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
     const minAltitude = 1 / Math.sin(halfAngleRad) - 1;
     const altitude = Math.max(2.5, minAltitude);
 
-    globeRef.current.pointOfView({ lat: 36, lng: 128, altitude }, 0);
+    if (!hasSetInitialPov.current) {
+      globeRef.current.pointOfView({ lat: 36, lng: 128, altitude }, 0);
+      hasSetInitialPov.current = true;
+    } else {
+      // 리사이즈 시 사용자의 lat/lng는 유지하고 altitude만 조정
+      const { lat, lng } = globeRef.current.pointOfView();
+      globeRef.current.pointOfView({ lat, lng, altitude }, 0);
+    }
   }, [size.width, size.height]);
 
   // react-globe.gl 기본 조명이 어두워 밝기 보정 + 지구본 준비 완료 알림
