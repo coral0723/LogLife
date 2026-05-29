@@ -48,21 +48,19 @@ vi.mock("next/dynamic", () => ({
 }));
 
 describe("GlobeClient", () => {
-  it("초기 상태 — LoadingSpinner(animate-spin 요소) 노출", () => {
-    const { container } = render(<GlobeClient pins={[]} />);
-    const spinner = container.querySelector(".animate-spin");
-    expect(spinner).toBeInTheDocument();
+  it("초기 상태 — 로딩 스피너 노출", () => {
+    render(<GlobeClient pins={[]} />);
+    expect(screen.getByRole("status", { name: "로딩 중" })).toBeInTheDocument();
   });
 
   it("onReady 콜백 호출 후 — 스피너 사라짐", () => {
-    const { container } = render(<GlobeClient pins={[]} />);
+    render(<GlobeClient pins={[]} />);
 
     act(() => {
       fireEvent.click(screen.getByTestId("trigger-ready"));
     });
 
-    const spinner = container.querySelector(".animate-spin");
-    expect(spinner).not.toBeInTheDocument();
+    expect(screen.queryByRole("status", { name: "로딩 중" })).not.toBeInTheDocument();
   });
 
   it("핀 클릭 시 팝업 카드 렌더링 — countryCode, count, achievedCount 텍스트 노출", () => {

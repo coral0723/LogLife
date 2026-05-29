@@ -19,6 +19,8 @@ export default function LoadingSpinner({ size = "md" }: Props) {
   return (
     <div className="flex items-center justify-center">
       <div
+        role="status"
+        aria-label="로딩 중"
         className="animate-spin rounded-full border-[4px] border-gray-400/20 border-t-gray-400"
         style={{ width: px, height: px }}
       />

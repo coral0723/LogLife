@@ -65,7 +65,7 @@ describe("BottomNav", () => {
     const customItems: NavItem[] = [
       {
         href: "/custom",
-        icon: () => <span data-testid="icon-custom" />,
+        icon: (() => <span data-testid="icon-custom" />) as unknown as NavItem["icon"],
         label: "커스텀",
       },
     ];
