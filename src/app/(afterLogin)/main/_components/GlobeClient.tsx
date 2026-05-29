@@ -16,21 +16,26 @@ const GlobeView = dynamic(
 );
 
 export function GlobeClient({ pins }: Props) {
-  const [selectedPin, setSelectedPin] = useState<CountryPin | null>(null);
+  const [selectedCountryCode, setSelectedCountryCode] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   const handleReady = useCallback(() => setIsReady(true), []);
+
+  const selectedPin = pins.find((p) => p.countryCode === selectedCountryCode) ?? null;
+  const handlePinClick = useCallback((pin: CountryPin) => {
+    setSelectedCountryCode(pin.countryCode);
+  }, []);
 
   return (
     <div
       className="relative h-full w-full"
-      onClick={() => setSelectedPin(null)}
+      onClick={() => setSelectedCountryCode(null)}
     >
       {!isReady && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white">
           <LoadingSpinner />
         </div>
       )}
-      <GlobeView pins={pins} onPinClick={setSelectedPin} onReady={handleReady} />
+      <GlobeView pins={pins} onPinClick={handlePinClick} onReady={handleReady} />
 
       {selectedPin && (
         <div
