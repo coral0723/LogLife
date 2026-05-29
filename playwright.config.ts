@@ -18,7 +18,7 @@ if (fs.existsSync('.env.local')) {
 // Playwright 실행 시 항상 E2E=true — 테스트 전용 Credentials 프로바이더 활성화
 process.env.E2E = 'true';
 
-const authFile = 'tests/e2e/.auth/user.json';
+const authFile = 'tests/e2e/setup/.auth/user.json';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -49,7 +49,7 @@ export default defineConfig({
   webServer: {
     command: 'pnpm exec next dev -p 3001',
     port: 3001,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     timeout: 120_000,
     env: {
       E2E: 'true',
