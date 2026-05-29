@@ -32,7 +32,7 @@ export default async function MainPage() {
       where: {
         userId,
         achieved: false,
-        deadlineAt: { lt: new Date(new Date().setHours(0, 0, 0, 0)) },
+        deadlineAt: { lt: new Date(new Date().setUTCHours(0, 0, 0, 0)) },
       },
       _count: { _all: true },
     }),
