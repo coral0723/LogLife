@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
+/tests/e2e/.auth
+/tests/e2e/setup/.auth
 
 # next.js
 /.next/
@@ -43,6 +47,10 @@ yarn-error.log*
 !.claude/rules/
 !.claude/settings.json
 .claude/settings.local.json
+!.claude/memory/
+.claude/memory/project/
+.claude/memory/user/
+.claude/memory/reference/
 .omc/
 /HANDOFF.md
 

@@ -4,7 +4,9 @@
       "Bash(*)",
       "PowerShell(*)",
       "WebFetch(*)",
-      "WebSearch(*)"
+      "WebSearch(*)",
+      "Read(//mnt/c/Users/user/Documents/LogLife/**)",
+      "Read(//mnt/c/Users/user/Documents/LogLife/prisma/**)"
     ],
     "additionalDirectories": [
       "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory",

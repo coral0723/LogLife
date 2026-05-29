@@ -14,7 +14,7 @@ const dirname =
 export default defineConfig({
   resolve: {
     alias: {
-      '@': path.resolve(dirname, './'),
+      '@': path.resolve(dirname, './src'),
     },
   },
   test: {
@@ -26,9 +26,10 @@ export default defineConfig({
           name: 'unit',
           environment: 'jsdom',
           globals: true,
+          pool: 'vmThreads',
           setupFiles: ['./vitest.setup.ts'],
           include: ['**/*.{test,spec}.{ts,tsx}'],
-          exclude: ['**/node_modules/**', '**/.next/**', '**/*.stories.{ts,tsx}'],
+          exclude: ['**/node_modules/**', '**/.next/**', '**/*.stories.{ts,tsx}', '**/e2e/**'],
         },
       },
       {

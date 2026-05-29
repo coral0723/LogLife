@@ -21,7 +21,11 @@ globs:
 
 ## 작성 규칙
 
-- 테스트 파일 위치: 대상 파일 옆 `*.test.ts(x)` 또는 `__tests__/` 폴더. 전역 인프라 코드는 `tests/`.
+- 테스트 파일 위치:
+  - 컴포넌트 테스트: 컴포넌트가 모인 폴더 안 `__tests__/` 서브폴더. 단독 파일이면 co-location(`*.test.tsx`) 허용.
+  - lib 함수 테스트: `src/lib/__tests__/`
+  - E2E 시나리오: `tests/e2e/specs/`
+  - E2E 인프라(globalSetup/Teardown/auth): `tests/e2e/setup/`
 - Server Action 단위 테스트는 직접 import 호출 (HTTP 라운드트립 X).
 - MSW handler는 `tests/msw/handlers/`에 도메인별로 분리.
 - 외부 API(Google Places 등)는 반드시 MSW로 mocking — 실제 호출 금지(비용 0원 원칙).

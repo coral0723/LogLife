@@ -43,7 +43,7 @@ export async function createBucketList(input: BucketListInput) {
     select: { id: true, shareToken: true },
   });
   updateTag(bucketListTag(userId));
-  revalidatePath("/");
+  revalidatePath("/main");
   return created;
 }
 
@@ -58,7 +58,7 @@ export async function updateBucketList(id: string, input: BucketListInput) {
     throw new Error("수정할 버킷리스트를 찾을 수 없습니다.");
   }
   updateTag(bucketListTag(userId));
-  revalidatePath("/");
+  revalidatePath("/main");
 }
 
 export async function deleteBucketList(id: string) {
@@ -70,7 +70,7 @@ export async function deleteBucketList(id: string) {
     throw new Error("삭제할 버킷리스트를 찾을 수 없습니다.");
   }
   updateTag(bucketListTag(userId));
-  revalidatePath("/");
+  revalidatePath("/main");
 }
 
 export async function toggleAchieved(id: string) {
@@ -91,6 +91,6 @@ export async function toggleAchieved(id: string) {
     },
   });
   updateTag(bucketListTag(userId));
-  revalidatePath("/");
+  revalidatePath("/main");
   return { achieved: nextAchieved };
 }
