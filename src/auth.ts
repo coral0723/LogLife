@@ -6,6 +6,10 @@ import type { Adapter, AdapterUser } from "next-auth/adapters";
 import { prisma } from "@/lib/prisma";
 import { generateUsername } from "@/lib/username";
 
+if (process.env.NODE_ENV === "production" && process.env.E2E === "true") {
+  throw new Error("E2E credentials provider는 프로덕션에서 활성화할 수 없습니다.");
+}
+
 const usernameExists = async (username: string) =>
   (await prisma.user.findUnique({
     where: { username },
