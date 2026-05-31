@@ -8,7 +8,10 @@ export const runtime = "nodejs";
 
 const querySchema = z.object({
   countryCode: z.string().min(2).max(3),
+  cursor: z.string().optional(),
 });
+
+const PAGE_SIZE = 10;
 
 export async function GET(req: Request) {
   const session = await auth();
@@ -22,12 +25,13 @@ export async function GET(req: Request) {
   try {
     query = querySchema.parse({
       countryCode: url.searchParams.get("countryCode"),
+      cursor: url.searchParams.get("cursor") ?? undefined,
     });
   } catch {
     return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
   }
 
-  const items = await prisma.bucketList.findMany({
+  const raw = await prisma.bucketList.findMany({
     where: { userId, countryCode: query.countryCode },
     select: {
       id: true,
@@ -39,7 +43,13 @@ export async function GET(req: Request) {
       deadlineAt: true,
     },
     orderBy: { createdAt: "desc" },
+    take: PAGE_SIZE + 1,
+    ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
   });
 
-  return NextResponse.json(items);
+  const hasMore = raw.length === PAGE_SIZE + 1;
+  const items = raw.slice(0, PAGE_SIZE);
+  const nextCursor = hasMore ? items[items.length - 1].id : null;
+
+  return NextResponse.json({ items, nextCursor });
 }

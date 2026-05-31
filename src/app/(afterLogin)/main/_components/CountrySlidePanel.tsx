@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Camera, CaretDown, Globe, Lock, Users } from "@phosphor-icons/react";
 
@@ -60,7 +60,10 @@ interface Props {
 
 export function CountrySlidePanel({ countryCode, onClose }: Props) {
   const [items, setItems] = useState<BucketItem[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const countryKoreanName = useMemo(() => {
     if (!countryCode) return null;
@@ -75,12 +78,38 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
     if (!countryCode) return;
     setLoading(true);
     setItems([]);
+    setNextCursor(null);
     fetch(`/api/bucketlists/by-country?countryCode=${countryCode}`)
       .then((r) => r.json())
-      .then((data: BucketItem[]) => setItems(data))
+      .then(({ items: data, nextCursor: nc }: { items: BucketItem[]; nextCursor: string | null }) => {
+        setItems(data);
+        setNextCursor(nc);
+      })
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
   }, [countryCode]);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || !nextCursor || loadingMore) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setLoadingMore(true);
+        fetch(`/api/bucketlists/by-country?countryCode=${countryCode}&cursor=${nextCursor}`)
+          .then((r) => r.json())
+          .then(({ items: more, nextCursor: nc }: { items: BucketItem[]; nextCursor: string | null }) => {
+            setItems((prev) => [...prev, ...more]);
+            setNextCursor(nc);
+          })
+          .catch(() => {})
+          .finally(() => setLoadingMore(false));
+      },
+      { threshold: 0.1 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [countryCode, nextCursor, loadingMore]);
 
   return (
     <AnimatePresence>
@@ -177,6 +206,16 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                     </li>
                   );
                 })}
+              {!loading && (
+                <>
+                  <div ref={sentinelRef} className="h-1" />
+                  {loadingMore && (
+                    <li className="flex items-center justify-center py-4">
+                      <div className="h-4 w-4 rounded-full border-2 border-zinc-300 border-t-zinc-600 animate-spin" />
+                    </li>
+                  )}
+                </>
+              )}
             </ul>
           </motion.div>
         </>
