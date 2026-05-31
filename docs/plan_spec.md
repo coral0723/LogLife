@@ -124,7 +124,7 @@ src/app/
   u/[username]/
     page.tsx                       # 5. 사용자 페이지 (공개 globe)
     profile/page.tsx               # 친구일 때 프로필 보기
-  b/[token]/page.tsx               # 공유 풀페이지 (인터셉팅 fallback 겸용)
+  b/[token]/page.tsx               # b = bucket list — 공유 풀페이지 (인터셉팅 fallback 겸용)
   api/
     places/
       photo/route.ts               # Google Places Photo 프록시
