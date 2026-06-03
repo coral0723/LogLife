@@ -1,8 +1,5 @@
 # LogLife — Project Map
 
-## ⚠️ This is NOT the Next.js you know
-Next.js 16은 breaking changes 다수. 코드 작성 전 `node_modules/next/dist/docs/`의 관련 가이드 확인 필수. deprecation 경고를 절대 무시하지 않는다.
-
 ## Engineering Guidelines
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
@@ -74,6 +71,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ### 🔵 작업 직전 항상
 - 비즈니스 / 도메인 / ADR / 페이지 사양 → [docs/plan_spec.md](docs/plan_spec.md)
 - 0원 운영 제약 → [docs/cost_constraint.md](docs/cost_constraint.md)
+- **Next.js 16 / Prisma 7 / React 19** 코드 작성 시 → context7 MCP로 공식 문서 먼저 조회 (수동 prefix 불필요, 자동 적용)
 
 ### 🟢 상황별 룰 ([.claude/rules/](.claude/rules/))
 - 코드 작성 시 → [code_style.md](.claude/rules/code_style.md)

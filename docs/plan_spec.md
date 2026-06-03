@@ -34,6 +34,14 @@
 - Storybook 10
 - Chromatic (Storybook 시각 회귀 CI — GitHub Actions 자동 배포)
 
+### AI 개발 도구 (MCP)
+
+| 서버 | 패키지 | 용도 |
+|---|---|---|
+| context7 | `@upstash/context7-mcp` | Next.js 16 / Prisma 7 / React 19 최신 공식 문서 실시간 조회 |
+
+> 설정 파일: `.mcp.json` (프로젝트 루트). 추후 Playwright MCP, GitHub MCP 추가 예정.
+
 **테스트 파일 배치 규칙 (feat/5에서 확립)**
 - lib 함수 테스트: `src/lib/__tests__/*.test.ts`
 - 컴포넌트 테스트: 해당 `_components/__tests__/*.test.tsx` (co-location)
@@ -297,7 +305,7 @@ src/app/
 
 ## 11. Next.js 16 주의사항 (AGENTS.md 지침)
 
-`AGENTS.md`: Next.js 16은 **breaking changes 다수**. 실제 코드 작성 전 `node_modules/next/dist/docs/`의 관련 가이드 확인 필수.
+Next.js 16은 **breaking changes 다수**. 실제 코드 작성 전 **context7 MCP**로 관련 가이드 확인 필수 (`.mcp.json` 설정됨 — `node_modules/next/dist/docs/` 대체).
 
 본 스펙이 가정한 Next 16 API들:
 - App Router의 **Parallel + Intercepting Routes** (`@modal`, `(.)`/`(..)` 규칙)
