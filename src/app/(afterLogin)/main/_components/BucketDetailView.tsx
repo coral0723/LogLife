@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   ArrowLeft,
   Camera,
@@ -112,6 +113,15 @@ export function BucketDetailView({ detail, onBack, photoSrc }: Props) {
 
         {/* 하단 그라데이션 */}
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent pointer-events-none" />
+
+        {/* E2E: 소프트 내비게이션으로 인터셉팅 라우트를 트리거하기 위한 Next.js Link */}
+        <Link
+          href={`/b/${detail.shareToken}`}
+          data-testid="share-page-link"
+          aria-hidden="true"
+          tabIndex={-1}
+          className="absolute opacity-0 w-px h-px top-0 left-0"
+        />
 
         {/* 뒤로가기 버튼 */}
         {onBack && (

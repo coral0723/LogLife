@@ -6,7 +6,9 @@
       "WebFetch(*)",
       "WebSearch(*)",
       "Read(//mnt/c/Users/user/Documents/LogLife/**)",
-      "Read(//mnt/c/Users/user/Documents/LogLife/prisma/**)"
+      "Read(//mnt/c/Users/user/Documents/LogLife/prisma/**)",
+      "Read(//tmp/cc-cache/check-harness/**)",
+      "Read(//c/tmp/cc-cache/check-harness/**)"
     ],
     "additionalDirectories": [
       "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory",

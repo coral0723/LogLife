@@ -65,6 +65,7 @@ export default async function globalSetup() {
           excitement: 5,
           achieved: true,
           achievedAt: new Date(),
+          visibility: 'PUBLIC',
         },
         {
           userId: user.id,

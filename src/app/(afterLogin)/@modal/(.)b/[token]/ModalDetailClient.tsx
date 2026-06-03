@@ -12,7 +12,7 @@ export function ModalDetailClient({ detail }: Props) {
   const router = useRouter();
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950">
+    <div className="fixed inset-0 z-70 bg-zinc-950">
       <BucketDetailView detail={detail} onBack={() => router.back()} />
     </div>
   );
