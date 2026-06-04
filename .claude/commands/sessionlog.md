@@ -25,15 +25,29 @@ Get-ChildItem .dev/session-logs -Filter "*.jsonl" | Sort-Object LastWriteTime -D
 - 파일이 1개면 자동 선택
 - 2개 이상이면 목록을 출력하고 사용자에게 어느 파일을 푸시할지 확인
 
-### 2. JSONL 파싱 및 집계
+### 2. JSONL 파싱 — 챕터 묶기
 
-선택한 파일을 읽어 다음 3그룹으로 분류한다:
+선택한 파일을 읽어 `ts` 순으로 정렬한 뒤, 각 `prompt` 항목을 챕터 기준점으로 삼아 후속 액션을 묶는다:
 
-| 그룹 | 조건 |
-|---|---|
-| Prompts | `type == 'prompt'` |
-| Files Modified | `type == 'file'` (action: write/edit) |
-| Commands Run | `type == 'cmd'` |
+```
+chapters = []
+current = null
+
+for entry in ts_sorted_entries:
+    if entry.type == 'prompt':
+        if current: chapters.append(current)
+        current = { prompt: entry.content, ts: entry.ts, actions: [] }
+    elif entry.type in ['file', 'cmd']:
+        if current:
+            current.actions.append(entry)
+        else:
+            # 첫 프롬프트 이전 액션
+            current = { prompt: '(프롬프트 이전 액션)', ts: entry.ts, actions: [entry] }
+
+if current: chapters.append(current)
+```
+
+각 챕터는 **프롬프트 원문 전체** + 해당 프롬프트 이후 다음 프롬프트 전까지의 `file`/`cmd` 액션 목록으로 구성된다.
 
 ### 3. Anomaly 감지
 
@@ -87,27 +101,32 @@ Files Modified 중 이 목록에 없는 파일 = **Anomaly 후보** (이번 세�
 | PR Link | 사용자 입력 |
 | Has Anomalies | Anomaly 후보 존재 여부 (true/false) |
 
-**본문 (4섹션):**
+**본문:**
 
-```markdown
-## Prompts
-1. {prompt 1}
-2. {prompt 2}
-...
+`## Session Flow` heading_2 블록 이후, 챕터마다 toggle 블록 1개:
 
-## Files Modified
-- **write** `{path}`
-- **edit**  `{path}`
-...
+```json
+{
+  "type": "toggle",
+  "toggle": {
+    "rich_text": [{ "type": "text", "text": { "content": "1. {prompt 원문}" } }],
+    "children": [
+      { "type": "bulleted_list_item", "bulleted_list_item": { "rich_text": [{ "type": "text", "text": { "content": "📝 edit: src/app/page.tsx" } }] } },
+      { "type": "bulleted_list_item", "bulleted_list_item": { "rich_text": [{ "type": "text", "text": { "content": "⚡ PowerShell: git status" } }] } }
+    ]
+  }
+}
+```
 
-## Commands Run
-{cmd 1}
-{cmd 2}
-...
+- 파일 액션: `📝 {action}: {path}` (action = write / edit)
+- 커맨드 액션: `⚡ {tool}: {cmd}`
+- 액션이 없는 챕터: children에 `paragraph` 블록으로 `(액션 없음)` 표시
+- 프롬프트가 2000자 초과 시: `rich_text` 배열에 2000자 단위로 분할해 이어붙임
 
-## Anomalies
-⚠️ `{path}` — 브랜치 히스토리에 없는 파일이 이 세션에서 수정됨
-(없으면 "없음")
+Anomaly가 있으면 마지막에 `## Anomalies` heading_2 + bulleted_list_item으로 목록 추가:
+
+```
+⚠️ {path} — 브랜치 히스토리에 없는 파일이 이 세션에서 수정됨
 ```
 
 ### 7. 완료 보고
@@ -115,6 +134,6 @@ Files Modified 중 이 목록에 없는 파일 = **Anomaly 후보** (이번 세�
 ```
 ✅ Notion 기록 완료
 - 페이지: {Notion 페이지 URL}
-- Prompts: N건 / Files: M건 / Commands: L건
+- 챕터: N개 / 총 액션: M건
 - Anomalies: {건수 또는 "없음"}
 ```
