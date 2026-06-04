@@ -61,8 +61,6 @@ export default async function BucketSharePage(
       achieved: true,
       placeId: true,
       displayName: true,
-      cityName: true,
-      admin1Code: true,
       countryCode: true,
       shareToken: true,
     },
@@ -95,8 +93,6 @@ export default async function BucketSharePage(
     achieved: item.achieved,
     placeId: item.placeId,
     displayName: item.displayName,
-    cityName: item.cityName,
-    admin1Code: item.admin1Code,
     countryCode: item.countryCode,
     shareToken: item.shareToken,
   };

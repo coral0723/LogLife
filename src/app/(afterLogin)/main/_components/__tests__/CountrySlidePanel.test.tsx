@@ -7,7 +7,7 @@ import { CountrySlidePanel } from "../CountrySlidePanel";
 vi.mock("framer-motion", () => ({
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   motion: {
-    div: ({ children, onClick, className }: any) => (
+    div: ({ children, onClick, className }: React.ComponentProps<"div">) => (
       <div onClick={onClick} className={className}>
         {children}
       </div>

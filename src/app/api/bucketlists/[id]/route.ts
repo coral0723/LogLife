@@ -31,8 +31,6 @@ export async function GET(
       achieved: true,
       placeId: true,
       displayName: true,
-      cityName: true,
-      admin1Code: true,
       countryCode: true,
       shareToken: true,
     },

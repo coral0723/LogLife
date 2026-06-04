@@ -42,7 +42,7 @@ export async function GET(req: Request) {
       visibility: true,
       deadlineAt: true,
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     take: PAGE_SIZE + 1,
     ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
   });

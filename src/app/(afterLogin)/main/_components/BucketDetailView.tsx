@@ -5,12 +5,11 @@ import Link from "next/link";
 import {
   ArrowLeft,
   Camera,
-  Globe,
-  Lock,
   MapPin,
   ShareNetwork,
-  Users,
 } from "@phosphor-icons/react";
+
+import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
 
 export type BucketDetail = {
   id: string;
@@ -24,8 +23,6 @@ export type BucketDetail = {
   achieved: boolean;
   placeId: string;
   displayName: string;
-  cityName: string | null;
-  admin1Code: string | null;
   countryCode: string;
   shareToken: string;
 };
@@ -35,25 +32,6 @@ interface Props {
   onBack?: () => void;
   photoSrc?: string;
 }
-
-function getStatus(detail: BucketDetail): "achieved" | "expired" | "pending" {
-  if (detail.achieved) return "achieved";
-  if (detail.deadlineAt && new Date(detail.deadlineAt) < new Date())
-    return "expired";
-  return "pending";
-}
-
-const STATUS_CONFIG = {
-  achieved: { label: "달성",    className: "bg-amber-100 text-amber-700" },
-  expired:  { label: "마감",    className: "bg-rose-100 text-rose-600" },
-  pending:  { label: "진행 중", className: "bg-zinc-100 text-zinc-500" },
-} as const;
-
-const VISIBILITY_CONFIG = {
-  PUBLIC:  { label: "전체 공개", Icon: Globe },
-  FRIENDS: { label: "친구 공개", Icon: Users },
-  PRIVATE: { label: "비공개",   Icon: Lock },
-} as const;
 
 function DotRating({ value, max = 5 }: { value: number; max?: number }) {
   return (
@@ -87,11 +65,15 @@ export function BucketDetailView({ detail, onBack, photoSrc }: Props) {
   const imgSrc = photoSrc ?? `/api/places/photo?placeId=${detail.placeId}`;
 
   const handleShare = async () => {
-    await navigator.clipboard.writeText(
-      `${window.location.origin}/b/${detail.shareToken}`,
-    );
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}/b/${detail.shareToken}`,
+      );
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      alert("클립보드에 오류가 발생했습니다.");
+    }
   };
 
   return (

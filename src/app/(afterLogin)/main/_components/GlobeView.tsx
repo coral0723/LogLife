@@ -46,6 +46,7 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
   const globeRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const onReadyRef = useRef(onReady);
+  // eslint-disable-next-line react-hooks/refs
   onReadyRef.current = onReady;
   const currentScaleRef = useRef(1);
   const [isGlobeMounted, setIsGlobeMounted] = useState(false);
@@ -152,6 +153,7 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
     <div ref={containerRef} className="h-full w-full">
       {size.width > 0 && (
         <Globe
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ref={globeCallbackRef as any /* react-globe.gl 타입이 callback ref 미지원, 런타임 동작은 정상 */}
           width={size.width}
           height={size.height}

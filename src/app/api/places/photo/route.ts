@@ -58,6 +58,7 @@ export async function GET(req: Request) {
   if (!photoRes.ok) return new Response(null, { status: 404 });
 
   const contentType = photoRes.headers.get("content-type") ?? "image/jpeg";
+  if (!contentType.startsWith("image/")) return new Response(null, { status: 404 });
   const buffer = await photoRes.arrayBuffer();
 
   return new Response(buffer, {

@@ -2,11 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Camera, CaretDown, Globe, Lock, Users } from "@phosphor-icons/react";
+import { Camera, CaretDown } from "@phosphor-icons/react";
 
+import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG, type Visibility } from "@/lib/bucketStatus";
 import { BucketDetailView, type BucketDetail } from "./BucketDetailView";
-
-type Visibility = "PUBLIC" | "FRIENDS" | "PRIVATE";
 
 type BucketItem = {
   id: string;
@@ -22,24 +21,6 @@ type View =
   | { kind: "list" }
   | { kind: "loadingDetail"; itemId: string }
   | { kind: "detail"; detail: BucketDetail };
-
-function getStatus(item: BucketItem): "achieved" | "expired" | "pending" {
-  if (item.achieved) return "achieved";
-  if (item.deadlineAt && new Date(item.deadlineAt) < new Date()) return "expired";
-  return "pending";
-}
-
-const STATUS_CONFIG = {
-  achieved: { label: "달성",    className: "bg-amber-100 text-amber-700" },
-  expired:  { label: "마감",    className: "bg-rose-100 text-rose-600" },
-  pending:  { label: "진행 중", className: "bg-zinc-100 text-zinc-500" },
-} as const;
-
-const VISIBILITY_CONFIG = {
-  PUBLIC:  { label: "전체 공개", Icon: Globe },
-  FRIENDS: { label: "친구 공개", Icon: Users },
-  PRIVATE: { label: "비공개",   Icon: Lock },
-} as const;
 
 function PhotoCell({ placeId }: { placeId: string }) {
   const [error, setError] = useState(false);
@@ -72,6 +53,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [view, setView] = useState<View>({ kind: "list" });
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const loadingMoreRef = useRef(false);
 
   const countryKoreanName = useMemo(() => {
     if (!countryCode) return null;
@@ -84,6 +66,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
 
   useEffect(() => {
     if (!countryCode) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
     setItems([]);
     setNextCursor(null);
@@ -100,10 +83,11 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
 
   useEffect(() => {
     const el = sentinelRef.current;
-    if (!el || !nextCursor || loadingMore) return;
+    if (!el || !nextCursor) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting) return;
+        if (!entry.isIntersecting || loadingMoreRef.current) return;
+        loadingMoreRef.current = true;
         setLoadingMore(true);
         fetch(`/api/bucketlists/by-country?countryCode=${countryCode}&cursor=${nextCursor}`)
           .then((r) => r.json())
@@ -112,13 +96,16 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
             setNextCursor(nc);
           })
           .catch(() => {})
-          .finally(() => setLoadingMore(false));
+          .finally(() => {
+            loadingMoreRef.current = false;
+            setLoadingMore(false);
+          });
       },
       { threshold: 0.1 }
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [countryCode, nextCursor, loadingMore]);
+  }, [countryCode, nextCursor]);
 
   const handleItemClick = async (itemId: string) => {
     setView({ kind: "loadingDetail", itemId });
@@ -244,15 +231,11 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                         );
                       })}
 
-                    {!loading && (
-                      <>
-                        <div ref={sentinelRef} className="h-1" />
-                        {loadingMore && (
-                          <li className="flex items-center justify-center py-4">
-                            <div className="h-4 w-4 rounded-full border-2 border-zinc-300 border-t-zinc-600 animate-spin" />
-                          </li>
-                        )}
-                      </>
+                    <div ref={sentinelRef} className="h-1" />
+                    {!loading && loadingMore && (
+                      <li className="flex items-center justify-center py-4">
+                        <div className="h-4 w-4 rounded-full border-2 border-zinc-300 border-t-zinc-600 animate-spin" />
+                      </li>
                     )}
                   </ul>
 
