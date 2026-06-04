@@ -66,7 +66,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
 
   useEffect(() => {
     if (!countryCode) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    let active = true;
     setLoading(true);
     setItems([]);
     setNextCursor(null);
@@ -74,11 +74,21 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
     fetch(`/api/bucketlists/by-country?countryCode=${countryCode}`)
       .then((r) => r.json())
       .then(({ items: data, nextCursor: nc }: { items: BucketItem[]; nextCursor: string | null }) => {
+        if (!active) return;
         setItems(data);
         setNextCursor(nc);
       })
-      .catch(() => setItems([]))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        if (!active) return;
+        setItems([]);
+      })
+      .finally(() => {
+        if (!active) return;
+        setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, [countryCode]);
 
   useEffect(() => {
