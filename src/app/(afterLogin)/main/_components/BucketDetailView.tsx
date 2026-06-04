@@ -109,28 +109,30 @@ export function BucketDetailView({ detail, onBack, photoSrc }: Props) {
         {onBack && (
           <button
             onClick={onBack}
-            className="absolute top-3 left-3 w-9 h-9 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+            className="absolute top-3 left-3 w-9 h-9 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors cursor-pointer"
             aria-label="목록으로 돌아가기"
           >
             <ArrowLeft size={18} weight="bold" />
           </button>
         )}
 
-        {/* 공유 버튼 */}
-        <div className="absolute top-3 right-3">
-          <button
-            onClick={handleShare}
-            className="w-9 h-9 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
-            aria-label="공유하기"
-          >
-            <ShareNetwork size={18} weight="bold" />
-          </button>
-          {copied && (
-            <span className="absolute right-0 top-11 whitespace-nowrap text-xs bg-zinc-900 text-white px-2.5 py-1.5 rounded-lg shadow-lg">
-              링크 복사됨
-            </span>
-          )}
-        </div>
+        {/* 공유 버튼 — PUBLIC 아이템만 표시 */}
+        {detail.visibility === "PUBLIC" && (
+          <div className="absolute top-3 right-3">
+            <button
+              onClick={handleShare}
+              className="w-9 h-9 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors cursor-pointer"
+              aria-label="공유하기"
+            >
+              <ShareNetwork size={18} weight="bold" />
+            </button>
+            {copied && (
+              <span className="absolute right-0 top-11 whitespace-nowrap text-xs bg-zinc-900 text-white px-2.5 py-1.5 rounded-lg shadow-lg">
+                링크 복사됨
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 콘텐츠 */}

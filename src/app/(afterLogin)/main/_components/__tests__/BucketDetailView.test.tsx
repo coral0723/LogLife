@@ -293,9 +293,19 @@ describe("BucketDetailView", () => {
   });
 
   describe("공유 버튼", () => {
-    it("공유하기 버튼 항상 렌더링", () => {
+    it("PUBLIC → 공유하기 버튼 렌더링", () => {
       render(<BucketDetailView detail={baseDetail} />);
       expect(screen.getByRole("button", { name: "공유하기" })).toBeInTheDocument();
+    });
+
+    it("PRIVATE → 공유하기 버튼 없음", () => {
+      render(<BucketDetailView detail={{ ...baseDetail, visibility: "PRIVATE" }} />);
+      expect(screen.queryByRole("button", { name: "공유하기" })).not.toBeInTheDocument();
+    });
+
+    it("FRIENDS → 공유하기 버튼 없음", () => {
+      render(<BucketDetailView detail={{ ...baseDetail, visibility: "FRIENDS" }} />);
+      expect(screen.queryByRole("button", { name: "공유하기" })).not.toBeInTheDocument();
     });
 
     it("클릭 시 clipboard.writeText에 올바른 URL(/b/{shareToken}) 전달", async () => {
