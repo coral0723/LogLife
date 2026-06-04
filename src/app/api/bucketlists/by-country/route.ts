@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export const runtime = "nodejs";
 
 const querySchema = z.object({
-  countryCode: z.string().min(2).max(3),
+  countryCode: z.string().min(2).max(3).transform((v) => v.toUpperCase()),
   cursor: z.string().optional(),
 });
 
