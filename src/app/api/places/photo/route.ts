@@ -33,38 +33,42 @@ export async function GET(req: Request) {
     return new Response(null, { status: 400 });
   }
 
-  // Step 1: 사진 참조(photo name) 조회
-  const detailsRes = await fetch(
-    `https://places.googleapis.com/v1/places/${encodeURIComponent(query.placeId)}`,
-    {
-      headers: {
-        "X-Goog-Api-Key": apiKey,
-        "X-Goog-FieldMask": "photos",
+  try {
+    // Step 1: 사진 참조(photo name) 조회
+    const detailsRes = await fetch(
+      `https://places.googleapis.com/v1/places/${encodeURIComponent(query.placeId)}`,
+      {
+        headers: {
+          "X-Goog-Api-Key": apiKey,
+          "X-Goog-FieldMask": "photos",
+        },
       },
-    },
-  );
-  if (!detailsRes.ok) return new Response(null, { status: 404 });
+    );
+    if (!detailsRes.ok) return new Response(null, { status: 404 });
 
-  const data = (await detailsRes.json()) as PlacePhotoResponse;
-  const photoName = data.photos?.[0]?.name;
-  if (!photoName) return new Response(null, { status: 404 });
+    const data = (await detailsRes.json()) as PlacePhotoResponse;
+    const photoName = data.photos?.[0]?.name;
+    if (!photoName) return new Response(null, { status: 404 });
 
-  // Step 2: 이미지 binary 프록시 (API key 클라이언트 미노출)
-  const mediaUrl = new URL(`https://places.googleapis.com/v1/${photoName}/media`);
-  mediaUrl.searchParams.set("maxHeightPx", "300");
-  mediaUrl.searchParams.set("key", apiKey);
+    // Step 2: 이미지 binary 프록시 (API key 클라이언트 미노출)
+    const mediaUrl = new URL(`https://places.googleapis.com/v1/${photoName}/media`);
+    mediaUrl.searchParams.set("maxHeightPx", "300");
+    mediaUrl.searchParams.set("key", apiKey);
 
-  const photoRes = await fetch(mediaUrl);
-  if (!photoRes.ok) return new Response(null, { status: 404 });
+    const photoRes = await fetch(mediaUrl);
+    if (!photoRes.ok) return new Response(null, { status: 404 });
 
-  const contentType = photoRes.headers.get("content-type") ?? "image/jpeg";
-  if (!contentType.startsWith("image/")) return new Response(null, { status: 404 });
-  const buffer = await photoRes.arrayBuffer();
+    const contentType = photoRes.headers.get("content-type") ?? "image/jpeg";
+    if (!contentType.startsWith("image/")) return new Response(null, { status: 404 });
+    const buffer = await photoRes.arrayBuffer();
 
-  return new Response(buffer, {
-    headers: {
-      "Content-Type": contentType,
-      "Cache-Control": "public, max-age=86400",
-    },
-  });
+    return new Response(buffer, {
+      headers: {
+        "Content-Type": contentType,
+        "Cache-Control": "public, max-age=86400",
+      },
+    });
+  } catch {
+    return new Response(null, { status: 502 });
+  }
 }
