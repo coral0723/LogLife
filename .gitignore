@@ -56,7 +56,12 @@ yarn-error.log*
 # session logs (로컬 전용, git 제외)
 .dev/session-logs/*.jsonl
 .dev/session-logs/.session
+.dev/changelog-cursor.txt
 .omc/
+
+# local tool artifacts
+.harness/
+.playwright-mcp/
 /HANDOFF.md
 
 # typescript

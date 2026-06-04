@@ -7,14 +7,18 @@ Notion ChangeLog DB에 오늘 날짜 페이지를 생성하거나 갱신한다.
 
 ## 절차
 
-### 1. 앵커 읽기
+### 1. 앵커 읽기 (Notion cursor)
+
+`mcp__notionApi__API-query-data-source`로 ChangeLog DB를 날짜 내림차순 조회.
+가장 최근 페이지를 찾고, `mcp__notionApi__API-get-block-children`으로 해당 페이지 blocks를 읽는다.
+block 텍스트에서 `\([a-f0-9]{7}\)` 패턴으로 커밋 해시 목록을 추출한다.
 
 ```powershell
-Get-Content .dev/changelog-cursor.txt -ErrorAction SilentlyContinue
+git log --format="%h" --no-merges
 ```
 
-- 내용이 있으면 그 값이 `<since>` 해시.
-- 파일이 없거나 비어 있으면 `<since>` = 빈 문자열 (전체 커밋 대상).
+위 출력 순서(최신→오래된)에서 추출한 해시가 처음 등장하는 것이 `<since>`.
+ChangeLog DB가 없거나 해시를 찾을 수 없으면 `<since>` = 빈 문자열 (전체 커밋 대상).
 
 ### 2. 신규 커밋 수집
 
@@ -73,13 +77,7 @@ Properties:
 `mcp__notionApi__API-patch-block-children`으로 새 섹션 블록을 본문 끝에 append.
 `mcp__notionApi__API-patch-page`로 Sections(합집합), Commits(누적 합) 속성 갱신.
 
-### 6. 앵커 갱신
-
-```powershell
-git rev-parse --short HEAD | Set-Content .dev/changelog-cursor.txt -NoNewline
-```
-
-### 7. 보고 (한 줄)
+### 6. 보고 (한 줄)
 
 예: `갱신 완료: 5건 추가 (추가 2, 수정 1, 기타 2) → Notion ChangeLog`
 
