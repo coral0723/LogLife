@@ -32,7 +32,7 @@ async function getPlacePhotoUrl(placeId: string): Promise<string | null> {
     // skipHttpRedirect=true → JSON { photoUri } 반환 (API key 클라이언트 미노출)
     const mediaRes = await fetch(
       `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=800&skipHttpRedirect=true&key=${apiKey}`,
-      { next: { revalidate: 86400 } },
+      { next: { revalidate: 1800 } },
     );
     if (!mediaRes.ok) return null;
     const { photoUri } = (await mediaRes.json()) as { photoUri?: string };
