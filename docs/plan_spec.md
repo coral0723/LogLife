@@ -34,6 +34,14 @@
 - Storybook 10
 - Chromatic (Storybook 시각 회귀 CI — GitHub Actions 자동 배포)
 
+### AI 개발 도구 (MCP)
+
+| 서버 | 패키지 | 용도 |
+|---|---|---|
+| context7 | `@upstash/context7-mcp` | Next.js 16 / Prisma 7 / React 19 최신 공식 문서 실시간 조회 |
+
+> 설정 파일: `.mcp.json` (프로젝트 루트). 추후 Playwright MCP, GitHub MCP 추가 예정.
+
 **테스트 파일 배치 규칙 (feat/5에서 확립)**
 - lib 함수 테스트: `src/lib/__tests__/*.test.ts`
 - 컴포넌트 테스트: 해당 `_components/__tests__/*.test.tsx` (co-location)
@@ -197,6 +205,13 @@ src/app/
   - `WHERE me.achieved AND fr.achieved AND ABS(me.achievedAt - fr.achievedAt) <= 30 days AND me.placeId = fr.placeId`
 - 모든 위젯은 친구의 `visibility ∈ {FRIENDS, PUBLIC}` 항목만 노출 (PRIVATE 제외 — RLS는 아니어도 API route에서 강제)
 
+#### 공유하기 버튼 공개 범위 정책 (현재 구현 상태 및 향후 계획)
+- 현재 `PUBLIC` 아이템에서만 공유하기 버튼이 노출됨
+- `PRIVATE` 아이템은 공유하기 버튼을 숨겨 `/b/[token]` 링크 생성 자체를 차단
+- **미구현 — 친구 구현 후 수정 예정**: `FRIENDS` 아이템도 현재는 공유하기 버튼이 노출되지 않음
+  - 친구 시스템 구현 후 `FRIENDS` 아이템에도 공유하기 버튼을 표시하도록 변경
+  - `/b/[token]` 접근 시: 친구 관계이면 정상 렌더링, 친구가 아니거나 비로그인이면 별도 안내 UI 표시
+
 ### 5) 사용자 페이지 — `/u/[username]`
 - 검은 단색 + 정중앙 globe, 비공개 제외 핀만
 - 좌상단 프로필 배지 + (친구 아닐 때) 친구 추가 아이콘
@@ -297,7 +312,7 @@ src/app/
 
 ## 11. Next.js 16 주의사항 (AGENTS.md 지침)
 
-`AGENTS.md`: Next.js 16은 **breaking changes 다수**. 실제 코드 작성 전 `node_modules/next/dist/docs/`의 관련 가이드 확인 필수.
+Next.js 16은 **breaking changes 다수**. 실제 코드 작성 전 **context7 MCP**로 관련 가이드 확인 필수 (`.mcp.json` 설정됨 — `node_modules/next/dist/docs/` 대체).
 
 본 스펙이 가정한 Next 16 API들:
 - App Router의 **Parallel + Intercepting Routes** (`@modal`, `(.)`/`(..)` 규칙)

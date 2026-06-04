@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+import React from "react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 
 import { GlobeClient } from "../GlobeClient";
 
-// next/dynamic을 동기 컴포넌트로 대체 — Three.js DOM 의존성 제거
 vi.mock("next/dynamic", () => ({
   default: () => {
     const MockGlobeView = ({
@@ -47,7 +47,46 @@ vi.mock("next/dynamic", () => ({
   },
 }));
 
+vi.mock("framer-motion", () => ({
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  motion: {
+    div: ({ children, onClick, className }: React.ComponentProps<"div">) => (
+      <div onClick={onClick} className={className}>
+        {children}
+      </div>
+    ),
+  },
+}));
+
+vi.mock("@phosphor-icons/react", () => ({
+  Camera: () => <span data-testid="icon-camera" />,
+  CaretDown: () => <span />,
+  Globe: () => <span />,
+  Lock: () => <span />,
+  Users: () => <span />,
+}));
+
+vi.mock("../BucketDetailView", () => ({
+  BucketDetailView: () => <div data-testid="bucket-detail-view" />,
+}));
+
 describe("GlobeClient", () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ items: [], nextCursor: null }),
+      })
+    );
+    vi.stubGlobal(
+      "IntersectionObserver",
+      vi.fn().mockImplementation(() => ({
+        observe: vi.fn(),
+        disconnect: vi.fn(),
+      }))
+    );
+  });
+
   it("초기 상태 — 로딩 스피너 노출", () => {
     render(<GlobeClient pins={[]} />);
     expect(screen.getByRole("status", { name: "로딩 중" })).toBeInTheDocument();
@@ -63,58 +102,35 @@ describe("GlobeClient", () => {
     expect(screen.queryByRole("status", { name: "로딩 중" })).not.toBeInTheDocument();
   });
 
-  it("핀 클릭 시 팝업 카드 렌더링 — countryCode, count, achievedCount 텍스트 노출", () => {
+  it("핀 클릭 시 CountrySlidePanel 열림 — 닫기 버튼 노출", async () => {
     render(<GlobeClient pins={[]} />);
 
     act(() => {
       fireEvent.click(screen.getByTestId("trigger-pin-click"));
     });
 
-    expect(screen.getByText("KR")).toBeInTheDocument();
-    expect(screen.getByText("3개 등록")).toBeInTheDocument();
-    expect(screen.getByText("2개 달성")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "닫기" })).toBeInTheDocument();
+    });
   });
 
-  it("팝업 배경(최상위 div) 클릭 시 팝업 닫힘", () => {
+  it("최상위 div 클릭 시 CountrySlidePanel 닫힘", async () => {
     const { container } = render(<GlobeClient pins={[]} />);
 
     act(() => {
       fireEvent.click(screen.getByTestId("trigger-pin-click"));
     });
 
-    expect(screen.getByText("KR")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "닫기" })).toBeInTheDocument();
+    });
 
     act(() => {
       fireEvent.click(container.firstChild as HTMLElement);
     });
 
-    expect(screen.queryByText("KR")).not.toBeInTheDocument();
-  });
-
-  it("팝업 카드 자체 클릭은 팝업 유지 — stopPropagation", () => {
-    render(<GlobeClient pins={[]} />);
-
-    act(() => {
-      fireEvent.click(screen.getByTestId("trigger-pin-click"));
+    await waitFor(() => {
+      expect(screen.queryByRole("button", { name: "닫기" })).not.toBeInTheDocument();
     });
-
-    const countryCodeEl = screen.getByText("KR");
-    const card = countryCodeEl.closest("div[class*='absolute']") as HTMLElement;
-
-    act(() => {
-      fireEvent.click(card);
-    });
-
-    expect(screen.getByText("KR")).toBeInTheDocument();
-  });
-
-  it("미달성 핀 — achievedCount/count 형식 배지 표시", () => {
-    render(<GlobeClient pins={[]} />);
-
-    act(() => {
-      fireEvent.click(screen.getByTestId("trigger-pin-click"));
-    });
-
-    expect(screen.getByText("2/3")).toBeInTheDocument();
   });
 });
