@@ -1,49 +1,91 @@
 ---
-description: git 커밋 기반 CHANGELOG.md 자동 갱신 (토큰 절약형)
+description: git 커밋을 Notion ChangeLog DB에 날짜별로 기록
 ---
 
-CHANGELOG.md를 갱신한다. 토큰을 아끼는 게 우선이므로 아래 절차만 정확히 따른다. 부수 작업(테스트, 빌드, 검증) 금지.
+Notion ChangeLog DB에 오늘 날짜 페이지를 생성하거나 갱신한다.
+토큰 절약 우선. 부수 작업(테스트, 빌드, 검증) 금지.
 
 ## 절차
 
-1. **마지막 갱신 시점 찾기**
-   - `git log -1 --format=%H -- CHANGELOG.md` 실행.
-   - 출력이 비어 있으면(파일을 한 번도 만진 적 없음) `<since>`는 빈 문자열 → 모든 커밋 대상.
-   - 출력이 있으면 그 해시가 `<since>`.
+### 1. 앵커 읽기
 
-2. **신규 커밋 수집**
-   - `<since>`가 빈 문자열이면: `git log HEAD --format="%h %s" --no-merges`
-   - 아니면: `git log <since>..HEAD --format="%h %s" --no-merges`
-   - 결과가 0줄이면 "갱신할 커밋 없음"만 출력하고 종료.
+```powershell
+Get-Content .dev/changelog-cursor.txt -ErrorAction SilentlyContinue
+```
 
-3. **태그별 분류**
+- 내용이 있으면 그 값이 `<since>` 해시.
+- 파일이 없거나 비어 있으면 `<since>` = 빈 문자열 (전체 커밋 대상).
 
-   커밋 제목 앞 태그(콜론 앞 부분)로 분류한다:
+### 2. 신규 커밋 수집
 
-   | 태그 | 섹션 |
-   |---|---|
-   | feat | ### 추가 |
-   | fix | ### 수정 |
-   | refactor, style | ### 변경 |
-   | docs | ### 문서 |
-   | chore, build, ci, test | ### 기타 |
-   | (그 외) | ### 기타 |
+- `<since>` 있음: `git log <since>..HEAD --format="%h %s" --no-merges`
+- `<since>` 없음: `git log HEAD --format="%h %s" --no-merges`
+- 결과가 0줄이면 "갱신할 커밋 없음"만 출력하고 종료.
 
-4. **CHANGELOG.md 갱신**
-   - 파일이 없으면 첫 줄에 `# Changelog` 헤더 작성 후 빈 줄.
-   - 오늘 날짜(`YYYY-MM-DD`)로 `## [YYYY-MM-DD]` 새 섹션을 `# Changelog` 헤더 바로 아래에 삽입.
-   - 같은 날짜 섹션이 이미 있으면 그 섹션에 항목을 **추가**(중복 해시 제외).
-   - 각 항목 형식: `- <태그 제외한 한국어 제목> (<short hash>)`
-     - 예: 커밋 `feat: 인증 추가 (abc1234)` → `- 인증 추가 (abc1234)`
-   - 빈 섹션(항목 0개)은 출력하지 않는다.
+### 3. 태그별 분류
 
-5. **보고**
-   - 추가된 커밋 수와 섹션 분포만 한 줄로 보고. 본문은 출력하지 말 것.
-   - 예: `갱신 완료: 5건 추가 (추가 2, 수정 1, 기타 2)`
+| 태그 | 섹션 |
+|---|---|
+| feat | 추가 |
+| fix | 수정 |
+| refactor, style | 변경 |
+| docs | 문서 |
+| chore, build, ci, test | 기타 |
+| (그 외) | 기타 |
+
+### 4. Notion ChangeLog DB 탐색
+
+`mcp__claude_ai_Notion__notion-search`로 "ChangeLog"를 검색한다.
+
+- DB를 찾지 못하면:
+  ```
+  ⚠️ Notion에 "ChangeLog" DB가 없습니다.
+  ✈️ LogLife 페이지 하위에 먼저 생성해 주세요.
+  ```
+  종료.
+
+### 5. 오늘 날짜 페이지 처리
+
+`mcp__notionApi__API-query-data-source`로 ChangeLog DB를 조회해
+Title == 오늘(YYYY-MM-DD)인 페이지를 찾는다.
+
+**없으면 — 신규 생성**
+`mcp__claude_ai_Notion__notion-create-pages`로 생성.
+
+Properties:
+| 필드 | 값 |
+|---|---|
+| Title | YYYY-MM-DD |
+| Date | 오늘 ISO 날짜 |
+| Sections | 등장한 섹션 multi-select |
+| Commits | 커밋 건수 |
+
+본문 형식:
+```
+### 추가
+- 인증 추가 (abc1234)
+
+### 수정
+- 핀 클릭 버그 수정 (def5678)
+```
+
+**있으면 — 갱신**
+`mcp__notionApi__API-patch-block-children`으로 새 섹션 블록을 본문 끝에 append.
+`mcp__notionApi__API-patch-page`로 Sections(합집합), Commits(누적 합) 속성 갱신.
+
+### 6. 앵커 갱신
+
+```powershell
+git rev-parse --short HEAD | Set-Content .dev/changelog-cursor.txt -NoNewline
+```
+
+### 7. 보고 (한 줄)
+
+예: `갱신 완료: 5건 추가 (추가 2, 수정 1, 기타 2) → Notion ChangeLog`
 
 ## 금지
 
-- CHANGELOG.md 외 파일 수정 금지.
-- 커밋/푸시 금지(사용자가 직접 함).
-- 커밋 본문 불릿을 가져오지 말 것. 제목만 사용해서 토큰 절약.
-- 분류 애매하다고 사용자에게 묻지 말고 ### 기타로 보낸다.
+- CHANGELOG.md 수정/생성 금지.
+- 커밋/푸시 금지.
+- 커밋 본문 불릿 사용 금지 (제목만).
+- 분류 애매 시 사용자에게 묻지 말고 기타로 처리.

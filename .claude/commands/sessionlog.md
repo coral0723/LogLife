@@ -2,7 +2,7 @@
 description: 세션 로그(JSONL)를 읽어 Notion "AI Agent Logs" DB에 기록
 ---
 
-# /notion-log
+# /sessionlog
 
 `.dev/session-logs/`에 훅이 쌓은 세션 로그를 Notion에 푸시한다.
 
@@ -61,7 +61,7 @@ Files Modified 중 이 목록에 없는 파일 = **Anomaly 후보** (이번 세�
 - DB가 없으면 사용자에게 안내:
   ```
   ⚠️ Notion에 "AI Agent Logs" 데이터베이스가 없습니다.
-  아래 속성으로 DB를 먼저 만들어 주세요:
+  ✈️ LogLife 페이지 하위에 아래 속성으로 DB를 먼저 만들어 주세요:
   - Title (제목)
   - Branch (선택)
   - Date (날짜)
