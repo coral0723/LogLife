@@ -45,13 +45,23 @@ yarn-error.log*
 .claude/*
 !.claude/commands/
 !.claude/rules/
+!.claude/hooks/
 !.claude/settings.json
 .claude/settings.local.json
 !.claude/memory/
 .claude/memory/project/
 .claude/memory/user/
 .claude/memory/reference/
+
+# session logs (로컬 전용, git 제외)
+.dev/session-logs/*.jsonl
+.dev/session-logs/.session
+.dev/changelog-cursor.txt
 .omc/
+
+# local tool artifacts
+.harness/
+.playwright-mcp/
 /HANDOFF.md
 
 # typescript

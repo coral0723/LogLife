@@ -15,6 +15,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // 빌드 아티팩트 — 소스 아님
+    "storybook-static/**",
+    "playwright-report/**",
   ]),
   ...storybook.configs["flat/recommended"]
 ]);
