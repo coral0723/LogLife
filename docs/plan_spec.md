@@ -205,6 +205,13 @@ src/app/
   - `WHERE me.achieved AND fr.achieved AND ABS(me.achievedAt - fr.achievedAt) <= 30 days AND me.placeId = fr.placeId`
 - 모든 위젯은 친구의 `visibility ∈ {FRIENDS, PUBLIC}` 항목만 노출 (PRIVATE 제외 — RLS는 아니어도 API route에서 강제)
 
+#### 공유하기 버튼 공개 범위 정책 (현재 구현 상태 및 향후 계획)
+- 현재 `PUBLIC` 아이템에서만 공유하기 버튼이 노출됨
+- `PRIVATE` 아이템은 공유하기 버튼을 숨겨 `/b/[token]` 링크 생성 자체를 차단
+- **미구현 — 친구 구현 후 수정 예정**: `FRIENDS` 아이템도 현재는 공유하기 버튼이 노출되지 않음
+  - 친구 시스템 구현 후 `FRIENDS` 아이템에도 공유하기 버튼을 표시하도록 변경
+  - `/b/[token]` 접근 시: 친구 관계이면 정상 렌더링, 친구가 아니거나 비로그인이면 별도 안내 UI 표시
+
 ### 5) 사용자 페이지 — `/u/[username]`
 - 검은 단색 + 정중앙 globe, 비공개 제외 핀만
 - 좌상단 프로필 배지 + (친구 아닐 때) 친구 추가 아이콘
