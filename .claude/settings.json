@@ -52,6 +52,16 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File .claude/hooks/stop-changelog-reminder.ps1"
+          }
+        ]
+      }
     ]
   },
   "enabledPlugins": {}
