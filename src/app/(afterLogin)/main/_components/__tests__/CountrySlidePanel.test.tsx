@@ -120,15 +120,19 @@ describe("CountrySlidePanel", () => {
       expect(screen.queryByRole("button", { name: "닫기" })).not.toBeInTheDocument();
     });
 
-    it("countryCode 'KR'이면 패널과 '대한민국' 표시", () => {
+    it("countryCode 'KR'이면 패널과 '대한민국' 표시", async () => {
       stubFetch({ items: [], nextCursor: null });
-      render(<CountrySlidePanel countryCode="KR" onClose={vi.fn()} />);
+      await act(async () => {
+        render(<CountrySlidePanel countryCode="KR" onClose={vi.fn()} />);
+      });
       expect(screen.getByText("대한민국")).toBeInTheDocument();
     });
 
-    it("인식 불가한 국가코드 'XX'는 코드 원문 그대로 표시", () => {
+    it("인식 불가한 국가코드 'XX'는 코드 원문 그대로 표시", async () => {
       stubFetch({ items: [], nextCursor: null });
-      render(<CountrySlidePanel countryCode="XX" onClose={vi.fn()} />);
+      await act(async () => {
+        render(<CountrySlidePanel countryCode="XX" onClose={vi.fn()} />);
+      });
       expect(screen.getByText("XX")).toBeInTheDocument();
     });
   });
@@ -235,20 +239,25 @@ describe("CountrySlidePanel", () => {
   });
 
   describe("인터랙션", () => {
-    it("닫기 버튼 클릭 시 onClose 호출", () => {
+    it("닫기 버튼 클릭 시 onClose 호출", async () => {
       stubFetch({ items: [], nextCursor: null });
       const onClose = vi.fn();
-      render(<CountrySlidePanel countryCode="KR" onClose={onClose} />);
+      await act(async () => {
+        render(<CountrySlidePanel countryCode="KR" onClose={onClose} />);
+      });
       fireEvent.click(screen.getByRole("button", { name: "닫기" }));
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
-    it("배경 오버레이 클릭 시 onClose 호출", () => {
+    it("배경 오버레이 클릭 시 onClose 호출", async () => {
       stubFetch({ items: [], nextCursor: null });
       const onClose = vi.fn();
-      const { container } = render(
-        <CountrySlidePanel countryCode="KR" onClose={onClose} />
-      );
+      let container!: HTMLElement;
+      await act(async () => {
+        ({ container } = render(
+          <CountrySlidePanel countryCode="KR" onClose={onClose} />
+        ));
+      });
       fireEvent.click(container.children[0]);
       expect(onClose).toHaveBeenCalledTimes(1);
     });
