@@ -94,6 +94,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el || !nextCursor) return;
+    let active = true;
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting || loadingMoreRef.current) return;
@@ -102,11 +103,13 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
         fetch(`/api/bucketlists/by-country?countryCode=${countryCode}&cursor=${nextCursor}`)
           .then((r) => r.json())
           .then(({ items: more, nextCursor: nc }: { items: BucketItem[]; nextCursor: string | null }) => {
+            if (!active) return;
             setItems((prev) => [...prev, ...more]);
             setNextCursor(nc);
           })
           .catch(() => {})
           .finally(() => {
+            if (!active) return;
             loadingMoreRef.current = false;
             setLoadingMore(false);
           });
@@ -114,7 +117,10 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
       { threshold: 0.1 }
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      active = false;
+      io.disconnect();
+    };
   }, [countryCode, nextCursor]);
 
   const handleItemClick = async (itemId: string) => {
