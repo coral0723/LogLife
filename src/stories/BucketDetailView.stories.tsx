@@ -18,8 +18,6 @@ const BASE: BucketDetail = {
   achieved: false,
   placeId: "ChIJ1111",
   displayName: "신주쿠구",
-  cityName: "도쿄",
-  admin1Code: "13",
   countryCode: "JP",
   shareToken: "abc123",
 };
@@ -56,7 +54,7 @@ const meta = {
     detail: {
       control: false,
       description:
-        "버킷리스트 상세 데이터 (id, title, description, visibility, deadlineAt, achievedAt, difficulty, excitement, achieved, placeId, displayName, cityName, admin1Code, countryCode, shareToken)",
+        "버킷리스트 상세 데이터 (id, title, description, visibility, deadlineAt, achievedAt, difficulty, excitement, achieved, placeId, displayName, countryCode, shareToken)",
     },
     photoSrc: {
       control: false,
