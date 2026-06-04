@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import type { BucketDetail } from "../BucketDetailView";
 import { CountrySlidePanel } from "../CountrySlidePanel";
 
@@ -94,14 +94,18 @@ function stubFetchWithDetail() {
   );
 }
 
+let capturedIOCallback: IntersectionObserverCallback | null = null;
+
 beforeEach(() => {
-  vi.stubGlobal(
-    "IntersectionObserver",
-    vi.fn().mockImplementation(() => ({
-      observe: vi.fn(),
-      disconnect: vi.fn(),
-    }))
-  );
+  capturedIOCallback = null;
+  class MockIntersectionObserver {
+    observe = vi.fn();
+    disconnect = vi.fn();
+    constructor(cb: IntersectionObserverCallback) {
+      capturedIOCallback = cb;
+    }
+  }
+  vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
 });
 
 afterEach(() => {
@@ -308,6 +312,77 @@ describe("CountrySlidePanel", () => {
         expect(screen.queryByTestId("bucket-detail-view")).not.toBeInTheDocument();
         expect(screen.getByText("도쿄 타워 방문")).toBeInTheDocument();
       });
+    });
+  });
+
+  describe("무한 스크롤", () => {
+    it("nextCursor가 있을 때 sentinel이 보이면 2페이지 fetch 후 아이템 목록에 추가됨", async () => {
+      const page1Item = { ...baseItem, id: "item-1", title: "1페이지 아이템" };
+      const page2Item = { ...baseItem, id: "item-2", title: "2페이지 아이템" };
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ items: [page1Item], nextCursor: "cursor-abc" }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ items: [page2Item], nextCursor: null }),
+        });
+      vi.stubGlobal("fetch", fetchMock);
+
+      render(<CountrySlidePanel countryCode="KR" onClose={vi.fn()} />);
+
+      // page1 로드 완료 + IO 콜백 등록 대기 (nextCursor 갱신 후 IO effect 재실행)
+      await waitFor(() => {
+        expect(screen.getByText("1페이지 아이템")).toBeInTheDocument();
+        expect(capturedIOCallback).not.toBeNull();
+      });
+
+      // sentinel이 화면에 진입한 상황 시뮬레이션
+      await act(async () => {
+        capturedIOCallback!(
+          [{ isIntersecting: true } as IntersectionObserverEntry],
+          {} as IntersectionObserver
+        );
+      });
+
+      // page2 아이템이 page1 아이템과 함께 목록에 추가됨
+      await waitFor(() => {
+        expect(screen.getByText("1페이지 아이템")).toBeInTheDocument();
+        expect(screen.getByText("2페이지 아이템")).toBeInTheDocument();
+      });
+
+      // 두 번째 fetch는 cursor 파라미터 포함
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock).toHaveBeenLastCalledWith(
+        expect.stringContaining("cursor=cursor-abc")
+      );
+    });
+
+    it("isIntersecting: false일 때 추가 fetch 없음", async () => {
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ items: [baseItem], nextCursor: "cursor-abc" }),
+      });
+      vi.stubGlobal("fetch", fetchMock);
+
+      render(<CountrySlidePanel countryCode="KR" onClose={vi.fn()} />);
+
+      await waitFor(() => {
+        expect(screen.getByText("도쿄 타워 방문")).toBeInTheDocument();
+        expect(capturedIOCallback).not.toBeNull();
+      });
+
+      await act(async () => {
+        capturedIOCallback!(
+          [{ isIntersecting: false } as IntersectionObserverEntry],
+          {} as IntersectionObserver
+        );
+      });
+
+      // isIntersecting: false이므로 초기 fetch 1회만 호출
+      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
   });
 
