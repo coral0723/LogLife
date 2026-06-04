@@ -8,7 +8,11 @@
       "Read(//mnt/c/Users/user/Documents/LogLife/**)",
       "Read(//mnt/c/Users/user/Documents/LogLife/prisma/**)",
       "Read(//tmp/cc-cache/check-harness/**)",
-      "Read(//c/tmp/cc-cache/check-harness/**)"
+      "Read(//c/tmp/cc-cache/check-harness/**)",
+      "mcp__claude_ai_Notion__notion-search",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "mcp__claude_ai_Notion__notion-create-pages",
+      "mcp__claude_ai_Notion__notion-update-data-source"
     ],
     "additionalDirectories": [
       "C:\\Users\\user\\.claude\\projects\\c--Users-user-Documents-LogLife\\memory",
@@ -17,6 +21,16 @@
     ]
   },
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File .claude/hooks/log-prompt.ps1"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash|PowerShell",
@@ -24,6 +38,17 @@
           {
             "type": "command",
             "command": "powershell -NoProfile -Command \"Get-Content '.claude/rules/cli_security.md' -Raw\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File .claude/hooks/log-tool.ps1"
           }
         ]
       }

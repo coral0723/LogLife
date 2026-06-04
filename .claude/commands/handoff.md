@@ -75,6 +75,10 @@ git diff --stat HEAD
 
 ```
 HANDOFF.md 저장 완료.
+
+이번 브랜치 작업을 Notion에도 기록하려면 /notion-log 를 실행하세요.
+의사결정 맥락, 프롬프트 패턴, 파일 맵을 Notion에 남길 수 있습니다.
+
 이제 /clear 를 입력해 세션을 종료하세요.
 새 세션에서 "@HANDOFF.md 참고해서 이어서 작업해줘"라고 시작하면 됩니다.
 ```
