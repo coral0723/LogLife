@@ -1,9 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import {
-  BucketDetailView,
-  type BucketDetail,
-} from "../app/(afterLogin)/main/_components/BucketDetailView";
+import { BucketDetailView } from "../app/(afterLogin)/main/_components/BucketDetailView";
+import type { BucketDetail } from "../api/bucketlists";
 
 const BASE: BucketDetail = {
   id: "1",

@@ -10,22 +10,7 @@ import {
 } from "@phosphor-icons/react";
 
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
-
-export type BucketDetail = {
-  id: string;
-  title: string;
-  description: string | null;
-  visibility: "PRIVATE" | "FRIENDS" | "PUBLIC";
-  deadlineAt: string | null;
-  achievedAt: string | null;
-  difficulty: number;
-  excitement: number;
-  achieved: boolean;
-  placeId: string;
-  displayName: string;
-  countryCode: string;
-  shareToken: string;
-};
+import { BucketDetail } from "@/api/bucketlists";
 
 interface Props {
   detail: BucketDetail;

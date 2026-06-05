@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
-import { BucketDetailView, type BucketDetail } from "@/app/(afterLogin)/main/_components/BucketDetailView";
+import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
+import { type BucketDetail } from "@/api/bucketlists";
 
 interface Props {
   detail: BucketDetail;

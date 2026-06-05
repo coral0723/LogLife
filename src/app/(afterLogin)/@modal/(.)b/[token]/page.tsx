@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
-import type { BucketDetail } from "@/app/(afterLogin)/main/_components/BucketDetailView";
+import type { BucketDetail } from "@/api/bucketlists";
 import { ModalDetailClient } from "./ModalDetailClient";
 
 export default async function BucketModalPage(

@@ -5,7 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Camera, CaretDown } from "@phosphor-icons/react";
 
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG, type Visibility } from "@/lib/bucketStatus";
-import { BucketDetailView, type BucketDetail } from "./BucketDetailView";
+import { BucketDetailView } from "./BucketDetailView";
+import { type BucketDetail } from "@/api/bucketlists";
 
 type BucketItem = {
   id: string;

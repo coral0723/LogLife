@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { prisma } from "@/lib/prisma";
-import type { BucketDetail } from "@/app/(afterLogin)/main/_components/BucketDetailView";
+import type { BucketDetail } from "@/api/bucketlists";
 import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
 import { StarField } from "@/app/(afterLogin)/main/_components/StarField";
 

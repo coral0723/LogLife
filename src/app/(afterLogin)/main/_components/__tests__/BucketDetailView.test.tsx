@@ -2,7 +2,7 @@ import React from "react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { BucketDetailView } from "../BucketDetailView";
-import type { BucketDetail } from "../BucketDetailView";
+import type { BucketDetail } from "@/api/bucketlists";
 
 vi.mock("@phosphor-icons/react", () => ({
   ArrowLeft: () => <span data-testid="icon-arrow-left" />,
