@@ -11,14 +11,13 @@ import {
   fetchBucketsByCountry,
   fetchBucketDetail,
   bucketQueryKeys,
-  type BucketDetail,
   type BucketsByCountryPage,
 } from "@/api/bucketlists";
 
 type View =
   | { kind: "list" }
   | { kind: "loadingDetail"; itemId: string }
-  | { kind: "detail"; detail: BucketDetail };
+  | { kind: "detail"; itemId: string };
 
 function PhotoCell({ placeId }: { placeId: string }) {
   const [error, setError] = useState(false);
@@ -97,11 +96,11 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
   const handleItemClick = async (itemId: string) => {
     setView({ kind: "loadingDetail", itemId });
     try {
-      const detail = await queryClient.fetchQuery({
+      await queryClient.fetchQuery({
         queryKey: bucketQueryKeys.detail(itemId),
         queryFn: () => fetchBucketDetail(itemId),
       });
-      setView({ kind: "detail", detail });
+      setView({ kind: "detail", itemId });
     } catch {
       setView({ kind: "list" });
     }
@@ -244,7 +243,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 >
                   <BucketDetailView
-                    detail={view.detail}
+                    bucketId={view.itemId}
                     onBack={() => setView({ kind: "list" })}
                   />
                 </motion.div>

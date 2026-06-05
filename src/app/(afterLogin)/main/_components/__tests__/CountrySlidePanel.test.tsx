@@ -36,14 +36,14 @@ vi.mock("@phosphor-icons/react", () => ({
 
 vi.mock("../BucketDetailView", () => ({
   BucketDetailView: ({
-    detail,
+    bucketId,
     onBack,
   }: {
-    detail: BucketDetail;
+    bucketId: string;
     onBack?: () => void;
   }) => (
     <div data-testid="bucket-detail-view">
-      <span>{detail.title}</span>
+      <span>{bucketId}</span>
       {onBack && (
         <button onClick={onBack} aria-label="목록으로 돌아가기">
           뒤로가기

@@ -8,12 +8,13 @@ import {
   MapPin,
   ShareNetwork,
 } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
 
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
-import { BucketDetail } from "@/api/bucketlists";
+import { fetchBucketDetail, bucketQueryKeys } from "@/api/bucketlists";
 
 interface Props {
-  detail: BucketDetail;
+  bucketId: string;
   onBack?: () => void;
   photoSrc?: string;
 }
@@ -39,9 +40,22 @@ const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
   day: "numeric",
 });
 
-export function BucketDetailView({ detail, onBack, photoSrc }: Props) {
+export function BucketDetailView({ bucketId, onBack, photoSrc }: Props) {
   const [photoError, setPhotoError] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const { data: detail } = useQuery({
+    queryKey: bucketQueryKeys.detail(bucketId),
+    queryFn: () => fetchBucketDetail(bucketId),
+  });
+
+  if (!detail) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="h-6 w-6 rounded-full border-2 border-zinc-300 border-t-zinc-600 animate-spin" />
+      </div>
+    );
+  }
 
   const status = getStatus(detail);
   const { label: statusLabel, className: statusClassName } = STATUS_CONFIG[status];

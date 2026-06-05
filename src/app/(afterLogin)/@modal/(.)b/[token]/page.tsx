@@ -1,50 +1,24 @@
 import { notFound } from "next/navigation";
+import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
-import { prisma } from "@/lib/prisma";
-import type { BucketDetail } from "@/api/bucketlists";
+import { bucketQueryKeys } from "@/api/bucketlists";
+import { getBucketByShareToken } from "@/lib/getBucketByShareToken";
 import { ModalDetailClient } from "./ModalDetailClient";
 
 export default async function BucketModalPage(
   props: { params: Promise<{ token: string }> },
 ) {
   const { token } = await props.params;
-
-  const item = await prisma.bucketList.findUnique({
-    where: { shareToken: token },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      visibility: true,
-      deadlineAt: true,
-      achievedAt: true,
-      difficulty: true,
-      excitement: true,
-      achieved: true,
-      placeId: true,
-      displayName: true,
-      countryCode: true,
-      shareToken: true,
-    },
-  });
-
+  const item = await getBucketByShareToken(token);
   if (!item || item.visibility !== "PUBLIC") notFound();
 
-  const detail: BucketDetail = {
-    id: item.id,
-    title: item.title,
-    description: item.description,
-    visibility: item.visibility,
-    deadlineAt: item.deadlineAt?.toISOString() ?? null,
-    achievedAt: item.achievedAt?.toISOString() ?? null,
-    difficulty: item.difficulty,
-    excitement: item.excitement,
-    achieved: item.achieved,
-    placeId: item.placeId,
-    displayName: item.displayName,
-    countryCode: item.countryCode,
-    shareToken: item.shareToken,
-  };
+  const queryClient = new QueryClient();
+  queryClient.setQueryData(bucketQueryKeys.detail(item.id), item);
+  const state = dehydrate(queryClient);
 
-  return <ModalDetailClient detail={detail} />;
+  return (
+    <HydrationBoundary state={state}>
+      <ModalDetailClient bucketId={item.id} />
+    </HydrationBoundary>
+  );
 }
