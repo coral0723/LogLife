@@ -3,20 +3,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Camera, CaretDown } from "@phosphor-icons/react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG, type Visibility } from "@/lib/bucketStatus";
+import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
 import { BucketDetailView } from "./BucketDetailView";
-import { type BucketDetail } from "@/api/bucketlists";
-
-type BucketItem = {
-  id: string;
-  title: string;
-  displayName: string;
-  achieved: boolean;
-  placeId: string;
-  visibility: Visibility;
-  deadlineAt: string | null;
-};
+import {
+  fetchBucketsByCountry,
+  fetchBucketDetail,
+  bucketQueryKeys,
+  type BucketDetail,
+  type BucketsByCountryPage,
+} from "@/api/bucketlists";
 
 type View =
   | { kind: "list" }
@@ -48,13 +45,26 @@ interface Props {
 }
 
 export function CountrySlidePanel({ countryCode, onClose }: Props) {
-  const [items, setItems] = useState<BucketItem[]>([]);
-  const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [view, setView] = useState<View>({ kind: "list" });
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const loadingMoreRef = useRef(false);
+  const queryClient = useQueryClient();
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: bucketQueryKeys.byCountry(countryCode ?? ""),
+    queryFn: ({ pageParam }) =>
+      fetchBucketsByCountry(countryCode!, pageParam ?? undefined),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage: BucketsByCountryPage) => lastPage.nextCursor ?? undefined,
+    enabled: !!countryCode,
+  });
+
+  const items = data?.pages.flatMap((page) => page.items) ?? [];
 
   const countryKoreanName = useMemo(() => {
     if (!countryCode) return null;
@@ -66,70 +76,31 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
   }, [countryCode]);
 
   useEffect(() => {
-    if (!countryCode) return;
-    let active = true;
-    setLoading(true);
-    setItems([]);
-    setNextCursor(null);
     setView({ kind: "list" });
-    fetch(`/api/bucketlists/by-country?countryCode=${countryCode}`)
-      .then((r) => r.json())
-      .then(({ items: data, nextCursor: nc }: { items: BucketItem[]; nextCursor: string | null }) => {
-        if (!active) return;
-        setItems(data);
-        setNextCursor(nc);
-      })
-      .catch(() => {
-        if (!active) return;
-        setItems([]);
-      })
-      .finally(() => {
-        if (!active) return;
-        setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
   }, [countryCode]);
 
   useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el || !nextCursor) return;
-    let active = true;
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting || loadingMoreRef.current) return;
-        loadingMoreRef.current = true;
-        setLoadingMore(true);
-        fetch(`/api/bucketlists/by-country?countryCode=${countryCode}&cursor=${nextCursor}`)
-          .then((r) => r.json())
-          .then(({ items: more, nextCursor: nc }: { items: BucketItem[]; nextCursor: string | null }) => {
-            if (!active) return;
-            setItems((prev) => [...prev, ...more]);
-            setNextCursor(nc);
-          })
-          .catch(() => {})
-          .finally(() => {
-            if (!active) return;
-            loadingMoreRef.current = false;
-            setLoadingMore(false);
-          });
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
       },
       { threshold: 0.1 }
     );
-    io.observe(el);
-    return () => {
-      active = false;
-      io.disconnect();
-    };
-  }, [countryCode, nextCursor]);
+    io.observe(sentinel);
+    return () => io.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleItemClick = async (itemId: string) => {
     setView({ kind: "loadingDetail", itemId });
     try {
-      const res = await fetch(`/api/bucketlists/${itemId}`);
-      if (!res.ok) throw new Error();
-      const detail: BucketDetail = await res.json();
+      const detail = await queryClient.fetchQuery({
+        queryKey: bucketQueryKeys.detail(itemId),
+        queryFn: () => fetchBucketDetail(itemId),
+      });
       setView({ kind: "detail", detail });
     } catch {
       setView({ kind: "list" });
@@ -191,7 +162,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 >
                   <ul className="overflow-y-auto flex-1">
-                    {loading &&
+                    {isLoading &&
                       [0, 1, 2].map((i) => (
                         <li
                           key={i}
@@ -206,13 +177,13 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                         </li>
                       ))}
 
-                    {!loading && items.length === 0 && (
+                    {!isLoading && items.length === 0 && (
                       <li className="flex items-center justify-center h-40 text-sm text-zinc-400">
                         등록된 버킷리스트가 없습니다.
                       </li>
                     )}
 
-                    {!loading &&
+                    {!isLoading &&
                       items.map((item) => {
                         const status = getStatus(item);
                         const { label: statusLabel, className: statusClassName } = STATUS_CONFIG[status];
@@ -249,7 +220,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                       })}
 
                     <div ref={sentinelRef} className="h-1" />
-                    {!loading && loadingMore && (
+                    {!isLoading && isFetchingNextPage && (
                       <li className="flex items-center justify-center py-4">
                         <div className="h-4 w-4 rounded-full border-2 border-zinc-300 border-t-zinc-600 animate-spin" />
                       </li>
