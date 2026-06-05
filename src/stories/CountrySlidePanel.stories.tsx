@@ -1,8 +1,11 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { CountrySlidePanel } from "../app/(afterLogin)/main/_components/CountrySlidePanel";
 import { bucketlistHandlers } from "../../tests/msw/handlers/bucketlists";
+
+const queryClient = new QueryClient();
 
 const meta = {
   title: "Components/CountrySlidePanel",
@@ -26,6 +29,13 @@ const meta = {
       description: "닫기 버튼 또는 배경 클릭 시 호출되는 콜백.",
     },
   },
+  decorators: [
+    (Story) => (
+      <QueryClientProvider client={queryClient}>
+        <Story />
+      </QueryClientProvider>
+    ),
+  ],
 } satisfies Meta<typeof CountrySlidePanel>;
 
 export default meta;
