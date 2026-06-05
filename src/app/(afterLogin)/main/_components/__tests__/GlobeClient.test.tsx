@@ -1,8 +1,25 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { GlobeClient } from "../GlobeClient";
+
+vi.mock("@/api/bucketlists", () => ({
+  fetchBucketsByCountry: vi.fn().mockResolvedValue({ items: [], nextCursor: null }),
+  fetchBucketDetail: vi.fn(),
+  bucketQueryKeys: {
+    byCountry: (code: string) => ["bucketlists", "by-country", code],
+    detail: (id: string) => ["bucketlists", "detail", id],
+  },
+}));
+
+function renderWithQuery(ui: React.ReactElement) {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    <QueryClientProvider client={client}>{ui}</QueryClientProvider>
+  );
+}
 
 vi.mock("next/dynamic", () => ({
   default: () => {
@@ -88,12 +105,12 @@ describe("GlobeClient", () => {
   });
 
   it("초기 상태 — 로딩 스피너 노출", () => {
-    render(<GlobeClient pins={[]} />);
+    renderWithQuery(<GlobeClient pins={[]} />);
     expect(screen.getByRole("status", { name: "로딩 중" })).toBeInTheDocument();
   });
 
   it("onReady 콜백 호출 후 — 스피너 사라짐", () => {
-    render(<GlobeClient pins={[]} />);
+    renderWithQuery(<GlobeClient pins={[]} />);
 
     act(() => {
       fireEvent.click(screen.getByTestId("trigger-ready"));
@@ -103,7 +120,7 @@ describe("GlobeClient", () => {
   });
 
   it("핀 클릭 시 CountrySlidePanel 열림 — 닫기 버튼 노출", async () => {
-    render(<GlobeClient pins={[]} />);
+    renderWithQuery(<GlobeClient pins={[]} />);
 
     act(() => {
       fireEvent.click(screen.getByTestId("trigger-pin-click"));
@@ -115,7 +132,7 @@ describe("GlobeClient", () => {
   });
 
   it("최상위 div 클릭 시 CountrySlidePanel 닫힘", async () => {
-    const { container } = render(<GlobeClient pins={[]} />);
+    const { container } = renderWithQuery(<GlobeClient pins={[]} />);
 
     act(() => {
       fireEvent.click(screen.getByTestId("trigger-pin-click"));

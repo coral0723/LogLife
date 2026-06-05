@@ -99,8 +99,6 @@ model BucketList {
   lat         Float
   lng         Float
   countryCode String
-  admin1Code  String?
-  cityName    String?
   displayName String
 
   createdAt DateTime @default(now())
@@ -109,7 +107,6 @@ model BucketList {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, achieved])
-  @@index([countryCode, admin1Code, cityName])
   @@index([visibility])
   @@index([placeId])
 }

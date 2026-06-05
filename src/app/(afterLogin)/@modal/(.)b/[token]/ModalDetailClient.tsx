@@ -2,18 +2,18 @@
 
 import { useRouter } from "next/navigation";
 
-import { BucketDetailView, type BucketDetail } from "@/app/(afterLogin)/main/_components/BucketDetailView";
+import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
 
 interface Props {
-  detail: BucketDetail;
+  bucketId: string;
 }
 
-export function ModalDetailClient({ detail }: Props) {
+export function ModalDetailClient({ bucketId }: Props) {
   const router = useRouter();
 
   return (
     <div className="fixed inset-0 z-70 bg-zinc-950">
-      <BucketDetailView detail={detail} onBack={() => router.back()} />
+      <BucketDetailView bucketId={bucketId} onBack={() => router.back()} />
     </div>
   );
 }

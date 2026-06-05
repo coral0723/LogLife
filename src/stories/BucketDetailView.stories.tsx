@@ -1,9 +1,9 @@
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import {
-  BucketDetailView,
-  type BucketDetail,
-} from "../app/(afterLogin)/main/_components/BucketDetailView";
+import { BucketDetailView } from "../app/(afterLogin)/main/_components/BucketDetailView";
+import type { BucketDetail } from "../api/bucketlists";
 
 const BASE: BucketDetail = {
   id: "1",
@@ -21,6 +21,19 @@ const BASE: BucketDetail = {
   countryCode: "JP",
   shareToken: "abc123",
 };
+
+// 스토리별로 QueryClient 캐시에 detail을 주입하는 데코레이터
+function withQueryCache(detail: BucketDetail) {
+  return (Story: React.ComponentType) => {
+    const qc = new QueryClient();
+    qc.setQueryData(["bucketlists", "detail", detail.id], detail);
+    return (
+      <QueryClientProvider client={qc}>
+        <Story />
+      </QueryClientProvider>
+    );
+  };
+}
 
 const meta = {
   title: "Components/BucketDetailView",
@@ -46,15 +59,14 @@ const meta = {
   ],
   tags: ["autodocs"],
   args: {
-    detail: BASE,
+    bucketId: BASE.id,
     onBack: () => {},
     photoSrc: "/stories/ramen-demo.jpg",
   },
   argTypes: {
-    detail: {
+    bucketId: {
       control: false,
-      description:
-        "버킷리스트 상세 데이터 (id, title, description, visibility, deadlineAt, achievedAt, difficulty, excitement, achieved, placeId, displayName, countryCode, shareToken)",
+      description: "버킷리스트 ID — QueryClient 캐시에서 상세 데이터를 조회한다.",
     },
     photoSrc: {
       control: false,
@@ -74,37 +86,32 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   name: "기본",
+  decorators: [withQueryCache(BASE)],
 };
 
 export const Achieved: Story = {
   name: "달성",
-  args: {
-    detail: {
+  decorators: [
+    withQueryCache({
       ...BASE,
       achieved: true,
       achievedAt: "2024-12-25T00:00:00Z",
       deadlineAt: null,
-    },
-  },
+    }),
+  ],
 };
 
 export const WithDeadline: Story = {
   name: "마감일 있음",
-  args: {
-    detail: { ...BASE, deadlineAt: "2027-12-31T00:00:00Z" },
-  },
+  decorators: [withQueryCache({ ...BASE, deadlineAt: "2027-12-31T00:00:00Z" })],
 };
 
 export const Expired: Story = {
   name: "마감 초과",
-  args: {
-    detail: { ...BASE, deadlineAt: "2024-01-01T00:00:00Z" },
-  },
+  decorators: [withQueryCache({ ...BASE, deadlineAt: "2024-01-01T00:00:00Z" })],
 };
 
 export const Private: Story = {
   name: "비공개",
-  args: {
-    detail: { ...BASE, visibility: "PRIVATE" },
-  },
+  decorators: [withQueryCache({ ...BASE, visibility: "PRIVATE" })],
 };
