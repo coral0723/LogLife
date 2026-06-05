@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -8,27 +8,13 @@ import {
   MapPin,
   ShareNetwork,
 } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
 
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
-
-export type BucketDetail = {
-  id: string;
-  title: string;
-  description: string | null;
-  visibility: "PRIVATE" | "FRIENDS" | "PUBLIC";
-  deadlineAt: string | null;
-  achievedAt: string | null;
-  difficulty: number;
-  excitement: number;
-  achieved: boolean;
-  placeId: string;
-  displayName: string;
-  countryCode: string;
-  shareToken: string;
-};
+import { fetchBucketDetail, bucketQueryKeys } from "@/api/bucketlists";
 
 interface Props {
-  detail: BucketDetail;
+  bucketId: string;
   onBack?: () => void;
   photoSrc?: string;
 }
@@ -54,9 +40,29 @@ const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
   day: "numeric",
 });
 
-export function BucketDetailView({ detail, onBack, photoSrc }: Props) {
+export function BucketDetailView({ bucketId, onBack, photoSrc }: Props) {
   const [photoError, setPhotoError] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const { data: detail, isError } = useQuery({
+    queryKey: bucketQueryKeys.detail(bucketId),
+    queryFn: () => fetchBucketDetail(bucketId),
+  });
+
+  useEffect(() => {
+    if (isError) {
+      alert("데이터를 불러오는 중 오류가 발생했습니다.");
+      window.location.reload();
+    }
+  }, [isError]);
+
+  if (!detail) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="h-6 w-6 rounded-full border-2 border-zinc-300 border-t-zinc-600 animate-spin" />
+      </div>
+    );
+  }
 
   const status = getStatus(detail);
   const { label: statusLabel, className: statusClassName } = STATUS_CONFIG[status];

@@ -33,8 +33,6 @@ type NormalizedPlace = {
   lat: number;
   lng: number;
   countryCode: string;
-  admin1Code: string | null;
-  cityName: string | null;
 };
 
 function pickComponent(
@@ -50,14 +48,6 @@ function normalize(data: PlaceDetailsResponse): NormalizedPlace | null {
   const lat = data.location?.latitude;
   const lng = data.location?.longitude;
   const country = pickComponent(data.addressComponents, "country");
-  const admin1 = pickComponent(
-    data.addressComponents,
-    "administrative_area_level_1",
-  );
-  const city =
-    pickComponent(data.addressComponents, "locality") ??
-    pickComponent(data.addressComponents, "sublocality_level_1");
-
   if (
     !placeId ||
     !displayName ||
@@ -74,8 +64,6 @@ function normalize(data: PlaceDetailsResponse): NormalizedPlace | null {
     lat,
     lng,
     countryCode: country.shortText,
-    admin1Code: admin1?.shortText ?? null,
-    cityName: city?.longText ?? null,
   };
 }
 

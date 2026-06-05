@@ -42,8 +42,6 @@ const MOCK_DETAIL = {
   achieved: false,
   placeId: 'ChIJ1111',
   displayName: '신주쿠구',
-  cityName: '도쿄',
-  admin1Code: '13',
   countryCode: 'JP',
   shareToken: 'abc123',
 };
