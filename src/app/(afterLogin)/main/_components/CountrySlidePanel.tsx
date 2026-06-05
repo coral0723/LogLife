@@ -96,7 +96,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
   const handleItemClick = async (itemId: string) => {
     setView({ kind: "loadingDetail", itemId });
     try {
-      await queryClient.fetchQuery({
+      await queryClient.ensureQueryData({
         queryKey: bucketQueryKeys.detail(itemId),
         queryFn: () => fetchBucketDetail(itemId),
       });
