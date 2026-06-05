@@ -26,8 +26,6 @@ const baseDetail: BucketDetail = {
   achieved: false,
   placeId: "place-123",
   displayName: "도쿄 타워, 일본",
-  cityName: null,
-  admin1Code: null,
   countryCode: "JP",
   shareToken: "token-abc",
 };

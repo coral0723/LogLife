@@ -19,8 +19,7 @@ const bucketListInputSchema = z.object({
   lat: z.number().gte(-90).lte(90),
   lng: z.number().gte(-180).lte(180),
   countryCode: z.string().min(2).max(3),
-  admin1Code: z.string().nullable().optional(),
-  cityName: z.string().nullable().optional(),
+
   displayName: z.string().min(1),
 });
 

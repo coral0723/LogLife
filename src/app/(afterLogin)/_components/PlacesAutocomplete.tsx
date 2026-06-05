@@ -15,8 +15,6 @@ export type NormalizedPlace = {
   lat: number;
   lng: number;
   countryCode: string;
-  admin1Code: string | null;
-  cityName: string | null;
 };
 
 type Suggestion = {
