@@ -8,19 +8,14 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
+import {
+  fetchPlacesAutocomplete,
+  fetchPlaceDetails,
+  type NormalizedPlace,
+  type Suggestion,
+} from "@/api/places";
 
-export type NormalizedPlace = {
-  placeId: string;
-  displayName: string;
-  lat: number;
-  lng: number;
-  countryCode: string;
-};
-
-type Suggestion = {
-  placeId: string;
-  text: string;
-};
+export type { NormalizedPlace };
 
 type Props = {
   onSelect: (place: NormalizedPlace) => void;
@@ -63,21 +58,13 @@ export function PlacesAutocomplete({
       setIsLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/places/autocomplete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            input: trimmed,
-            sessionToken: sessionTokenRef.current,
-            languageCode,
-            ...(regionCode ? { regionCode } : {}),
-          }),
-          signal: ac.signal,
-        });
-        if (!res.ok) {
-          throw new Error("자동완성을 불러오지 못했습니다.");
-        }
-        const data = (await res.json()) as { suggestions: Suggestion[] };
+        const data = await fetchPlacesAutocomplete(
+          trimmed,
+          sessionTokenRef.current,
+          languageCode,
+          regionCode,
+          ac.signal,
+        );
         setSuggestions(data.suggestions);
         setActiveIndex(-1);
       } catch (e) {
@@ -99,15 +86,11 @@ export function PlacesAutocomplete({
       setError(null);
       setIsLoading(true);
       try {
-        const url = new URL("/api/places/details", window.location.origin);
-        url.searchParams.set("placeId", suggestion.placeId);
-        url.searchParams.set("sessionToken", sessionTokenRef.current);
-        url.searchParams.set("languageCode", languageCode);
-        const res = await fetch(url, { method: "GET" });
-        if (!res.ok) {
-          throw new Error("위치 상세 정보를 불러오지 못했습니다.");
-        }
-        const place = (await res.json()) as NormalizedPlace;
+        const place = await fetchPlaceDetails(
+          suggestion.placeId,
+          sessionTokenRef.current,
+          languageCode,
+        );
         onSelect(place);
         sessionTokenRef.current = crypto.randomUUID();
         skipNextFetchRef.current = true;

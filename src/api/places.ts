@@ -16,11 +16,13 @@ export async function fetchPlacesAutocomplete(
   sessionToken: string,
   languageCode: string,
   regionCode?: string,
+  signal?: AbortSignal,
 ): Promise<{ suggestions: Suggestion[] }> {
   const res = await fetch("/api/places/autocomplete", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ input, sessionToken, languageCode, regionCode }),
+    signal,
   });
   if (!res.ok) throw new Error("Places 자동완성 조회 실패");
   return res.json();
