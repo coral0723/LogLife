@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -44,10 +44,17 @@ export function BucketDetailView({ bucketId, onBack, photoSrc }: Props) {
   const [photoError, setPhotoError] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const { data: detail } = useQuery({
+  const { data: detail, isError } = useQuery({
     queryKey: bucketQueryKeys.detail(bucketId),
     queryFn: () => fetchBucketDetail(bucketId),
   });
+
+  useEffect(() => {
+    if (isError) {
+      alert("데이터를 불러오는 중 오류가 발생했습니다.");
+      window.location.reload();
+    }
+  }, [isError]);
 
   if (!detail) {
     return (
