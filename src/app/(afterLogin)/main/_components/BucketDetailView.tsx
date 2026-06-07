@@ -7,12 +7,17 @@ import {
   MapPin,
   ShareNetwork,
 } from "@phosphor-icons/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type InfiniteData } from "@tanstack/react-query";
 
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketList/bucketStatus";
 import { toggleAchieved, updateDeadline } from "@/lib/bucketList/actions";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
-import { fetchBucketDetail, bucketQueryKeys, type BucketDetail } from "@/api/bucketlists";
+import {
+  fetchBucketDetail,
+  bucketQueryKeys,
+  type BucketDetail,
+  type BucketsByCountryPage,
+} from "@/api/bucketlists";
 
 interface Props {
   bucketId: string;
@@ -106,6 +111,19 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
               ...prev,
               achieved,
               achievedAt: achieved ? new Date().toISOString() : null,
+            },
+        );
+        queryClient.setQueryData(
+          bucketQueryKeys.byCountry(detail.countryCode),
+          (prev?: InfiniteData<BucketsByCountryPage>) =>
+            prev && {
+              ...prev,
+              pages: prev.pages.map((page) => ({
+                ...page,
+                items: page.items.map((item) =>
+                  item.id === bucketId ? { ...item, achieved } : item,
+                ),
+              })),
             },
         );
         showToast({
