@@ -72,6 +72,21 @@ export async function deleteBucketList(id: string) {
   revalidatePath("/main");
 }
 
+export async function updateDeadline(id: string, deadlineAt: Date | null) {
+  const userId = await requireUserId();
+  const parsed = z.coerce.date().nullable().parse(deadlineAt);
+  const result = await prisma.bucketList.updateMany({
+    where: { id, userId },
+    data: { deadlineAt: parsed },
+  });
+  if (result.count === 0) {
+    throw new Error("수정할 버킷리스트를 찾을 수 없습니다.");
+  }
+  updateTag(bucketListTag(userId));
+  revalidatePath("/main");
+  return { deadlineAt: parsed };
+}
+
 export async function toggleAchieved(id: string) {
   const userId = await requireUserId();
   const current = await prisma.bucketList.findFirst({

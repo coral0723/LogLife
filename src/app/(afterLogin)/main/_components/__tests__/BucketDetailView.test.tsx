@@ -3,13 +3,22 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BucketDetailView } from "../BucketDetailView";
+import { toggleAchieved, updateDeadline } from "@/lib/bucketList/actions";
 import type { BucketDetail } from "@/api/bucketlists";
+
+const mockToggleAchieved = vi.mocked(toggleAchieved);
+const mockUpdateDeadline = vi.mocked(updateDeadline);
 
 vi.mock("@/api/bucketlists", () => ({
   fetchBucketDetail: vi.fn(),
   bucketQueryKeys: {
     detail: (id: string) => ["bucketlists", "detail", id],
   },
+}));
+
+vi.mock("@/lib/bucketList/actions", () => ({
+  toggleAchieved: vi.fn(),
+  updateDeadline: vi.fn(),
 }));
 
 vi.mock("@phosphor-icons/react", () => ({
@@ -41,7 +50,7 @@ const baseDetail: BucketDetail = {
 // QueryClient 캐시에 detail을 미리 주입하고 렌더링 — fetch 없이 즉시 data 반환
 function renderWithDetail(
   detail: BucketDetail,
-  props?: { onBack?: () => void; photoSrc?: string },
+  props?: { onBack?: () => void; photoSrc?: string; isOwner?: boolean },
 ) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
@@ -321,6 +330,92 @@ describe("BucketDetailView", () => {
         vi.advanceTimersByTime(2000);
       });
       expect(screen.queryByText("링크 복사됨")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("본인 소유 액션 (isOwner)", () => {
+    beforeEach(() => {
+      vi.setSystemTime(new Date("2026-06-03T00:00:00Z"));
+    });
+
+    it("isOwner 기본값(false) → 액션 버튼 없음", () => {
+      renderWithDetail({ ...baseDetail, achieved: false, deadlineAt: null });
+      expect(
+        screen.queryByRole("button", { name: "달성으로 표시" }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "달성 취소" }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "마감일 다시 설정" }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("isOwner=true + pending → '달성으로 표시' 버튼 표시", () => {
+      renderWithDetail(
+        { ...baseDetail, achieved: false, deadlineAt: null },
+        { isOwner: true },
+      );
+      expect(
+        screen.getByRole("button", { name: "달성으로 표시" }),
+      ).toBeInTheDocument();
+    });
+
+    it("isOwner=true + achieved → '달성 취소' 버튼 표시", () => {
+      renderWithDetail({ ...baseDetail, achieved: true }, { isOwner: true });
+      expect(
+        screen.getByRole("button", { name: "달성 취소" }),
+      ).toBeInTheDocument();
+    });
+
+    it("isOwner=true + expired → '마감일 다시 설정' 버튼 표시", () => {
+      renderWithDetail(
+        { ...baseDetail, achieved: false, deadlineAt: "2020-01-01T00:00:00Z" },
+        { isOwner: true },
+      );
+      expect(
+        screen.getByRole("button", { name: "마감일 다시 설정" }),
+      ).toBeInTheDocument();
+    });
+
+    it("'달성으로 표시' 클릭 → toggleAchieved 호출 + '되돌리기' 토스트 표시", async () => {
+      mockToggleAchieved.mockResolvedValue({ achieved: true });
+      renderWithDetail(
+        { ...baseDetail, achieved: false, deadlineAt: null },
+        { isOwner: true },
+      );
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "달성으로 표시" }));
+      });
+
+      expect(mockToggleAchieved).toHaveBeenCalledWith("item-1");
+      expect(screen.getByText("달성으로 표시했어요.")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "되돌리기" })).toBeInTheDocument();
+    });
+
+    it("'마감일 다시 설정' 클릭 → 인라인 date input 노출 → 확정 시 updateDeadline 호출", async () => {
+      mockUpdateDeadline.mockResolvedValue({
+        deadlineAt: new Date("2030-07-01T00:00:00Z"),
+      });
+      renderWithDetail(
+        { ...baseDetail, achieved: false, deadlineAt: "2020-01-01T00:00:00Z" },
+        { isOwner: true },
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: "마감일 다시 설정" }));
+      const input = screen.getByLabelText("새 마감일");
+      expect(input).toBeInTheDocument();
+
+      fireEvent.change(input, { target: { value: "2030-07-01" } });
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "확인" }));
+      });
+
+      expect(mockUpdateDeadline).toHaveBeenCalledWith(
+        "item-1",
+        new Date("2030-07-01"),
+      );
     });
   });
 });

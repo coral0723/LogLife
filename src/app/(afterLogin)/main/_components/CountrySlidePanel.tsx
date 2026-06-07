@@ -232,6 +232,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                   <BucketDetailView
                     bucketId={view.itemId}
                     onBack={() => setView({ kind: "list" })}
+                    isOwner
                   />
                 </motion.div>
               )}
