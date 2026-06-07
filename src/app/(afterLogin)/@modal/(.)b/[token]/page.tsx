@@ -3,7 +3,7 @@ import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query
 
 import { bucketQueryKeys } from "@/api/bucketlists";
 import { getBucketByShareToken } from "@/lib/getBucketByShareToken";
-import { ModalDetailClient } from "./ModalDetailClient";
+import { ModalDetailClient } from "./_components/ModalDetailClient";
 
 export default async function BucketModalPage(
   props: { params: Promise<{ token: string }> },
