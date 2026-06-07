@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Camera,
   MapPin,
   ShareNetwork,
 } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
+import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
 import { fetchBucketDetail, bucketQueryKeys } from "@/api/bucketlists";
 
 interface Props {
@@ -41,7 +41,6 @@ const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
 });
 
 export function BucketDetailView({ bucketId, onBack, photoSrc }: Props) {
-  const [photoError, setPhotoError] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const { data: detail, isError } = useQuery({
@@ -86,18 +85,12 @@ export function BucketDetailView({ bucketId, onBack, photoSrc }: Props) {
     <div className="flex flex-col h-full overflow-hidden">
       {/* 사진 헤더 */}
       <div className="relative h-48 flex-shrink-0">
-        {photoError ? (
-          <div className="w-full h-full bg-zinc-100 flex items-center justify-center">
-            <Camera size={32} className="text-zinc-400" weight="regular" />
-          </div>
-        ) : (
-          <img
-            src={imgSrc}
-            alt=""
-            className="w-full h-full object-cover"
-            onError={() => setPhotoError(true)}
-          />
-        )}
+        <ImageWithFallback
+          src={imgSrc}
+          containerClassName="w-full h-full bg-zinc-100 flex items-center justify-center"
+          iconSize={32}
+          iconClassName="text-zinc-400"
+        />
 
         {/* 하단 그라데이션 */}
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent pointer-events-none" />
