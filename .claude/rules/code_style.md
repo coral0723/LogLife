@@ -4,6 +4,11 @@ description: 코드 스타일 규칙 (전역)
 
 # Code Style
 
+## 타입 선언
+
+- 객체 타입 선언 키워드는 `interface`가 아닌 `type`을 사용한다.
+  - 예: `type Props = { ... }`
+
 ## 네이밍
 
 - **컴포넌트 파일·식별자**: PascalCase

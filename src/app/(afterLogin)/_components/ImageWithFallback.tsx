@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { Camera } from "@phosphor-icons/react";
 
-interface Props {
+type Props = {
   src: string;
   alt?: string;
   containerClassName: string;
   iconSize: number;
   iconClassName: string;
-}
+};
 
 export function ImageWithFallback({
   src,
