@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CaretDown } from "@phosphor-icons/react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
+import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketList/bucketStatus";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
 import { BucketDetailView } from "./BucketDetailView";
 import {

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { bucketQueryKeys } from "@/api/bucketlists";
-import { getBucketByShareToken } from "@/lib/getBucketByShareToken";
+import { getBucketByShareToken } from "@/lib/bucketList/getBucketByShareToken";
 import { ModalDetailClient } from "./_components/ModalDetailClient";
 
 export default async function BucketModalPage(

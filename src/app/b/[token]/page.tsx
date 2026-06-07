@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 import { bucketQueryKeys } from "@/api/bucketlists";
-import { getBucketByShareToken } from "@/lib/getBucketByShareToken";
+import { getBucketByShareToken } from "@/lib/bucketList/getBucketByShareToken";
 import { getPlacePhotoUrl } from "@/lib/getPlacePhotoUrl";
 import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
 import { StarField } from "@/app/(afterLogin)/main/_components/StarField";

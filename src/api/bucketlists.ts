@@ -1,4 +1,4 @@
-import type { Visibility } from "@/lib/bucketStatus";
+import type { Visibility } from "@/lib/bucketList/bucketStatus";
 
 export type BucketListItem = {
   id: string;
