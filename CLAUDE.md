@@ -78,6 +78,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - 테스트 작성/수정 시 → [testing_guide.md](.claude/rules/testing_guide.md)
 - auth / api / .env 만질 때 → [security.md](.claude/rules/security.md)
 - 배포 / next.config / Vercel 관련 → [deploy.md](.claude/rules/deploy.md)
+- 라우트/페이지(page/layout/route.ts) 작성 시 → [nextjs16.md](.claude/rules/nextjs16.md)
 
 ### 🟣 AI 작업 흔적 ([.dev/](.dev/))
 - 브랜치 작업 정리 → [work-logs/](.dev/work-logs/)
