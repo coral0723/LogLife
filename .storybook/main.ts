@@ -8,7 +8,6 @@ const dirname =
 
 const config: StorybookConfig = {
   "stories": [
-    "../src/stories/**/*.mdx",
     "../src/stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
   "addons": [
@@ -26,7 +25,7 @@ const config: StorybookConfig = {
     mergeConfig(viteConfig, {
       resolve: {
         alias: {
-          '@/lib/bucketList/actions': path.resolve(dirname, './mocks/bucketListActions.ts'),
+          '@/actions/bucketList/actions': path.resolve(dirname, './mocks/bucketListActions.ts'),
         },
       },
     }),
