@@ -8,7 +8,7 @@ import {
   type NormalizedPlace,
 } from "@/app/(afterLogin)/_components/PlacesAutocomplete";
 
-import { createBucketList } from "./actions";
+import { createBucketList } from "@/actions/bucketList/actions";
 
 type Visibility = "PRIVATE" | "FRIENDS" | "PUBLIC";
 

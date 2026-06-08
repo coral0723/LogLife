@@ -1,3 +1,5 @@
+import RQProviders from "./_components/RQProviders";
+
 export default function AfterLoginLayout({
   children,
   modal,
@@ -6,9 +8,9 @@ export default function AfterLoginLayout({
   modal: React.ReactNode;
 }) {
   return (
-    <>
+    <RQProviders>
       {modal}
       {children}
-    </>
+    </RQProviders>
   );
 }

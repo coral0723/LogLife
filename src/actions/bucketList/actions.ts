@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { auth } from "@/auth";
@@ -25,8 +25,6 @@ const bucketListInputSchema = z.object({
 
 export type BucketListInput = z.infer<typeof bucketListInputSchema>;
 
-const bucketListTag = (userId: string) => `bucketlist:user:${userId}`;
-
 async function requireUserId(): Promise<string> {
   const session = await auth();
   const userId = session?.user?.id;
@@ -41,7 +39,6 @@ export async function createBucketList(input: BucketListInput) {
     data: { ...data, userId },
     select: { id: true, shareToken: true },
   });
-  updateTag(bucketListTag(userId));
   revalidatePath("/main");
   return created;
 }
@@ -56,7 +53,6 @@ export async function updateBucketList(id: string, input: BucketListInput) {
   if (result.count === 0) {
     throw new Error("수정할 버킷리스트를 찾을 수 없습니다.");
   }
-  updateTag(bucketListTag(userId));
   revalidatePath("/main");
 }
 
@@ -68,8 +64,21 @@ export async function deleteBucketList(id: string) {
   if (result.count === 0) {
     throw new Error("삭제할 버킷리스트를 찾을 수 없습니다.");
   }
-  updateTag(bucketListTag(userId));
   revalidatePath("/main");
+}
+
+export async function updateDeadline(id: string, deadlineAt: Date | null) {
+  const userId = await requireUserId();
+  const parsed = z.coerce.date().nullable().parse(deadlineAt);
+  const result = await prisma.bucketList.updateMany({
+    where: { id, userId },
+    data: { deadlineAt: parsed },
+  });
+  if (result.count === 0) {
+    throw new Error("수정할 버킷리스트를 찾을 수 없습니다.");
+  }
+  revalidatePath("/main");
+  return { deadlineAt: parsed };
 }
 
 export async function toggleAchieved(id: string) {
@@ -89,7 +98,6 @@ export async function toggleAchieved(id: string) {
       achievedAt: nextAchieved ? new Date() : null,
     },
   });
-  updateTag(bucketListTag(userId));
   revalidatePath("/main");
   return { achieved: nextAchieved };
 }

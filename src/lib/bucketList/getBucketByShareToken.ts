@@ -4,7 +4,7 @@ import type { BucketDetail } from "@/api/bucketlists";
 // shareToken으로 조회. 없으면 null, visibility 판단은 호출자가 담당
 export async function getBucketByShareToken(
   token: string,
-): Promise<BucketDetail | null> {
+): Promise<(BucketDetail & { userId: string }) | null> {
   const item = await prisma.bucketList.findUnique({
     where: { shareToken: token },
     select: {
@@ -21,6 +21,7 @@ export async function getBucketByShareToken(
       displayName: true,
       countryCode: true,
       shareToken: true,
+      userId: true,
     },
   });
   if (!item) return null;

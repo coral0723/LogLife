@@ -2,8 +2,9 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
+import { auth } from "@/auth";
 import { bucketQueryKeys } from "@/api/bucketlists";
-import { getBucketByShareToken } from "@/lib/getBucketByShareToken";
+import { getBucketByShareToken } from "@/lib/bucketList/getBucketByShareToken";
 import { getPlacePhotoUrl } from "@/lib/getPlacePhotoUrl";
 import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
 import { StarField } from "@/app/(afterLogin)/main/_components/StarField";
@@ -29,8 +30,14 @@ export default async function BucketSharePage(
     );
   }
 
+  const session = await auth();
+  const isOwner = session?.user?.id === item.userId;
+
+  // userId는 서버 전용 — 클라이언트(setQueryData)로 직렬화되지 않도록 제거
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { userId, ...detail } = item;
   const queryClient = new QueryClient();
-  queryClient.setQueryData(bucketQueryKeys.detail(item.id), item);
+  queryClient.setQueryData(bucketQueryKeys.detail(detail.id), detail);
   const state = dehydrate(queryClient);
   const photoSrc = await getPlacePhotoUrl(item.placeId);
 
@@ -39,7 +46,7 @@ export default async function BucketSharePage(
       <StarField />
       <div className="relative z-10 w-full max-w-md h-[85vh] rounded-t-3xl bg-white overflow-hidden flex flex-col">
         <HydrationBoundary state={state}>
-          <BucketDetailView bucketId={item.id} photoSrc={photoSrc ?? undefined} />
+          <BucketDetailView bucketId={item.id} photoSrc={photoSrc ?? undefined} isOwner={isOwner} />
         </HydrationBoundary>
       </div>
     </main>
