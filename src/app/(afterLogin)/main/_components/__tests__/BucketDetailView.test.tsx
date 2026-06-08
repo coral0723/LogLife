@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BucketDetailView } from "../BucketDetailView";
-import { toggleAchieved, updateDeadline } from "@/lib/bucketList/actions";
+import { toggleAchieved, updateDeadline } from "@/actions/bucketList/actions";
 import type { BucketDetail } from "@/api/bucketlists";
 
 const mockToggleAchieved = vi.mocked(toggleAchieved);
@@ -16,7 +16,7 @@ vi.mock("@/api/bucketlists", () => ({
   },
 }));
 
-vi.mock("@/lib/bucketList/actions", () => ({
+vi.mock("@/actions/bucketList/actions", () => ({
   toggleAchieved: vi.fn(),
   updateDeadline: vi.fn(),
 }));

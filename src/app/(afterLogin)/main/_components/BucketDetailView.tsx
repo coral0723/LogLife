@@ -10,7 +10,7 @@ import {
 import { useQuery, useQueryClient, type InfiniteData } from "@tanstack/react-query";
 
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketList/bucketStatus";
-import { toggleAchieved, updateDeadline } from "@/lib/bucketList/actions";
+import { toggleAchieved, updateDeadline } from "@/actions/bucketList/actions";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
 import {
   fetchBucketDetail,
