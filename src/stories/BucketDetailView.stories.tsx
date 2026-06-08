@@ -24,7 +24,7 @@ const BASE: BucketDetail = {
 
 // 스토리별로 QueryClient 캐시에 detail을 주입하는 데코레이터
 function withQueryCache(detail: BucketDetail) {
-  return (Story: React.ComponentType) => {
+  return function QueryCacheDecorator(Story: React.ComponentType) {
     const qc = new QueryClient({
       defaultOptions: { queries: { staleTime: Infinity, retry: false } },
     });

@@ -27,6 +27,7 @@ interface Props {
 
 export function CountrySlidePanel({ countryCode, onClose }: Props) {
   const [view, setView] = useState<View>({ kind: "list" });
+  const [prevCountryCode, setPrevCountryCode] = useState(countryCode);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -56,9 +57,10 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
     }
   }, [countryCode]);
 
-  useEffect(() => {
+  if (countryCode !== prevCountryCode) {
+    setPrevCountryCode(countryCode);
     setView({ kind: "list" });
-  }, [countryCode]);
+  }
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
