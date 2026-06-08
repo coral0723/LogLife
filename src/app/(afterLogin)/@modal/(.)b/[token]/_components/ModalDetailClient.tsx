@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
 
-interface Props {
+type Props = {
   bucketId: string;
   isOwner?: boolean;
 }
