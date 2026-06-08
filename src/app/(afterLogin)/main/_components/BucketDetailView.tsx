@@ -19,12 +19,12 @@ import {
   type BucketsByCountryPage,
 } from "@/api/bucketlists";
 
-interface Props {
+type Props = {
   bucketId: string;
   onBack?: () => void;
   photoSrc?: string;
   isOwner?: boolean;
-}
+};
 
 type Toast = { message: string; onUndo?: () => void };
 
