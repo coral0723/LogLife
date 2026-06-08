@@ -81,10 +81,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - 라우트/페이지(page/layout/route.ts) 작성 시 → [nextjs16.md](.claude/rules/nextjs16.md)
 
 ### 🟣 AI 작업 흔적 ([.dev/](.dev/))
-- 브랜치 작업 정리 → [work-logs/](.dev/work-logs/)
-- 새로 알게 된 패턴 / 주의점 → [learnings/](.dev/learnings/)
-- 오류 · 재현 기록 → [troubleshooting/](.dev/troubleshooting/)
-- 임시 메모 → [scratchpad/](.dev/scratchpad/)
+- 여러 커밋 · 복잡한 호출 관계가 얽힌 큰 기능의 구조 정리 → [work-logs/](.dev/work-logs/) (작은 브랜치는 PR 본문 + `/changelog`로 충분, 굳이 작성하지 않음)
+- 새로 알게 된 패턴 · 주의점 · 재현하기 까다로웠던 오류 기록 → [learnings/](.dev/learnings/)
+- 작업 중 임시 메모 (작업 종료 후 삭제 — 비어있는 게 정상 상태) → [scratchpad/](.dev/scratchpad/)
 
 ## 산출물 / 검증
 - 빌드: `pnpm build`, 결과 `.next/` (정적 export 시 `out/`)
