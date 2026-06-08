@@ -20,10 +20,10 @@ type View =
   | { kind: "loadingDetail"; itemId: string }
   | { kind: "detail"; itemId: string };
 
-interface Props {
+type Props = {
   countryCode: string | null;
   onClose: () => void;
-}
+};
 
 export function CountrySlidePanel({ countryCode, onClose }: Props) {
   const [view, setView] = useState<View>({ kind: "list" });
