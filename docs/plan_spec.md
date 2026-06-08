@@ -39,6 +39,8 @@
 | 서버 | 패키지 | 용도 |
 |---|---|---|
 | context7 | `@upstash/context7-mcp` | Next.js 16 / Prisma 7 / React 19 최신 공식 문서 실시간 조회 |
+| playwright | `@playwright/mcp` | 브라우저 자동화 — E2E/시각 확인 |
+| notionApi | `@notionhq/notion-mcp-server` | Notion DB 연동 — changelog/sessionlog 등 |
 
 > 설정 파일: `.mcp.json` (프로젝트 루트). 추후 Playwright MCP, GitHub MCP 추가 예정.
 
@@ -54,7 +56,7 @@
 |---|---|---|---|
 | AD-01 | Globe LOD 전환 | **나라 단위 고정** | 줌 레벨 무관하게 나라별 핀 하나만 표시. 줌 기반 전환은 구현 복잡도 대비 UX 이득이 불확실하여 제외 |
 | AD-02 | 마커 클러스터링 | **country_code 기반** | 나라당 핀 1개. `GROUP BY countryCode`. 핀에 해당 나라의 버킷리스트 개수 표시 |
-| AD-03 | 위치 데이터 모델 | **place_id + 좌표 + 정규화된 행정 계층** | 클러스터링/통계/필터 인덱스 가능, Places API 재호출 최소화 |
+| AD-03 | 위치 데이터 모델 | **place_id + 좌표 + countryCode + displayName** | 나라 단위 클러스터링(AD-01/AD-02)에 맞춰 행정 계층(시/구/동) 정규화는 제외. Places API 재호출 최소화 + 클러스터링/필터 인덱스 가능 |
 | AD-04 | Places 사진 | **서버 API route 프록시 + Next Image 캐시** | `/api/places/photo?ref=...` 응답을 Next Image가 자동 캐시. ToS 준수 + 추가 비용 0 |
 | AD-05 | 인증/세션 | **NextAuth v5 + Prisma Adapter + JWT session** | PWA 장기 로그인, OAuth 전용 → 강제 로그아웃 시나리오 거의 없음. 추후 `tokenVersion` 패턴으로 semi-stateful 확장 가능 |
 | AD-06 | 친구 관계 | **양방향 friend (request → accept)** | 비공개 컨텐츠 + "인생 경험 아카이브" 성격에 정합 |
@@ -62,7 +64,7 @@
 | AD-08 | 공유 URL | **`/u/[username]` + `/b/[token]`** | 사용자 페이지는 SEO 유리한 username 경로, 개별 버킷리스트는 추측 불가 토큰 (link-only 공유 겸용) |
 | AD-09 | 버킷리스트 상태 | **`achieved` boolean + `achievedAt` timestamp** | 단순. `achievedAt - createdAt`으로 모든 통계 처리. 만료 판정은 UTC 자정 기준(`new Date(new Date().setUTCHours(0,0,0,0))`)으로 수행하여 타임존 편차를 방지 |
 | AD-10 | 달성 처리 UX | **토글 즉시 달성 + 축하 팝업** | 마찰 최소화. 사진 업로드/소감은 v1 제외 (비용·복잡도) |
-| AD-11 | 공유 페이지 렌더링 | **Server Component + Server Action + `updateTag` / `revalidateTag(tag, 'max')`** | Next 16에서 `revalidateTag`는 2번째 인자(cacheLife profile) 필수. 본인 변경(달성 토글·CRUD)은 즉시 반영이 중요 → Server Action 안에서 `updateTag`(read-your-own-writes). 친구·공개 데이터는 `revalidateTag(tag, 'max')`로 stale-while-revalidate. tag 미부여 라우트는 `revalidatePath` fallback |
+| AD-11 | 공유/본인 데이터 캐싱 | **TanStack Query Hydration + Server Action `revalidatePath`** | Next 캐시 태그(`updateTag`/`revalidateTag`) 대신 클라이언트 캐싱은 TanStack Query(`dehydrate`/`HydrationBoundary`, `/b/[token]` 참고)로, 본인 변경(달성 토글·CRUD) 후 SSR 갱신은 Server Action의 `revalidatePath`(`src/actions/bucketList/actions.ts`)로 처리. 캐시 메커니즘을 하나로 통일해 학습 곡선·일관성 확보 |
 | AD-12 | 통계 집계 | **매 요청 Prisma aggregate** | 개인 단위 소규모 데이터셋. 조기 최적화 회피, 추후 materialized view 이행 가능 |
 | AD-13 | 카드 라우팅 | **메인 globe: 슬라이드업 패널 / 기타: Parallel + Intercepting Routes** | 메인 globe 핀 클릭은 슬라이드업 패널(목록→상세 인라인 전환). 프로필·사용자 페이지 카드 클릭은 `(.)b/[id]` 인터셉트 + `@modal` 슬롯 + `/b/[token]` 풀페이지 fallback. **Next 16**: 모든 parallel slot에 `default.js` 의무(`app/(app)/@modal/default.tsx`에서 `null` 반환). 없으면 빌드 실패 |
 | AD-14 | 위치 검색 UX | **Places Autocomplete only (지도 클릭 X)** | 비용 절감 (session token으로 single transaction 과금). 미세 위치는 본문 텍스트로 보완 |
@@ -102,9 +104,9 @@
 - `excitement` (Int 1–5)
 - `achieved` (Boolean, default false)
 - `achievedAt` (DateTime?)
-- **위치 필드** — `placeId`, `lat`, `lng`, `countryCode`, `admin1Code`, `cityName`, `displayName`
+- **위치 필드** — `placeId`, `lat`, `lng`, `countryCode`, `displayName`
 - `createdAt`, `updatedAt`
-- 인덱스: `(userId, achieved)`, `(countryCode, admin1Code, cityName)`, `(visibility)`
+- 인덱스: `(userId, achieved)`, `(placeId)`, `(visibility)`
 
 ### (선택) `Place`
 - `placeId` 기준 비정규화 캐시. v1에서는 BucketList에 inline해도 충분.
@@ -150,11 +152,8 @@ src/app/
 > 도메인·기능 단위 서브폴더 분리(예: `_components/nav/`, `_components/globe/`,
 > `src/lib/bucketlist/`, `src/lib/user/`)를 검토한다.
 
-> **Next 16 라우트 작성 규칙 (모든 page/layout에 공통 적용)**
-> - `params`, `searchParams`, `cookies()`, `headers()` 전부 **async** → 반드시 `await`. 동기 접근 제거됨.
-> - 페이지 컴포넌트는 `async function Page(props: PageProps<'/u/[username]'>) { const { username } = await props.params }` 패턴 사용.
-> - `PageProps` / `LayoutProps` / `RouteContext` 헬퍼는 `next dev` 또는 `next typegen` 실행 시 전역 생성됨 → import 불필요.
-> - 미들웨어 대신 **`proxy.ts`** 사용 (`middleware` 파일·named export 모두 deprecated). proxy 런타임은 nodejs 고정 (edge 불가). NextAuth v5 미들웨어 사용 시 edge 패턴 제약 확인.
+> **Next 16 라우트 작성 규칙**
+> 모든 page/layout 작성 시 공통 적용 규칙·체크리스트는 [`.claude/rules/nextjs16.md`](../.claude/rules/nextjs16.md) 참고.
 
 ## 6. 페이지별 사양 요약
 
@@ -162,9 +161,6 @@ src/app/
 - 정중앙 react-globe.gl (html-markers, 어두운 단색 배경)
 - 본인의 모든 버킷리스트 핀 (visibility 무관)
 - **나라별 핀 하나** — 핀에 해당 나라의 버킷리스트 개수 표시 (AD-01, AD-02)
-
-> **구현 상태**: feat/5(작업순서 3번)에서는 팝업 카드(고정 위치, 나라 코드·개수·달성 수만 표시)로 임시 구현됨.
-> 슬라이드업 패널(목록→상세 전환)은 작업순서 4번(카드 인터셉팅 라우트)에서 완성한다.
 
 - 핀 클릭 → **슬라이드업 패널** (아래에서 위로 올라옴):
   1. 해당 나라의 버킷리스트 목록
@@ -198,7 +194,7 @@ src/app/
   - `SELECT … FROM BucketList me JOIN BucketList fr ON me.placeId = fr.placeId WHERE me.userId = :me AND fr.userId IN (:friendIds) AND fr.visibility IN ('FRIENDS','PUBLIC')`
 - **위젯 2 — 친구들의 핫 플레이스 Top 5**
   - 친구들이 가장 많이 등록한 도시/국가 랭킹
-  - `GROUP BY (countryCode, admin1Code, cityName) ORDER BY COUNT(*) DESC LIMIT 5`
+  - `GROUP BY (countryCode, displayName) ORDER BY COUNT(*) DESC LIMIT 5`
 - **위젯 3 — 함께 달성 모먼트**
   - 같은 `placeId`를 비슷한 시기(±30일)에 달성한 친구와 묶어서 표시
   - 정서 컨텍스트("이 시점에 친구 ㅇㅇ도 같은 곳에 있었어요")
@@ -284,7 +280,6 @@ src/app/
 - 랜딩: 정적 SSG + 메타
 
 ### 성능 목표
-- Globe 한 화면 마커 ≤ 200개 (클러스터링으로 강제)
 - 카드 모달: 인터셉팅 라우트로 prefetch
 - 이미지: Next Image (avif, `sizes` 지정)
 
@@ -297,10 +292,10 @@ src/app/
 
 ## 10. 작업 순서 제안
 
-✅ 1. 인증 + 데이터 모델 + Prisma 마이그레이션 (NextAuth v5 + Google 우선)
-✅ 2. 버킷리스트 CRUD + 작성 페이지 (Places Autocomplete + Place Details)
-✅ 3. 메인 globe 페이지 — 핀 표시 + 팝업 카드 임시 구현 (슬라이드업 패널은 4번에서 완성)
-4. 카드 인터셉팅 라우트 (`@modal/(.)b/[token]` + 풀페이지 fallback + 슬라이드업 패널 완성)
+ 1. 인증 + 데이터 모델 + Prisma 마이그레이션 (NextAuth v5 + Google 우선) ✅
+ 2. 버킷리스트 CRUD + 작성 페이지 (Places Autocomplete + Place Details) ✅
+ 3. 메인 globe 페이지 — 핀 표시 + 팝업 카드 임시 구현 (슬라이드업 패널은 4번에서 완성) ✅
+4. 카드 인터셉팅 라우트 (`@modal/(.)b/[token]` + 풀페이지 fallback + 슬라이드업 패널 완성) ✅
 5. 프로필 페이지 대시보드 (Prisma aggregate)
 6. 친구 시스템 (request / accept) + 친구 리스트 UI
 7. 친구 페이지 위젯 — 검색/정렬, 공통 매칭, 핫 플레이스 Top 5, 함께 달성 모먼트
@@ -312,11 +307,11 @@ src/app/
 
 ## 11. Next.js 16 주의사항 (AGENTS.md 지침)
 
-Next.js 16은 **breaking changes 다수**. 실제 코드 작성 전 **context7 MCP**로 관련 가이드 확인 필수 (`.mcp.json` 설정됨 — `node_modules/next/dist/docs/` 대체).
+Next.js 16은 **breaking changes 다수**.
 
 본 스펙이 가정한 Next 16 API들:
 - App Router의 **Parallel + Intercepting Routes** (`@modal`, `(.)`/`(..)` 규칙)
-- Server Components + Server Actions + `updateTag` / `revalidateTag(tag, profile)`
+- Server Components + Server Actions + `revalidatePath` / TanStack Query Hydration (AD-11)
 - `next/image` 캐싱 동작
 - NextAuth v5 (beta) 통합
 
@@ -325,8 +320,8 @@ Next.js 16은 **breaking changes 다수**. 실제 코드 작성 전 **context7 M
 | 영역 | v15 → v16 변화 | LogLife 영향 |
 |---|---|---|
 | Async Request APIs | `params`, `searchParams`, `cookies()`, `headers()`, `draftMode()` 동기 접근 **완전 제거** | 모든 page/layout/route handler에서 `await` 적용. `PageProps<'/u/[username]'>` 헬퍼 사용 |
-| `revalidateTag` 시그니처 | 2번째 인자(cacheLife profile) **필수** | `revalidateTag('friend-feed', 'max')` 형태로 호출 |
-| `updateTag` (신규) | Server Action 전용, 즉시 만료 = read-your-own-writes | 버킷리스트 작성/달성 토글 등 본인 변경에 사용 (AD-11) |
+| `revalidateTag` 시그니처 | 2번째 인자(cacheLife profile) **필수** | LogLife는 미채택 (AD-11 — `revalidatePath` + TanStack Query Hydration 사용) |
+| `updateTag` (신규) | Server Action 전용, 즉시 만료 = read-your-own-writes | LogLife는 미채택 (AD-11 — `revalidatePath` + TanStack Query Hydration 사용) |
 | `refresh()` (신규) | Server Action 안에서 클라이언트 라우터 새로고침 | 알림 카운트 등 곁가지 갱신 |
 | Parallel slots `default.js` | 모든 slot에 의무화. 없으면 빌드 실패 | `app/(app)/@modal/default.tsx` 필수 (AD-13) |
 | `middleware` → `proxy` | 파일·named export 모두 rename. **proxy 런타임 nodejs 고정 (edge 불가)** | NextAuth v5 미들웨어 사용 시 edge 패턴 검토 |
@@ -351,15 +346,7 @@ Next.js 16은 **breaking changes 다수**. 실제 코드 작성 전 **context7 M
 - NextAuth v5 + Prisma 학습 곡선이 이미 있음. 캐시 모델까지 신규 도입은 위험
 - 1차 배포 후 globe·랜딩 같은 정적/캐시 가능 영역이 확장되면 마이그레이션 가이드(`migrating-to-cache-components.md`) 따라 전환
 
-### 11.3 작성 패턴 체크리스트
-
-코드 작성 전마다 확인:
-- [ ] page/layout 컴포넌트는 `async` + `await props.params` / `await props.searchParams`
-- [ ] `cookies()` / `headers()` 호출 시 `await`
-- [ ] Server Action에서 본인 변경은 `updateTag`, 친구·공개 데이터 갱신은 `revalidateTag(tag, 'max')`
-- [ ] 새로 추가하는 parallel slot에는 `default.tsx` 동봉
-- [ ] 미들웨어 필요 시 `proxy.ts`로 작성 (edge 런타임 의존성 점검)
-- [ ] 이미지 quality 75 외 값 사용 시 `next.config.images.qualities` 추가
+> 코드 작성 시 확인할 라우트 작성 체크리스트는 [`.claude/rules/nextjs16.md`](../.claude/rules/nextjs16.md) 참고.
 
 ## 12. 미결 / 추후 결정 사항
 
