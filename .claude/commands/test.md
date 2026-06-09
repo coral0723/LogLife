@@ -23,38 +23,22 @@ description: 컴포넌트 또는 lib 함수의 단위 테스트 작성 (케이�
    - 대상 파일이 lib 함수(`*.ts`)이면 `src/lib/__tests__/<파일명>.test.ts` 존재 여부 확인.
    - 기존 테스트가 있으면 내용을 읽어 중복 케이스를 피한다.
 
-3. **케이스 목록 수집**
-   - `oh-my-claudecode:test-engineer` 에이전트에 대상 파일 내용과 힌트 케이스를 전달해 코드 분석 및 케이스 도출을 위임한다.
-   - 사용자가 힌트 케이스를 줬다면 해당 케이스를 "필수"로 먼저 목록에 추가한다.
-   - 코드를 분석해 추가로 빠진 케이스를 발굴한다 (경계값, 에러/예외, 주요 props 조합 등).
-   - 힌트 케이스 + 분석 케이스를 합친 최종 목록을 구성한다.
+3. **케이스 설계·승인·작성** (test-engineer 1회 호출)
+   - `oh-my-claudecode:test-engineer` 에이전트에 아래 정보를 전달하고 전체 흐름을 위임한다.
+     - 대상 파일 **경로** (내용은 에이전트가 직접 Read)
+     - 힌트 케이스 목록 (있는 경우)
+     - 저장 경로
+     - 아래 "케이스 작성 기준" 전문
+   - 에이전트 내부 처리 순서:
+     1. 대상 파일 Read → 힌트 케이스 + 코드 분석으로 케이스 목록 도출
+     2. `AskUserQuestion`으로 사용자 승인 요청 (`Yes` / `No`)
+     3. **No** → "취소합니다." 출력 후 종료
+     4. **Yes** → 파일 작성
+        - 저장 위치: 컴포넌트(`_components/` 안) → `<컴포넌트 폴더>/__tests__/<파일명>.test.tsx` / lib 함수 → `src/lib/__tests__/<파일명>.test.ts`
+        - 기존 테스트 있으면 추가(Edit), 없으면 신규 생성(Write)
+        - testing_guide.md 금지 사항 준수 (`Date`/`Math.random` 직접 사용 금지, `console.log` 잔존 금지, 외부 API 실제 호출 금지)
 
-4. **케이스 승인 요청**
-   - `AskUserQuestion` 도구로 묻기:
-     - question: `다음 케이스로 테스트를 작성할까요?`
-     - header: `테스트 케이스`
-     - options:
-       - `Yes` — 이 케이스 목록으로 테스트 파일 작성
-       - `No` — 취소
-     - multiSelect: false
-   - question 본문에 제안 케이스를 번호 목록으로 포함한다.
-
-5. **분기 처리** ← AskUserQuestion 응답을 받은 즉시 이 단계를 반드시 실행한다.
-   - **No**: "취소합니다." 한 문장만 출력 후 종료. 이유를 묻지 말 것.
-   - **Yes**: 6단계로 진행.
-
-6. **테스트 파일 작성**
-   - `oh-my-claudecode:test-engineer` 에이전트에 승인된 케이스 목록, 대상 파일 내용, 저장 경로를 전달해 파일 작성을 위임한다.
-   - 저장 위치 결정:
-     - 컴포넌트 (`_components/` 안): `<컴포넌트 폴더>/__tests__/<파일명>.test.tsx`
-     - lib 함수: `src/lib/__tests__/<파일명>.test.ts`
-   - 기존 테스트가 있으면 새 케이스를 기존 파일에 추가(Edit), 없으면 새 파일 생성(Write).
-   - testing_guide.md 금지 사항 준수:
-     - `Date`/`Math.random` 직접 사용 금지 → `vi.useFakeTimers()` / 시드 고정
-     - `console.log` 잔존 금지
-     - 외부 API 실제 호출 금지 → MSW mocking
-
-7. **테스트 실행 및 결과 확인**
+4. **테스트 실행 및 결과 확인**
    - `pnpm test --project unit` 을 run_in_background=false로 실행.
    - 실패 케이스가 있으면 원인 파악 후 즉시 수정, 다시 실행.
    - 전부 통과하면 통과 케이스 수만 한 줄로 출력.
