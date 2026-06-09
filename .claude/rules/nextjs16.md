@@ -1,3 +1,10 @@
+---
+description: Next.js 16 App Router 라우트 작성 규칙
+globs:
+  - "app/**/*.ts"
+  - "app/**/*.tsx"
+---
+
 # Next.js 16 라우트 작성 규칙
 
 ## 공통 적용 (모든 page/layout)
