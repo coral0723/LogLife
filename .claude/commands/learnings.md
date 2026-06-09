@@ -75,13 +75,13 @@ description: 세션에서 배운 점을 .dev/learnings/에 기록하고 .claude/
 
 ### 6-A. Yes 선택 시
 
-1. `Write` 도구로 `.dev/learnings/YYYY-MM-DD_{topic}.md` 저장
+1. `Write` 도구로 `.dev/learnings/YYYY-MM-DD_{snake_case_topic}.md` 저장
 2. `Edit` 도구로 해당 `.claude/rules/*.md` 파일 끝에 컴팩트 요약 append
 3. 아래 메시지 출력
 
 ```
 저장 완료.
-- .dev/learnings/YYYY-MM-DD_{topic}.md
+- .dev/learnings/YYYY-MM-DD_{snake_case_topic}.md
 - .claude/rules/{파일명}.md (컴팩트 요약 추가)
 
 git commit 후 다른 기기에서 git pull 하면 동기화됩니다.
