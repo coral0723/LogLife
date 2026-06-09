@@ -20,7 +20,7 @@ description: 컴포넌트 또는 lib 함수의 단위 테스트 작성 (케이�
 
 2. **기존 테스트 확인**
    - 대상 파일이 컴포넌트(`*.tsx`)이면 같은 폴더의 `__tests__/<파일명>.test.tsx` 존재 여부 확인.
-   - 대상 파일이 lib 함수(`*.ts`)이면 `src/lib/__tests__/<파일명>.test.ts` 존재 여부 확인.
+   - 대상 파일이 lib 함수(`*.ts`)이면 `src/lib/{카테고리}/__tests__/<파일명>.test.ts` 존재 여부 확인.
    - 기존 테스트가 있으면 내용을 읽어 중복 케이스를 피한다.
 
 3. **케이스 설계·승인·작성** (test-engineer 1회 호출)
@@ -34,7 +34,7 @@ description: 컴포넌트 또는 lib 함수의 단위 테스트 작성 (케이�
      2. `AskUserQuestion`으로 사용자 승인 요청 (`Yes` / `No`)
      3. **No** → "취소합니다." 출력 후 종료
      4. **Yes** → 파일 작성
-        - 저장 위치: 컴포넌트(`_components/` 안) → `<컴포넌트 폴더>/__tests__/<파일명>.test.tsx` / lib 함수 → `src/lib/__tests__/<파일명>.test.ts`
+        - 저장 위치: 컴포넌트(`_components/` 안) → `<컴포넌트 폴더>/__tests__/<파일명>.test.tsx` / lib 함수 → `src/lib/{카테고리}/__tests__/<파일명>.test.ts`
         - 기존 테스트 있으면 추가(Edit), 없으면 신규 생성(Write)
         - testing_guide.md 금지 사항 준수 (`Date`/`Math.random` 직접 사용 금지, `console.log` 잔존 금지, 외부 API 실제 호출 금지)
 
