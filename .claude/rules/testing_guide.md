@@ -21,9 +21,9 @@ globs:
 
 ## 작성 규칙
 
-- 테스트 파일 위치:
-  - 컴포넌트 테스트: 컴포넌트가 모인 폴더 안 `__tests__/` 서브폴더. 단독 파일이면 co-location(`*.test.tsx`) 허용.
-  - lib 함수 테스트: `src/lib/__tests__/`
+- 테스트 파일 위치 원칙: **`__tests__/` 폴더는 항상 대상 파일과 같은 폴더 내**에 위치
+  - 컴포넌트 테스트: `_components/__tests__/` (예: `main/_components/__tests__/MyCard.test.tsx`)
+  - lib 함수 테스트: `src/lib/{카테고리}/__tests__/` (예: `src/lib/bucketList/__tests__/bucketStatus.test.ts`)
   - E2E 시나리오: `tests/e2e/specs/`
   - E2E 인프라(globalSetup/Teardown/auth): `tests/e2e/setup/`
 - Server Action 단위 테스트는 직접 import 호출 (HTTP 라운드트립 X).
