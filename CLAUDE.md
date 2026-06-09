@@ -90,6 +90,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - 빌드: `pnpm build`, 결과 `.next/` (정적 export 시 `out/`)
 - 테스트: `pnpm test` (Vitest) — 인프라는 `tests/`. E2E는 Playwright
 - Lint: `pnpm lint`
+- 장시간 명령(`pnpm build` / `pnpm test` / `pnpm lint`)은 `run_in_background: true`로 실행
 
 ## 영구 금지
 - `git add -A` / `git add .` (민감 파일 우회 위험)
