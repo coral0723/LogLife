@@ -20,10 +20,9 @@ globs:
 - [ ] Vercel 사용량 80% 도달 시 이메일 알림 설정
 - [ ] Supabase 프로젝트 health check ping — GitHub Actions cron (`*/3 * * *`)으로 일시 정지 방지
 - [ ] `next.config`의 `images` 설정에서 `unoptimized` 옵션 사용 금지 (Image Optimization 캐시 보장)
+- [ ] `next.config.images.remotePatterns`에 Google Places photo 프록시 도메인 등록 불필요 (same-origin `/api/places/photo`). 외부 호스트 직접 임베드 시에만 등록 — `images.domains`는 Next 16 deprecated
 - [ ] `images.qualities`에 75 외 값을 쓰는 컴포넌트가 있다면 명시 (Next 16 기본값은 `[75]`만)
 - [ ] `.env`의 API key가 클라이언트 번들에 노출되지 않는지 확인 (`NEXT_PUBLIC_` 없는지)
-
-원본: [`docs/plan_spec.md`](../../docs/plan_spec.md) §7.2
 
 ## 무료 한도 한계 (의식만 — 도달 시 알림)
 

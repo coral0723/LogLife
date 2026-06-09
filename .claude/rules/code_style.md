@@ -1,5 +1,8 @@
 ---
 description: 코드 스타일 규칙 (전역)
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
 ---
 
 # Code Style
@@ -30,6 +33,18 @@ description: 코드 스타일 규칙 (전역)
 - **40줄 초과** 시 분리 검토 (JSX 포함 시 60줄까지 허용).
 - 분리 기준은 "한 함수 = 한 책임". 단순히 줄 수를 줄이려고 의미 없는 헬퍼를 만들지 말 것.
 - Server Action, Route Handler, RSC `page`/`layout`은 본문이 길어지면 도메인 로직을 `lib/` 또는 같은 폴더 내 `actions.ts`/`helpers.ts`로 추출.
+
+## 파일·폴더 구조
+
+- **컴포넌트 위치**: 사용하는 페이지 라우트 폴더 하위 `_components/`에 배치
+  - 예: `app/(afterLogin)/main/_components/MyCard.tsx`
+- **컴포넌트 분리**: 한 파일 안에 컴포넌트가 2개 이상이면 별도 파일로 분리
+- **API 요청 로직**: `src/api/` 폴더에 카테고리별로 배치. 신규 작성 전 기존 파일 확인
+  - 예: `src/api/bucketlists.ts`, `src/api/places.ts`
+- **단순 로직**: `src/lib/` 폴더에 카테고리별로 배치. 신규 작성 전 기존 파일 확인
+  - 예: `src/lib/bucketList/`, `src/lib/username.ts`
+- **api vs lib 구분**: 외부 fetch 호출 → `src/api/`, 순수 유틸·변환 로직 → `src/lib/`
+- **타입 co-location**: 타입은 사용하는 파일·폴더 가까이 정의. 전역 공유 타입만 `src/types/`
 
 ## 일반
 

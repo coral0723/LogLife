@@ -52,6 +52,7 @@ Transform tasks into verifiable goals:
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
 - "Refactor X" → "Ensure tests pass before and after"
+- "Modify component/function" → "Run `pnpm test` after to verify existing tests still pass"
 
 For multi-step tasks, state a brief plan:
 ```
@@ -78,17 +79,19 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - 테스트 작성/수정 시 → [testing_guide.md](.claude/rules/testing_guide.md)
 - auth / api / .env 만질 때 → [security.md](.claude/rules/security.md)
 - 배포 / next.config / Vercel 관련 → [deploy.md](.claude/rules/deploy.md)
+- 라우트/페이지(page/layout/route.ts) 작성 시 → [nextjs16.md](.claude/rules/nextjs16.md)
+- 디버깅·이상 증상 발견 시 → [known_issues.md](.claude/rules/known_issues.md)
 
 ### 🟣 AI 작업 흔적 ([.dev/](.dev/))
-- 브랜치 작업 정리 → [work-logs/](.dev/work-logs/)
-- 새로 알게 된 패턴 / 주의점 → [learnings/](.dev/learnings/)
-- 오류 · 재현 기록 → [troubleshooting/](.dev/troubleshooting/)
-- 임시 메모 → [scratchpad/](.dev/scratchpad/)
+- 여러 커밋 · 복잡한 호출 관계가 얽힌 큰 기능의 구조 정리 → [work-logs/](.dev/work-logs/) (작은 브랜치는 PR 본문 + `/changelog`로 충분, 굳이 작성하지 않음)
+- 새로 알게 된 패턴 · 주의점 · 재현하기 까다로웠던 오류 기록 → [learnings/](.dev/learnings/)
+- 작업 중 임시 메모 (작업 종료 후 삭제 — 비어있는 게 정상 상태) → [scratchpad/](.dev/scratchpad/)
 
 ## 산출물 / 검증
 - 빌드: `pnpm build`, 결과 `.next/` (정적 export 시 `out/`)
 - 테스트: `pnpm test` (Vitest) — 인프라는 `tests/`. E2E는 Playwright
 - Lint: `pnpm lint`
+- 장시간 명령(`pnpm build` / `pnpm test` / `pnpm lint`)은 `run_in_background: true`로 실행
 
 ## 영구 금지
 - `git add -A` / `git add .` (민감 파일 우회 위험)
