@@ -1,5 +1,8 @@
 ---
 description: 코드 스타일 규칙 (전역)
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
 ---
 
 # Code Style
