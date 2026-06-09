@@ -24,8 +24,10 @@ const BASE: BucketDetail = {
 
 // 스토리별로 QueryClient 캐시에 detail을 주입하는 데코레이터
 function withQueryCache(detail: BucketDetail) {
-  return (Story: React.ComponentType) => {
-    const qc = new QueryClient();
+  return function QueryCacheDecorator(Story: React.ComponentType) {
+    const qc = new QueryClient({
+      defaultOptions: { queries: { staleTime: Infinity, retry: false } },
+    });
     qc.setQueryData(["bucketlists", "detail", detail.id], detail);
     return (
       <QueryClientProvider client={qc}>
@@ -33,6 +35,20 @@ function withQueryCache(detail: BucketDetail) {
       </QueryClientProvider>
     );
   };
+}
+
+// 본인 소유 액션 영역(화면 최하단 고정) 위에 클릭 차단용 투명 레이어를 얹는 데코레이터
+// — 클릭 시 toggleAchieved/updateDeadline 서버 액션이 실제 호출되는 것을 막아 디자인 프리뷰만 보여준다
+function withOwnerActionGuard(Story: React.ComponentType) {
+  return (
+    <div style={{ position: "relative", height: "100%" }}>
+      <Story />
+      <div
+        aria-hidden="true"
+        style={{ position: "absolute", inset: "auto 0 0 0", height: "72px", zIndex: 10 }}
+      />
+    </div>
+  );
 }
 
 const meta = {
@@ -56,12 +72,14 @@ const meta = {
         <Story />
       </div>
     ),
+    withOwnerActionGuard,
   ],
   tags: ["autodocs"],
   args: {
     bucketId: BASE.id,
     onBack: () => {},
     photoSrc: "/stories/ramen-demo.jpg",
+    isOwner: true,
   },
   argTypes: {
     bucketId: {
@@ -77,6 +95,11 @@ const meta = {
       control: false,
       description:
         "뒤로가기 버튼 클릭 시 호출되는 콜백. 미전달 시 버튼이 숨겨진다.",
+    },
+    isOwner: {
+      control: "boolean",
+      description:
+        "본인 소유 여부 — true면 화면 하단에 상태 전환 액션(달성 토글 · 마감일 다시 설정)이 노출된다.",
     },
   },
 } satisfies Meta<typeof BucketDetailView>;

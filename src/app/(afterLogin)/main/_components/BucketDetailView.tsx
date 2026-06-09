@@ -1,23 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Camera,
   MapPin,
   ShareNetwork,
 } from "@phosphor-icons/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type InfiniteData } from "@tanstack/react-query";
 
-import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
-import { fetchBucketDetail, bucketQueryKeys } from "@/api/bucketlists";
+import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketList/bucketStatus";
+import { toggleAchieved, updateDeadline } from "@/actions/bucketList/actions";
+import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
+import {
+  fetchBucketDetail,
+  bucketQueryKeys,
+  type BucketDetail,
+  type BucketsByCountryPage,
+} from "@/api/bucketlists";
 
-interface Props {
+type Props = {
   bucketId: string;
   onBack?: () => void;
   photoSrc?: string;
-}
+  isOwner?: boolean;
+};
+
+type Toast = { message: string; onUndo?: () => void };
 
 function DotRating({ value, max = 5 }: { value: number; max?: number }) {
   return (
@@ -40,9 +49,13 @@ const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
   day: "numeric",
 });
 
-export function BucketDetailView({ bucketId, onBack, photoSrc }: Props) {
-  const [photoError, setPhotoError] = useState(false);
+export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }: Props) {
   const [copied, setCopied] = useState(false);
+  const [toast, setToast] = useState<Toast | null>(null);
+  const [resettingDeadline, setResettingDeadline] = useState(false);
+  const [deadlineInput, setDeadlineInput] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
 
   const { data: detail, isError } = useQuery({
     queryKey: bucketQueryKeys.detail(bucketId),
@@ -82,22 +95,76 @@ export function BucketDetailView({ bucketId, onBack, photoSrc }: Props) {
     }
   };
 
+  const showToast = (toast: Toast) => {
+    setToast(toast);
+    setTimeout(() => setToast(null), 2000);
+  };
+
+  const handleToggleAchieved = () => {
+    startTransition(async () => {
+      try {
+        const { achieved } = await toggleAchieved(detail.id);
+        queryClient.setQueryData(
+          bucketQueryKeys.detail(bucketId),
+          (prev?: BucketDetail) =>
+            prev && {
+              ...prev,
+              achieved,
+              achievedAt: achieved ? new Date().toISOString() : null,
+            },
+        );
+        queryClient.setQueryData(
+          bucketQueryKeys.byCountry(detail.countryCode),
+          (prev?: InfiniteData<BucketsByCountryPage>) =>
+            prev && {
+              ...prev,
+              pages: prev.pages.map((page) => ({
+                ...page,
+                items: page.items.map((item) =>
+                  item.id === bucketId ? { ...item, achieved } : item,
+                ),
+              })),
+            },
+        );
+        showToast({
+          message: achieved ? "달성으로 표시했어요." : "달성을 취소했어요.",
+          onUndo: handleToggleAchieved,
+        });
+      } catch (e) {
+        alert(e instanceof Error ? e.message : "처리 중 오류가 발생했습니다.");
+      }
+    });
+  };
+
+  const handleUpdateDeadline = () => {
+    if (!deadlineInput) return;
+    startTransition(async () => {
+      try {
+        const { deadlineAt } = await updateDeadline(detail.id, new Date(deadlineInput));
+        queryClient.setQueryData(
+          bucketQueryKeys.detail(bucketId),
+          (prev?: BucketDetail) =>
+            prev && { ...prev, deadlineAt: deadlineAt?.toISOString() ?? null },
+        );
+        setResettingDeadline(false);
+        setDeadlineInput("");
+        showToast({ message: "마감일을 다시 설정했어요. 진행 중으로 전환됩니다." });
+      } catch (e) {
+        alert(e instanceof Error ? e.message : "처리 중 오류가 발생했습니다.");
+      }
+    });
+  };
+
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="relative flex flex-col h-full overflow-hidden">
       {/* 사진 헤더 */}
       <div className="relative h-48 flex-shrink-0">
-        {photoError ? (
-          <div className="w-full h-full bg-zinc-100 flex items-center justify-center">
-            <Camera size={32} className="text-zinc-400" weight="regular" />
-          </div>
-        ) : (
-          <img
-            src={imgSrc}
-            alt=""
-            className="w-full h-full object-cover"
-            onError={() => setPhotoError(true)}
-          />
-        )}
+        <ImageWithFallback
+          src={imgSrc}
+          containerClassName="w-full h-full bg-zinc-100 flex items-center justify-center"
+          iconSize={32}
+          iconClassName="text-zinc-400"
+        />
 
         {/* 하단 그라데이션 */}
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent pointer-events-none" />
@@ -208,6 +275,86 @@ export function BucketDetailView({ bucketId, onBack, photoSrc }: Props) {
           </p>
         )}
       </div>
+
+      {/* 본인 소유 — 상태 전환 액션 */}
+      {isOwner && (
+        <div className="relative flex-shrink-0 border-t border-zinc-100 bg-white px-5 py-3">
+          {/* 토스트 — 되돌리기 액션 포함 */}
+          {toast && (
+            <div className="absolute inset-x-4 bottom-full mb-3 z-20 flex items-center justify-between gap-3 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm text-white shadow-lg">
+              <span>{toast.message}</span>
+              {toast.onUndo && (
+                <button
+                  type="button"
+                  onClick={toast.onUndo}
+                  className="font-medium underline underline-offset-2 cursor-pointer"
+                >
+                  되돌리기
+                </button>
+              )}
+            </div>
+          )}
+
+          {status === "pending" && (
+            <button
+              type="button"
+              onClick={handleToggleAchieved}
+              disabled={isPending}
+              className="w-full rounded-xl bg-zinc-900 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 cursor-pointer"
+            >
+              달성으로 표시
+            </button>
+          )}
+
+          {status === "achieved" && (
+            <button
+              type="button"
+              onClick={handleToggleAchieved}
+              disabled={isPending}
+              className="w-full rounded-xl border border-zinc-200 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-50 disabled:opacity-50 cursor-pointer"
+            >
+              달성 취소
+            </button>
+          )}
+
+          {status === "expired" && !resettingDeadline && (
+            <button
+              type="button"
+              onClick={() => setResettingDeadline(true)}
+              className="w-full rounded-xl border border-zinc-200 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 cursor-pointer"
+            >
+              마감일 다시 설정
+            </button>
+          )}
+
+          {status === "expired" && resettingDeadline && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUpdateDeadline();
+              }}
+              className="flex items-center gap-2"
+            >
+              <input
+                type="date"
+                value={deadlineInput}
+                onChange={(e) => setDeadlineInput(e.target.value)}
+                min={new Date().toLocaleDateString("en-CA")}
+                required
+                aria-label="새 마감일"
+                className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-700"
+              />
+              <button
+                type="submit"
+                disabled={isPending}
+                className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 cursor-pointer"
+              >
+                확인
+              </button>
+            </form>
+          )}
+        </div>
+      )}
     </div>
   );
 }

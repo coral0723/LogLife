@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { CountrySlidePanel } from "../app/(afterLogin)/main/_components/CountrySlidePanel";
-import { bucketlistHandlers } from "../../tests/msw/handlers/bucketlists";
+import { bucketlistHandlers } from "../mocks/handlers/bucketlists";
 
 const queryClient = new QueryClient();
 

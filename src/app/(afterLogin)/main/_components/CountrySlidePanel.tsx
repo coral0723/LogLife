@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Camera, CaretDown } from "@phosphor-icons/react";
+import { CaretDown } from "@phosphor-icons/react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketStatus";
+import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketList/bucketStatus";
+import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
 import { BucketDetailView } from "./BucketDetailView";
 import {
   fetchBucketsByCountry,
@@ -19,32 +20,14 @@ type View =
   | { kind: "loadingDetail"; itemId: string }
   | { kind: "detail"; itemId: string };
 
-function PhotoCell({ placeId }: { placeId: string }) {
-  const [error, setError] = useState(false);
-
-  return (
-    <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-100 flex-shrink-0 flex items-center justify-center">
-      {error ? (
-        <Camera size={24} className="text-zinc-300" weight="regular" />
-      ) : (
-        <img
-          src={`/api/places/photo?placeId=${placeId}`}
-          alt=""
-          className="w-full h-full object-cover"
-          onError={() => setError(true)}
-        />
-      )}
-    </div>
-  );
-}
-
-interface Props {
+type Props = {
   countryCode: string | null;
   onClose: () => void;
-}
+};
 
 export function CountrySlidePanel({ countryCode, onClose }: Props) {
   const [view, setView] = useState<View>({ kind: "list" });
+  const [prevCountryCode, setPrevCountryCode] = useState(countryCode);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -74,9 +57,10 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
     }
   }, [countryCode]);
 
-  useEffect(() => {
+  if (countryCode !== prevCountryCode) {
+    setPrevCountryCode(countryCode);
     setView({ kind: "list" });
-  }, [countryCode]);
+  }
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
@@ -213,7 +197,12 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                                 </span>
                               </div>
                             </div>
-                            <PhotoCell placeId={item.placeId} />
+                            <ImageWithFallback
+                              src={`/api/places/photo?placeId=${item.placeId}`}
+                              containerClassName="w-16 h-16 rounded-xl overflow-hidden bg-zinc-100 flex-shrink-0 flex items-center justify-center"
+                              iconSize={24}
+                              iconClassName="text-zinc-300"
+                            />
                           </li>
                         );
                       })}
@@ -245,6 +234,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                   <BucketDetailView
                     bucketId={view.itemId}
                     onBack={() => setView({ kind: "list" })}
+                    isOwner
                   />
                 </motion.div>
               )}

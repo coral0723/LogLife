@@ -361,7 +361,7 @@ describe("CountrySlidePanel", () => {
     });
   });
 
-  describe("PhotoCell", () => {
+  describe("사진 썸네일", () => {
     it("img 로드 실패 시 Camera 아이콘으로 대체", async () => {
       vi.mocked(fetchBucketsByCountry).mockResolvedValue({ items: [baseItem], nextCursor: null });
       const { container } = renderWithQuery(
