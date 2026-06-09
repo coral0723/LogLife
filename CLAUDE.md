@@ -80,6 +80,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - auth / api / .env 만질 때 → [security.md](.claude/rules/security.md)
 - 배포 / next.config / Vercel 관련 → [deploy.md](.claude/rules/deploy.md)
 - 라우트/페이지(page/layout/route.ts) 작성 시 → [nextjs16.md](.claude/rules/nextjs16.md)
+- 디버깅·이상 증상 발견 시 → [known_issues.md](.claude/rules/known_issues.md)
 
 ### 🟣 AI 작업 흔적 ([.dev/](.dev/))
 - 여러 커밋 · 복잡한 호출 관계가 얽힌 큰 기능의 구조 정리 → [work-logs/](.dev/work-logs/) (작은 브랜치는 PR 본문 + `/changelog`로 충분, 굳이 작성하지 않음)
