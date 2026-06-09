@@ -78,7 +78,7 @@
 - `email` (unique)
 - `username` (unique, `/u/[username]` URL)
 - `displayName`
-- `profileImageUrl` — OAuth provider 제공값
+- `profileImageUrl` — 초기값은 OAuth provider 제공값. 프로필 변경 시 `/avatars/*.png` 경로로 교체
 - `provider` (`google` | `kakao`)
 - `providerAccountId`
 - `createdAt`, `updatedAt`
@@ -172,7 +172,7 @@ src/app/
 
 ### 2) 프로필 페이지 — `/profile`
 메인 페이지의 좌상단 프로필 뱃지 클릭 시 노출되는 바텀 시트:
-- 프로필 사진 변경
+- 프로필 사진 변경 — `public/avatars/`에 준비된 10종 프리셋 아바타 중 선택. 직접 업로드 미지원 (0원 원칙). 신규 가입 시 무작위 아바타 1종 자동 배정
 - 닉네임 변경
 - 로그아웃
 - 탈퇴하기 (확인 모달 포함)
@@ -275,7 +275,7 @@ src/app/
 
 ## 8. v1 비스코프 (Out of Scope)
 
-- 사용자 직접 사진 업로드 (비용)
+- 사용자 직접 사진 업로드 (비용) — 프리셋 아바타 선택은 지원
 - 달성 시 소감/일기 (추후 도입)
 - 친구 활동 피드 / 친구 카드 미니 통계 / 통합 친구 글로브 / 마감 임박 위젯 / 팁 매칭 / 친구 추천 / 친구 그룹핑 (대시보드 후보 중 v1 미선택분)
 - 차단/신고
