@@ -133,7 +133,6 @@ src/app/
       (.)b/[token]/page.tsx        # 카드 인터셉팅 모달
   u/[username]/
     page.tsx                       # 5. 사용자 페이지 (공개 globe)
-    profile/page.tsx               # 친구일 때 프로필 보기
   b/[token]/page.tsx               # b = bucket list — 공유 풀페이지 (인터셉팅 fallback 겸용)
   api/
     places/
@@ -162,24 +161,35 @@ src/app/
 - 본인의 모든 버킷리스트 핀 (visibility 무관)
 - **나라별 핀 하나** — 핀에 해당 나라의 버킷리스트 개수 표시 (AD-01, AD-02)
 
+- 좌상단 프로필 뱃지 (OAuth 사진 + 닉네임) → 클릭 시 **설정 시트** (아래 참고)
 - 핀 클릭 → **슬라이드업 패널** (아래에서 위로 올라옴):
   1. 해당 나라의 버킷리스트 목록
   2. 목록 아이템 클릭 → 패널 내용이 해당 버킷리스트 상세로 전환
   3. 상세에서 좌상단 뒤로가기 버튼 → 목록 복귀
   4. 패널 상단 드래그 다운 또는 화살표 아이콘 클릭 → 패널 닫힘 (데스크톱은 화살표 아이콘만)
-- 하단 중앙 네비 버튼 (양쪽 둥근 캡슐): `프로필 | 메인 | 친구`
+- 하단 중앙 네비 버튼 (양쪽 둥근 캡슐): `대시보드 | 메인 | 친구`
+- 우하단 FAB (CirclePlusIcon) → `/create`
 
 ### 2) 프로필 페이지 — `/profile`
-- 상단 뱃지: OAuth 프로필 사진 + 이름
+메인 페이지의 좌상단 프로필 뱃지 클릭 시 노출되는 바텀 시트:
+- 프로필 사진 변경
+- 닉네임 변경
+- 로그아웃
+- 탈퇴하기 (확인 모달 포함)
+
+> 별도 `/settings` 페이지 없음 — 바텀 시트로 처리
+
+### 3) 대시보드 페이지 — `/dashboard`
+> BottomNav 진입 레이블: **대시보드** (기존 "프로필"에서 변경)
 - 대시보드 위젯:
   - 작성한 버킷리스트 수
   - 마감 임박 순 리스트
   - 난이도 × 설레임 2×2 매트릭스 ("지금 도전 vs 나중에")
   - 평균 달성 소요 기간, 가장 오래 미룬 항목, 달성이 빠른 카테고리
 - 위젯의 카드 클릭 → 인터셉팅 카드 모달
-- 우상단 작성 버튼 → `/create`
 
-### 3) 작성 페이지 — `/create`
+### 4) 작성 페이지 — `/create`
+메인 페이지의 우하단 FAB (CirclePlusIcon) 클릭 시 노출되는 바텀 시트:
 - 입력: 제목, 내용, 위치 (Places Autocomplete only, AD-14), 마감일, 난이도/설레임 1–5, visibility (private/friends/public)
 - Autocomplete: session token으로 single transaction 과금
 - 선택 시점에 Place Details 1회 호출 → `placeId + 좌표 + 행정 계층` 저장 (AD-03)
@@ -210,8 +220,10 @@ src/app/
 
 ### 5) 사용자 페이지 — `/u/[username]`
 - 검은 단색 + 정중앙 globe, 비공개 제외 핀만
-- 좌상단 프로필 배지 + (친구 아닐 때) 친구 추가 아이콘
-- 배지 클릭: 친구이면 `/u/[username]/profile`(프로필 페이지와 동일 UI), 아니면 이동 없음
+- 좌상단 프로필 배지 + (친구 아닐 때) 배지 우측에 친구 추가 아이콘
+- 배지 클릭:
+  - 친구가 아닌 경우 → 이동 없음
+  - 친구인 경우 → **해당 사용자의 대시보드 시트** (§3 대시보드와 동일 위젯 구성, 바텀 시트로 표시)
 - **SEO**: Server Component + OG/Twitter 메타 + JSON-LD `Person`
 - `/b/[token]`: noindex 메타 (link-only 공유 의도)
 
@@ -296,7 +308,7 @@ src/app/
  2. 버킷리스트 CRUD + 작성 페이지 (Places Autocomplete + Place Details) ✅
  3. 메인 globe 페이지 — 핀 표시 + 팝업 카드 임시 구현 (슬라이드업 패널은 4번에서 완성) ✅
 4. 카드 인터셉팅 라우트 (`@modal/(.)b/[token]` + 풀페이지 fallback + 슬라이드업 패널 완성) ✅
-5. 프로필 페이지 대시보드 (Prisma aggregate)
+5. 프로필 페이지 대시보드 (Prisma aggregate) + 메인 페이지 상단 뱃지·설정 시트 + 우하단 FAB
 6. 친구 시스템 (request / accept) + 친구 리스트 UI
 7. 친구 페이지 위젯 — 검색/정렬, 공통 매칭, 핫 플레이스 Top 5, 함께 달성 모먼트
 8. 사용자 페이지 `/u/[username]` + 공유 토큰 `/b/[token]`
