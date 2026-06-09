@@ -44,11 +44,7 @@
 
 > 설정 파일: `.mcp.json` (프로젝트 루트). 추후 Playwright MCP, GitHub MCP 추가 예정.
 
-**테스트 파일 배치 규칙 (feat/5에서 확립)**
-- lib 함수 테스트: `src/lib/__tests__/*.test.ts`
-- 컴포넌트 테스트: 해당 `_components/__tests__/*.test.tsx` (co-location)
-- E2E 시나리오: `tests/e2e/specs/*.spec.ts`
-- E2E 인프라 (globalSetup/Teardown/auth): `tests/e2e/setup/`
+**테스트 파일 배치 규칙** → [`.claude/rules/testing_guide.md`](.claude/rules/testing_guide.md) 참고
 
 ## 3. 핵심 아키텍처 의사결정 (ADR)
 
@@ -251,16 +247,7 @@ src/app/
 
 기능 개발은 우선 진행하고, **배포 직전 일괄 적용 후 한 번 더 확인**한다.
 
-- [ ] Google Cloud Console에서 Maps API **일일 quota 하드 캡** 설정 (예: 일 500 호출)
-- [ ] Google Maps API key의 **HTTP referrer 제한** — 배포 도메인(`*.vercel.app` 또는 커스텀)만 허용
-- [ ] API Routes rate limiting — `/api/places/*`는 인증된 사용자 IP당 분당 30회
-- [ ] `/api/places/*` 진입 시 `auth()` 검증 통과 후에만 외부 API 호출 (비로그인 차단)
-- [ ] Vercel 사용량 80% 도달 시 이메일 알림 설정
-- [ ] Supabase 프로젝트 health check ping — GitHub Actions cron (`*/3 * * *`)으로 일시 정지 방지
-- [ ] `next.config` 의 `images` 설정에서 `unoptimized` 옵션 사용 금지 (= Image Optimization 캐시 보장)
-- [ ] `next.config.images.remotePatterns`에 Google Places photo 프록시 도메인은 **불필요**(same-origin `/api/places/photo`). 외부 호스트 직접 임베드 시에만 등록 — `images.domains`는 Next 16에서 deprecated
-- [ ] Next 16 기본값으로 `images.qualities = [75]`만 허용 → 다른 quality 값 쓰는 컴포넌트가 있다면 `images.qualities` 명시
-- [ ] `.env`의 API key가 클라이언트 번들에 노출되지 않는지 확인 (`NEXT_PUBLIC_` 접두사 없는지)
+→ 상세 체크리스트: [`.claude/rules/deploy.md`](.claude/rules/deploy.md) 참고
 
 ### 7.3 Vercel Pro 업그레이드 트리거
 
