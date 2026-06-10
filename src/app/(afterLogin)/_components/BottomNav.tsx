@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, UserCircle, UsersThree, type Icon } from "@phosphor-icons/react";
+import { Globe, SquaresFour, UsersThree, type Icon } from "@phosphor-icons/react";
 
 export type NavItem = {
   href: string;
@@ -11,7 +11,7 @@ export type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/profile", icon: UserCircle, label: "프로필" },
+  { href: "/dashboard", icon: SquaresFour, label: "대시보드" },
   { href: "/main", icon: Globe, label: "메인" },
   { href: "/friends", icon: UsersThree, label: "친구" },
 ];
