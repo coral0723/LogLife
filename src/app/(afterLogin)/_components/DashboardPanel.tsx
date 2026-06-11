@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
+import { BucketCountWidget } from "./BucketCountWidget";
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -33,11 +35,7 @@ export function DashboardPanel({ isOpen, onClose }: Props) {
             </div>
 
             <div className="flex-1 space-y-4 overflow-y-auto px-5 pb-28">
-              {/* 작성한 버킷리스트 수 */}
-              <section className="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
-                <p className="text-sm text-zinc-400">작성한 버킷리스트 수</p>
-                <p className="mt-2 text-3xl font-bold text-zinc-900">-</p>
-              </section>
+              <BucketCountWidget isOpen={isOpen} />
 
               {/* 마감 임박 순 리스트 */}
               <section className="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
