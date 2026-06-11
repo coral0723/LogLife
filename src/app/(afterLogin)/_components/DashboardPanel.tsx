@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import { BucketCountWidget } from "./BucketCountWidget";
+import { UpcomingDeadlinesWidget } from "./UpcomingDeadlinesWidget";
 
 type Props = {
   isOpen: boolean;
@@ -37,15 +38,7 @@ export function DashboardPanel({ isOpen, onClose }: Props) {
             <div className="flex-1 space-y-4 overflow-y-auto px-5 pb-28">
               <BucketCountWidget isOpen={isOpen} />
 
-              {/* 마감 임박 순 리스트 */}
-              <section className="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
-                <p className="mb-3 text-sm text-zinc-400">마감 임박 순 리스트</p>
-                <ul className="space-y-2">
-                  <li className="h-12 rounded-xl bg-white" />
-                  <li className="h-12 rounded-xl bg-white" />
-                  <li className="h-12 rounded-xl bg-white" />
-                </ul>
-              </section>
+              <UpcomingDeadlinesWidget isOpen={isOpen} />
 
               {/* 난이도 x 설렘 2x2 매트릭스 */}
               <section className="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
