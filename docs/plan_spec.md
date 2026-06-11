@@ -66,6 +66,7 @@
 | AD-14 | 위치 검색 UX | **Places Autocomplete only (지도 클릭 X)** | 비용 절감 (session token으로 single transaction 과금). 미세 위치는 본문 텍스트로 보완 |
 | AD-15 | 친구 페이지 v1 | **친구 리스트 + 검색/정렬 + 3개 위젯** | 공통 버킷리스트 매칭, 친구들의 핫 플레이스 Top 5, 함께 달성 모먼트 — LogLife 차별화 핵심 |
 | AD-16 | PWA 오프라인 | **온라인 필수** | 네트워크 미연결 시 풀스크린 안내 팝업으로 모든 인터랙션 차단. Serwist는 manifest/installable만 사용 |
+| AD-17 | 메인 페이지 보조 UI 진입 패턴 | **BottomNav(대시보드/작성)=인페이지 슬라이드 패널 / 상단 배지(프로필·친구)=`@modal` 인터셉트 오버레이** | BottomNav 좌(대시보드)·우(작성)는 URL 변경 없이 컴포넌트 슬라이드 패널만 오픈(대시보드 위젯 / 작성 폼, 핀 클릭 슬라이드업 패널과 동일하게 하단에서 노출). 좌상단 프로필·우상단 친구 배지는 `/profile`,`/friends`로 실제 이동하되 `@modal`의 `(.)profile`/`(.)friends` 인터셉트로 오버레이 렌더(AD-13 인프라 재사용) — 모바일은 풀스크린+우상단 X(뒤로가기), 데스크탑은 GlobeView 너비를 가리는 바텀시트(BottomNav 위 z-index)+어두운 배경+흰색 X로 닫기 |
 
 ## 4. 데이터 모델 (Prisma 가이드)
 
@@ -111,24 +112,23 @@
 
 ```
 src/app/
-  page.tsx                         # 6. 랜딩 페이지 (SSG, 디자인 후순위)
+  page.tsx                         # 7. 랜딩 페이지 (SSG, 디자인 후순위)
   (auth)/
     login/page.tsx                 # Google/Kakao 버튼
   (afterLogin)/                    # 인증 필요 그룹
     layout.tsx                     # 인증 공통 레이아웃
-    (withNav)/                     # 항상 BottomNav가 표시되는 페이지 그룹
-      layout.tsx                   # BottomNav 포함 레이아웃
-      profile/page.tsx             # 2. 프로필 (본인)
-      friends/page.tsx             # 4. 친구 페이지
     main/
       layout.tsx                   # BottomNav 없음 — 빈 상태 예외 처리
       page.tsx                     # 1. 메인 globe — 핀 있을 때만 BottomNav 렌더
-    create/page.tsx                # 3. 버킷리스트 작성
+    profile/page.tsx               # 2. 프로필 (본인) — @modal 인터셉트 오버레이의 풀페이지 fallback
+    friends/page.tsx               # 5. 친구 페이지 — @modal 인터셉트 오버레이의 풀페이지 fallback
     @modal/
       default.tsx                  # Next 16 의무: 매칭 안될 때 null 반환
       (.)b/[token]/page.tsx        # 카드 인터셉팅 모달
+      (.)profile/page.tsx          # 프로필 오버레이 인터셉트 (AD-17)
+      (.)friends/page.tsx          # 친구 오버레이 인터셉트 (AD-17)
   u/[username]/
-    page.tsx                       # 5. 사용자 페이지 (공개 globe)
+    page.tsx                       # 6. 사용자 페이지 (공개 globe)
   b/[token]/page.tsx               # b = bucket list — 공유 풀페이지 (인터셉팅 fallback 겸용)
   api/
     places/
@@ -136,10 +136,6 @@ src/app/
       autocomplete/route.ts        # session token 관리
     auth/[...nextauth]/route.ts
 ```
-
-> **`(withNav)` 그룹 분리 이유**
-> `profile`, `friends`는 항상 BottomNav를 표시하므로 `(withNav)/layout.tsx` 한 곳에서 선언한다.
-> `main`은 버킷리스트 데이터가 없는 신규 유저 진입 시 BottomNav를 숨겨야 하므로 `(withNav)` 밖에 두고, `page.tsx`에서 `pins.length > 0`일 때만 조건부 렌더링한다.
 
 > **폴더링 확장 가이드 (TODO)**
 > 현재는 메인 페이지 1개라 `_components/` 하나에 모든 공유 컴포넌트를 배치 중.
@@ -157,26 +153,33 @@ src/app/
 - 본인의 모든 버킷리스트 핀 (visibility 무관)
 - **나라별 핀 하나** — 핀에 해당 나라의 버킷리스트 개수 표시 (AD-01, AD-02)
 
-- 좌상단 프로필 뱃지 (OAuth 사진 + 닉네임) → 클릭 시 **설정 시트** (아래 참고)
+- 좌상단 프로필 배지 (OAuth 사진 + 닉네임) → 클릭 시 `/profile` 이동 (AD-17 — 모바일 풀스크린/데스크탑 바텀시트 오버레이)
+- 우상단 친구 배지 → 클릭 시 `/friends` 이동 (AD-17 — 좌상단 프로필 배지와 동일한 오버레이)
 - 핀 클릭 → **슬라이드업 패널** (아래에서 위로 올라옴):
   1. 해당 나라의 버킷리스트 목록
   2. 목록 아이템 클릭 → 패널 내용이 해당 버킷리스트 상세로 전환
   3. 상세에서 좌상단 뒤로가기 버튼 → 목록 복귀
   4. 패널 상단 드래그 다운 또는 화살표 아이콘 클릭 → 패널 닫힘 (데스크톱은 화살표 아이콘만)
-- 하단 중앙 네비 버튼 (양쪽 둥근 캡슐): `대시보드 | 메인 | 친구`
-- 우하단 FAB (CirclePlusIcon) → `/create`
+- 하단 중앙 네비 (양쪽 둥근 캡슐): `대시보드 | 메인 | 작성`
+  - **대시보드** 클릭 → 페이지 이동 없이 대시보드 위젯 슬라이드 패널 오픈 (3번 항목, AD-17)
+  - **메인** → 현재 페이지(이동 없음)
+  - **작성** 클릭 → 페이지 이동 없이 작성 슬라이드 패널 오픈 (4번 항목, AD-17)
 
 ### 2) 프로필 페이지 — `/profile`
-메인 페이지의 좌상단 프로필 뱃지 클릭 시 노출되는 바텀 시트:
+메인 페이지의 좌상단 프로필 배지 클릭 시 이동 (AD-17):
+- **모바일/태블릿**: 화면 전체를 채우고, 우상단 X 아이콘 클릭 시 `router.back()`
+- **데스크탑**: 바텀시트 — GlobeView를 가리는 가로 너비 + BottomNav를 가리는 z-index. 나머지 영역은 뒤 화면이 비치는 어두운 배경, 우상단 흰색 X 클릭 시 뒤로가기
+
+내용:
 - 프로필 사진 변경 — `public/avatars/`에 준비된 10종 프리셋 아바타 중 선택. 직접 업로드 미지원 (0원 원칙). 신규 가입 시 무작위 아바타 1종 자동 배정
 - 닉네임 변경
 - 로그아웃
 - 탈퇴하기 (확인 모달 포함)
 
-> 별도 `/settings` 페이지 없음 — 바텀 시트로 처리
+> 별도 `/settings` 페이지 없음 — `/profile`에서 처리
 
-### 3) 대시보드 페이지 — `/dashboard`
-> BottomNav 진입 레이블: **대시보드** (기존 "프로필"에서 변경)
+### 3) 대시보드 위젯 — BottomNav 좌측 슬라이드 패널
+> 페이지 이동 없음. `/main` 위에 컴포넌트로만 오픈되는 슬라이드 패널 (AD-17). 별도 라우트 없음
 - 대시보드 위젯:
   - 작성한 버킷리스트 수
   - 마감 임박 순 리스트
@@ -184,13 +187,14 @@ src/app/
   - 평균 달성 소요 기간, 가장 오래 미룬 항목, 달성이 빠른 카테고리
 - 위젯의 카드 클릭 → 인터셉팅 카드 모달
 
-### 4) 작성 페이지 — `/create`
-메인 페이지의 우하단 FAB (CirclePlusIcon) 클릭 시 노출되는 바텀 시트:
+### 4) 작성 — BottomNav 우측 슬라이드 패널
+> 페이지 이동 없음. `/main` 위에 컴포넌트로만 오픈되는 슬라이드 패널 (AD-17). 기존 `/create` 라우트는 차기 브랜치에서 제거 + 본 패널로 통합 예정
 - 입력: 제목, 내용, 위치 (Places Autocomplete only, AD-14), 마감일, 난이도/설레임 1–5, visibility (private/friends/public)
 - Autocomplete: session token으로 single transaction 과금
 - 선택 시점에 Place Details 1회 호출 → `placeId + 좌표 + 행정 계층` 저장 (AD-03)
 
-### 4) 친구 페이지 — `/friends`
+### 5) 친구 페이지 — `/friends`
+메인 페이지의 우상단 친구 배지 클릭 시 이동 (AD-17 — 2번 프로필 페이지와 동일한 모바일/데스크탑 오버레이):
 - 친구 리스트 + 친구 추가
 - 친구 클릭 → `/u/[username]` 이동
 - **검색/정렬** (닉네임 검색, 정렬: 최근 활동순 / 달성 많은순 / 가나다순)
@@ -214,16 +218,16 @@ src/app/
   - 친구 시스템 구현 후 `FRIENDS` 아이템에도 공유하기 버튼을 표시하도록 변경
   - `/b/[token]` 접근 시: 친구 관계이면 정상 렌더링, 친구가 아니거나 비로그인이면 별도 안내 UI 표시
 
-### 5) 사용자 페이지 — `/u/[username]`
+### 6) 사용자 페이지 — `/u/[username]`
 - 검은 단색 + 정중앙 globe, 비공개 제외 핀만
 - 좌상단 프로필 배지 + (친구 아닐 때) 배지 우측에 친구 추가 아이콘
 - 배지 클릭:
   - 친구가 아닌 경우 → 이동 없음
-  - 친구인 경우 → **해당 사용자의 대시보드 시트** (§3 대시보드와 동일 위젯 구성, 바텀 시트로 표시)
+  - 친구인 경우 → **해당 사용자의 대시보드 위젯 시트** (3번 항목과 동일 위젯 구성, 바텀 시트로 표시)
 - **SEO**: Server Component + OG/Twitter 메타 + JSON-LD `Person`
 - `/b/[token]`: noindex 메타 (link-only 공유 의도)
 
-### 6) 랜딩 페이지 — `/`
+### 7) 랜딩 페이지 — `/`
 - 비로그인 사용자 진입 시. 감성 디자인은 추후 `Design.md`에서 정의
 - Google/Kakao 버튼 우선, 디자인은 최후순위
 - SSG + 메타 태그
@@ -295,7 +299,7 @@ src/app/
  2. 버킷리스트 CRUD + 작성 페이지 (Places Autocomplete + Place Details) ✅
  3. 메인 globe 페이지 — 핀 표시 + 팝업 카드 임시 구현 (슬라이드업 패널은 4번에서 완성) ✅
 4. 카드 인터셉팅 라우트 (`@modal/(.)b/[token]` + 풀페이지 fallback + 슬라이드업 패널 완성) ✅
-5. 프로필 페이지 대시보드 (Prisma aggregate) + 메인 페이지 상단 뱃지·설정 시트 + 우하단 FAB
+5. 메인 페이지 상단 배지(좌: 프로필 → `/profile`, 우: 친구 → `/friends`, AD-17 오버레이) + BottomNav 좌(대시보드 위젯 슬라이드 패널, Prisma aggregate)·우(작성 슬라이드 패널) + 프로필 설정 시트 (`/create` 라우트 정리는 차기 브랜치)
 6. 친구 시스템 (request / accept) + 친구 리스트 UI
 7. 친구 페이지 위젯 — 검색/정렬, 공통 매칭, 핫 플레이스 Top 5, 함께 달성 모먼트
 8. 사용자 페이지 `/u/[username]` + 공유 토큰 `/b/[token]`
