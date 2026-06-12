@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
 import { prisma } from "@/lib/prisma";
 import { generateUsername } from "@/lib/username";
+import { getRandomAvatarPath } from "@/lib/avatar";
 
 if (process.env.NODE_ENV === "production" && process.env.E2E === "true") {
   throw new Error("E2E credentials provider는 프로덕션에서 활성화할 수 없습니다.");
@@ -31,7 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           emailVerified: user.emailVerified ?? null,
           name: user.name ?? null,
-          image: user.image ?? null,
+          image: getRandomAvatarPath(),
           username,
         },
       });
