@@ -14,7 +14,16 @@ export async function GET() {
 
   const items = await prisma.bucketList.findMany({
     where: { userId, achieved: false },
-    select: { id: true, title: true, difficulty: true, excitement: true },
+    select: {
+      id: true,
+      title: true,
+      displayName: true,
+      placeId: true,
+      difficulty: true,
+      excitement: true,
+      deadlineAt: true,
+      visibility: true,
+    },
   });
 
   return NextResponse.json({ items });
