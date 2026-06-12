@@ -34,6 +34,14 @@ export default defineConfig({
       },
       {
         extends: true,
+        resolve: {
+          alias: [
+            {
+              find: '@/actions/bucketList/actions',
+              replacement: path.resolve(dirname, './.storybook/mocks/bucketListActions.ts'),
+            },
+          ],
+        },
         plugins: [
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
         ],
