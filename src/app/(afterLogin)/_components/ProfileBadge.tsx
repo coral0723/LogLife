@@ -8,7 +8,7 @@ import { AVATAR_PATHS } from "@/lib/avatar";
 import { ImageWithFallback } from "./ImageWithFallback";
 
 const BADGE_CLASSNAME =
-  "fixed left-4 top-6 z-30 flex items-center gap-2 rounded-3xl border-4 border-[#A1A1AA] bg-[#F3F4F6] pl-2 pr-4 pt-0.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:left-8 md:top-8 md:gap-3 md:pr-6";
+  "fixed left-4 top-6 z-30 flex items-center gap-1.5 rounded-3xl md:rounded-4xl border-2 border-[#A1A1AA] bg-[#F3F4F6] pl-2 pr-3 pt-0.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:left-8 md:top-8 md:gap-2 md:pr-5 lg:left-14 lg:top-14";
 
 export function ProfileBadge() {
   const { data, isLoading, isError } = useQuery({
@@ -19,7 +19,7 @@ export function ProfileBadge() {
   if (isLoading) {
     return (
       <div className={BADGE_CLASSNAME}>
-        <div className="h-16 w-16 flex-shrink-0 animate-pulse bg-zinc-200 md:h-20 md:w-20" />
+        <div className="h-14 w-14 flex-shrink-0 animate-pulse bg-zinc-200 md:h-16 md:w-16 lg:h-12 lg:w-12" />
         <div className="h-3 w-14 animate-pulse rounded-full bg-zinc-200 md:h-4 md:w-20" />
       </div>
     );
@@ -36,12 +36,12 @@ export function ProfileBadge() {
       <ImageWithFallback
         src={avatarSrc}
         alt={nickname}
-        containerClassName="flex h-16 w-16 flex-shrink-0 items-center justify-center md:h-20 md:w-20"
+        containerClassName="flex h-10 w-10 flex-shrink-0 items-center justify-center md:h-12 md:w-12 lg:h-14 lg:w-14"
         objectFit="contain"
         iconSize={18}
         iconClassName="text-zinc-300"
       />
-      <span className="max-w-30 truncate text-lg font-semibold text-[#A1A1AA] md:max-w-40 md:text-xl">
+      <span className="max-w-32 truncate text-sm font-mono text-[#A1A1AA] md:max-w-44 md:text-lg lg:text-xl">
         {nickname}
       </span>
     </Link>
