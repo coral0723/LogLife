@@ -9,6 +9,7 @@ type Props = {
   containerClassName: string;
   iconSize: number;
   iconClassName: string;
+  objectFit?: "cover" | "contain";
 };
 
 export function ImageWithFallback({
@@ -17,6 +18,7 @@ export function ImageWithFallback({
   containerClassName,
   iconSize,
   iconClassName,
+  objectFit = "cover",
 }: Props) {
   const [error, setError] = useState(false);
 
@@ -28,7 +30,7 @@ export function ImageWithFallback({
         <img
           src={src}
           alt={alt}
-          className="w-full h-full object-cover"
+          className={`w-full h-full ${objectFit === "contain" ? "object-contain" : "object-cover"}`}
           onError={() => setError(true)}
         />
       )}
