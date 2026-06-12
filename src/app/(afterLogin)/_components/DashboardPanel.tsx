@@ -25,7 +25,7 @@ export function DashboardPanel({ isOpen, onClose }: Props) {
             onClick={onClose}
           />
           <motion.div
-            className="fixed inset-y-0 left-0 z-40 flex w-full flex-col bg-white lg:max-w-3xl"
+            className="fixed inset-y-0 left-0 z-40 flex w-full flex-col bg-white lg:max-w-2xl"
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}

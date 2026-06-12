@@ -16,10 +16,10 @@ export type DifficultyExcitementItem = {
 export type QuadrantKey = "challengeNow" | "bucketListGem" | "relaxedTime" | "slowAndSteady";
 
 export const QUADRANT_CONFIG: { key: QuadrantKey; label: string }[] = [
-  { key: "challengeNow", label: "지금 도전!" },
+  { key: "slowAndSteady", label: "마음먹고 천천히" },
   { key: "bucketListGem", label: "버킷리스트의 꽃" },
   { key: "relaxedTime", label: "여유 있을 때" },
-  { key: "slowAndSteady", label: "마음먹고 천천히" },
+  { key: "challengeNow", label: "지금 도전!" },
 ];
 
 export function groupByQuadrant(
