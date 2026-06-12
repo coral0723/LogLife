@@ -1,9 +1,11 @@
+import type { AchievementStats } from "@/lib/bucketList/achievementStats";
 import type { DifficultyExcitementItem } from "@/lib/bucketList/difficultyExcitementMatrix";
 
 export const dashboardQueryKeys = {
   bucketCount: () => ["dashboard", "bucket-count"] as const,
   upcomingDeadlines: () => ["dashboard", "upcoming-deadlines"] as const,
   difficultyExcitement: () => ["dashboard", "difficulty-excitement"] as const,
+  achievementStats: () => ["dashboard", "achievement-stats"] as const,
 };
 
 export async function fetchBucketCount(): Promise<number> {
@@ -32,4 +34,10 @@ export async function fetchDifficultyExcitementMatrix(): Promise<DifficultyExcit
   if (!res.ok) throw new Error("난이도 × 설렘 매트릭스 조회 실패");
   const data = await res.json();
   return data.items;
+}
+
+export async function fetchAchievementStats(): Promise<AchievementStats> {
+  const res = await fetch("/api/dashboard/achievement-stats");
+  if (!res.ok) throw new Error("달성 통계 조회 실패");
+  return res.json();
 }
