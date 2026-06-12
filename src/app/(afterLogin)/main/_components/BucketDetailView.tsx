@@ -18,6 +18,7 @@ import {
   type BucketDetail,
   type BucketsByCountryPage,
 } from "@/api/bucketlists";
+import { dashboardQueryKeys } from "@/api/dashboard";
 
 type Props = {
   bucketId: string;
@@ -126,6 +127,9 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
               })),
             },
         );
+        queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.upcomingDeadlines() });
+        queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.difficultyExcitement() });
+        queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.achievementStats() });
         showToast({
           message: achieved ? "달성으로 표시했어요." : "달성을 취소했어요.",
           onUndo: handleToggleAchieved,
@@ -146,6 +150,7 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
           (prev?: BucketDetail) =>
             prev && { ...prev, deadlineAt: deadlineAt?.toISOString() ?? null },
         );
+        queryClient.invalidateQueries({ queryKey: dashboardQueryKeys.upcomingDeadlines() });
         setResettingDeadline(false);
         setDeadlineInput("");
         showToast({ message: "마감일을 다시 설정했어요. 진행 중으로 전환됩니다." });
