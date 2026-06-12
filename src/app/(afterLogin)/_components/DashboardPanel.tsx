@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
+import { AchievementStatsWidget } from "./AchievementStatsWidget";
 import { BucketCountWidget } from "./BucketCountWidget";
 import { DifficultyExcitementMatrixWidget } from "./DifficultyExcitementMatrixWidget";
 import { UpcomingDeadlinesWidget } from "./UpcomingDeadlinesWidget";
@@ -43,21 +44,7 @@ export function DashboardPanel({ isOpen, onClose }: Props) {
 
               <DifficultyExcitementMatrixWidget isOpen={isOpen} />
 
-              {/* 달성 통계 */}
-              <section className="space-y-3 rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-zinc-400">평균 달성 소요 기간</span>
-                  <span className="font-medium text-zinc-900">-</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-zinc-400">가장 오래 미룬 항목</span>
-                  <span className="font-medium text-zinc-900">-</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-zinc-400">달성이 빠른 카테고리</span>
-                  <span className="font-medium text-zinc-900">-</span>
-                </div>
-              </section>
+              <AchievementStatsWidget isOpen={isOpen} />
             </div>
           </motion.div>
         </>
