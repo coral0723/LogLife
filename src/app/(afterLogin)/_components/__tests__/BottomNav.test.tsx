@@ -16,7 +16,7 @@ vi.mock("next/link", () => ({
 vi.mock("@phosphor-icons/react", () => ({
   Globe: () => <span data-testid="icon-globe" />,
   SquaresFour: () => <span data-testid="icon-squaresfour" />,
-  UsersThree: () => <span data-testid="icon-usersthree" />,
+  PencilSimple: () => <span data-testid="icon-pencilsimple" />,
 }));
 vi.mock("../DashboardPanel", () => ({
   DashboardPanel: ({ isOpen }: { isOpen: boolean; onClose: () => void }) =>
