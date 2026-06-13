@@ -45,3 +45,9 @@ export async function updateNickname(nickname: string) {
     select: { name: true },
   });
 }
+
+export async function deleteAccount() {
+  const userId = await requireUserId();
+
+  await prisma.user.delete({ where: { id: userId } });
+}

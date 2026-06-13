@@ -6,7 +6,7 @@ import { signOut } from "next-auth/react";
 import { User, CaretRight } from "@phosphor-icons/react";
 
 import { fetchCurrentUser, userQueryKeys, type CurrentUser } from "@/api/user";
-import { updateAvatar, updateNickname } from "@/actions/user/actions";
+import { deleteAccount, updateAvatar, updateNickname } from "@/actions/user/actions";
 import { AVATAR_PATHS } from "@/lib/avatar";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
@@ -53,6 +53,13 @@ export function ProfileSettingsView() {
     },
   });
 
+  const deleteAccountMutation = useMutation({
+    mutationFn: deleteAccount,
+    onSuccess: () => {
+      signOut({ redirectTo: "/" });
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-10">
@@ -78,6 +85,12 @@ export function ProfileSettingsView() {
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
       signOut({ redirectTo: "/" });
+    }
+  };
+
+  const handleWithdraw = () => {
+    if (window.confirm("정말 탈퇴하시겠습니까?")) {
+      deleteAccountMutation.mutate();
     }
   };
 
@@ -154,7 +167,9 @@ export function ProfileSettingsView() {
             </button>
             <button
               type="button"
-              className="w-full cursor-pointer rounded-xl bg-red-500 py-2.5 text-sm font-medium text-white hover:bg-red-600"
+              onClick={handleWithdraw}
+              disabled={deleteAccountMutation.isPending}
+              className="w-full cursor-pointer rounded-xl bg-red-500 py-2.5 text-sm font-medium text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               탈퇴하기
             </button>
