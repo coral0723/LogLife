@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { signOut } from "next-auth/react";
 import { User, CaretRight } from "@phosphor-icons/react";
 
 import { fetchCurrentUser, userQueryKeys, type CurrentUser } from "@/api/user";
@@ -74,6 +75,12 @@ export function ProfileSettingsView() {
     setMode("nickname");
   };
 
+  const handleLogout = () => {
+    if (window.confirm("로그아웃 하시겠습니까?")) {
+      signOut({ redirectTo: "/" });
+    }
+  };
+
   return (
     <div className={`flex flex-1 flex-col px-6 pt-16 ${mode !== "view" ? "pb-0" : "pb-16"}`}>
       <div className="flex flex-col items-center gap-3">
@@ -140,6 +147,7 @@ export function ProfileSettingsView() {
           <div className="mt-auto flex flex-col gap-2 pt-6">
             <button
               type="button"
+              onClick={handleLogout}
               className="w-full cursor-pointer rounded-xl border border-zinc-900 bg-white py-2.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
             >
               로그아웃
