@@ -5,6 +5,7 @@ import { buildCountryPins } from "@/lib/countryPins";
 import { prisma } from "@/lib/prisma";
 
 import { BottomNav } from "../_components/BottomNav";
+import { ProfileBadge } from "../_components/ProfileBadge";
 import { EmptyState } from "./_components/EmptyState";
 import { GlobeClient } from "./_components/GlobeClient";
 import { StarField } from "./_components/StarField";
@@ -48,6 +49,7 @@ export default async function MainPage() {
         <EmptyState />
       )}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#060d1f]/70 to-transparent" />
+      <ProfileBadge />
       {pins.length > 0 && <BottomNav />}
     </main>
   );

@@ -13,6 +13,15 @@ vi.mock("@/api/bucketlists", () => ({
   fetchBucketDetail: vi.fn(),
   bucketQueryKeys: {
     detail: (id: string) => ["bucketlists", "detail", id],
+    byCountry: (code: string) => ["bucketlists", "by-country", code],
+  },
+}));
+
+vi.mock("@/api/dashboard", () => ({
+  dashboardQueryKeys: {
+    upcomingDeadlines: () => ["dashboard", "upcoming-deadlines"],
+    difficultyExcitement: () => ["dashboard", "difficulty-excitement"],
+    achievementStats: () => ["dashboard", "achievement-stats"],
   },
 }));
 
@@ -59,9 +68,12 @@ function renderWithDetail(
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
-  return render(<BucketDetailView bucketId={detail.id} {...props} />, {
-    wrapper: Wrapper,
-  });
+  return {
+    ...render(<BucketDetailView bucketId={detail.id} {...props} />, {
+      wrapper: Wrapper,
+    }),
+    queryClient,
+  };
 }
 
 beforeEach(() => {
@@ -394,6 +406,29 @@ describe("BucketDetailView", () => {
       expect(screen.getByRole("button", { name: "되돌리기" })).toBeInTheDocument();
     });
 
+    it("'달성으로 표시' 클릭 → 대시보드 위젯 쿼리(마감 임박/난이도·설렘/달성 통계) invalidate", async () => {
+      mockToggleAchieved.mockResolvedValue({ achieved: true });
+      const { queryClient } = renderWithDetail(
+        { ...baseDetail, achieved: false, deadlineAt: null },
+        { isOwner: true },
+      );
+      const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "달성으로 표시" }));
+      });
+
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ["dashboard", "upcoming-deadlines"],
+      });
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ["dashboard", "difficulty-excitement"],
+      });
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ["dashboard", "achievement-stats"],
+      });
+    });
+
     it("'마감일 다시 설정' 클릭 → 인라인 date input 노출 → 확정 시 updateDeadline 호출", async () => {
       mockUpdateDeadline.mockResolvedValue({
         deadlineAt: new Date("2030-07-01T00:00:00Z"),
@@ -416,6 +451,30 @@ describe("BucketDetailView", () => {
         "item-1",
         new Date("2030-07-01"),
       );
+    });
+
+    it("'마감일 다시 설정' 확정 → upcomingDeadlines만 invalidate (difficultyExcitement/achievementStats/bucketCount은 영향 없음)", async () => {
+      mockUpdateDeadline.mockResolvedValue({
+        deadlineAt: new Date("2030-07-01T00:00:00Z"),
+      });
+      const { queryClient } = renderWithDetail(
+        { ...baseDetail, achieved: false, deadlineAt: "2020-01-01T00:00:00Z" },
+        { isOwner: true },
+      );
+      const invalidateSpy = vi.spyOn(queryClient, "invalidateQueries");
+
+      fireEvent.click(screen.getByRole("button", { name: "마감일 다시 설정" }));
+      fireEvent.change(screen.getByLabelText("새 마감일"), {
+        target: { value: "2030-07-01" },
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "확인" }));
+      });
+
+      expect(invalidateSpy).toHaveBeenCalledTimes(1);
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: ["dashboard", "upcoming-deadlines"],
+      });
     });
   });
 });
