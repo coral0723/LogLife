@@ -9,10 +9,10 @@ import { AVATAR_PATHS } from "@/lib/avatar";
 import { ImageWithFallback } from "./ImageWithFallback";
 
 const BADGE_CLASSNAME =
-  "fixed left-4 top-6 z-30 flex items-center gap-1.5 rounded-3xl md:rounded-4xl border-2 border-[#A1A1AA] bg-[#F3F4F6] pl-2 pr-3 pt-0.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:left-8 md:top-8 md:gap-2 md:pr-5 lg:left-14 lg:top-14";
+  "fixed left-4 top-14 z-30 flex items-center gap-3 rounded-3xl md:rounded-4xl border-2 border-[#A1A1AA] bg-[#F3F4F6] pl-2 pr-3 pt-0.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:left-8 md:top-8 md:pr-5 lg:left-14 lg:top-14";
 
 const AVATAR_CONTAINER_CLASSNAME =
-  "flex h-10 w-10 flex-shrink-0 items-center justify-center md:h-12 md:w-12 lg:h-14 lg:w-14";
+  "flex h-6 w-6 flex-shrink-0 items-center justify-center md:h-8 md:w-8 lg:h-10 md:w-10";
 
 export function ProfileBadge() {
   const { data, isLoading, isError } = useQuery({
@@ -51,7 +51,7 @@ export function ProfileBadge() {
           iconClassName="text-zinc-300"
         />
       )}
-      <span className="max-w-32 truncate text-sm font-mono text-[#A1A1AA] md:max-w-44 md:text-lg lg:text-xl">
+      <span className="max-w-32 truncate text-xs font-sans text-[#7b7b81] md:max-w-44 md:text-md">
         {nickname}
       </span>
     </Link>
