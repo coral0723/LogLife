@@ -12,7 +12,11 @@ import { createBucketList } from "@/actions/bucketList/actions";
 
 type Visibility = "PRIVATE" | "FRIENDS" | "PUBLIC";
 
-export function CreateBucketListForm() {
+type Props = {
+  onSuccess?: () => void;
+};
+
+export function CreateBucketListForm({ onSuccess }: Props) {
   const router = useRouter();
   const [place, setPlace] = useState<NormalizedPlace | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +46,11 @@ export function CreateBucketListForm() {
           excitement,
           ...place,
         });
-        router.push("/main");
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          router.push("/main");
+        }
       } catch (e) {
         setError(e instanceof Error ? e.message : "저장에 실패했습니다.");
       }

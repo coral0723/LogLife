@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Globe, PencilSimple, SquaresFour, type Icon } from "@phosphor-icons/react";
 
+import { CreatePanel } from "./CreatePanel";
 import { DashboardPanel } from "./DashboardPanel";
 
 export type NavLinkItem = { href: string; icon: Icon; label: string };
@@ -88,6 +89,7 @@ export function BottomNav({ items }: Props) {
         </ul>
       </nav>
       <DashboardPanel isOpen={isDashboardOpen} onClose={() => setIsDashboardOpen(false)} />
+      <CreatePanel isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
     </>
   );
 }

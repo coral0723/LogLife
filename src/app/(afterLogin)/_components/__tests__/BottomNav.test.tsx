@@ -22,6 +22,10 @@ vi.mock("../DashboardPanel", () => ({
   DashboardPanel: ({ isOpen }: { isOpen: boolean; onClose: () => void }) =>
     isOpen ? <div data-testid="dashboard-panel" /> : null,
 }));
+vi.mock("../CreatePanel", () => ({
+  CreatePanel: ({ isOpen }: { isOpen: boolean; onClose: () => void }) =>
+    isOpen ? <div data-testid="create-panel" /> : null,
+}));
 
 import { usePathname } from "next/navigation";
 
