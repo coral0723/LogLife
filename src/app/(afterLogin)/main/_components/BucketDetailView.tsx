@@ -55,6 +55,7 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
   const [toast, setToast] = useState<Toast | null>(null);
   const [resettingDeadline, setResettingDeadline] = useState(false);
   const [deadlineInput, setDeadlineInput] = useState("");
+  const [minDate, setMinDate] = useState<string | undefined>(undefined);
   const [isPending, startTransition] = useTransition();
   const queryClient = useQueryClient();
 
@@ -69,6 +70,10 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
       window.location.reload();
     }
   }, [isError]);
+
+  useEffect(() => {
+    setMinDate(new Date().toLocaleDateString("en-CA"));
+  }, []);
 
   if (!detail) {
     return (
@@ -344,7 +349,7 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
                 type="date"
                 value={deadlineInput}
                 onChange={(e) => setDeadlineInput(e.target.value)}
-                min={new Date().toLocaleDateString("en-CA")}
+                min={minDate}
                 required
                 aria-label="새 마감일"
                 className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-700"
