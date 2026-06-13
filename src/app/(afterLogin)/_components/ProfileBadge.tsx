@@ -12,7 +12,7 @@ const BADGE_CLASSNAME =
   "fixed left-4 top-14 z-30 flex items-center gap-3 rounded-3xl md:rounded-4xl border-2 border-[#A1A1AA] bg-[#F3F4F6] pl-2 pr-3 pt-0.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:left-8 md:top-8 md:pr-5 lg:left-14 lg:top-14";
 
 const AVATAR_CONTAINER_CLASSNAME =
-  "flex h-6 w-6 flex-shrink-0 items-center justify-center md:h-8 md:w-8 lg:h-10 md:w-10";
+  "flex h-6 w-6 flex-shrink-0 items-center justify-center ml-[6px] md:h-8 md:w-8 lg:h-10 md:w-10";
 
 export function ProfileBadge() {
   const { data, isLoading, isError } = useQuery({
