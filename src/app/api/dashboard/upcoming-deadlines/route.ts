@@ -15,7 +15,7 @@ export async function GET() {
   }
 
   const items = await prisma.bucketList.findMany({
-    where: { userId, achieved: false, deadlineAt: { gte: new Date() } },
+    where: { userId, achieved: false, deadlineAt: { gte: new Date(new Date().setUTCHours(0, 0, 0, 0)) } },
     select: { id: true, title: true, displayName: true, deadlineAt: true },
     orderBy: { deadlineAt: "asc" },
     take: LIMIT,
