@@ -39,9 +39,15 @@ export function MatrixSlidePanel({ label, items, onClose }: Props) {
         queryKey: bucketQueryKeys.detail(itemId),
         queryFn: () => fetchBucketDetail(itemId),
       });
-      setView({ kind: "detail", itemId });
+      setView((current) =>
+        current.kind === "loadingDetail" && current.itemId === itemId
+          ? { kind: "detail", itemId }
+          : current
+      );
     } catch {
-      setView({ kind: "list" });
+      setView((current) =>
+        current.kind === "loadingDetail" && current.itemId === itemId ? { kind: "list" } : current
+      );
     }
   };
 
