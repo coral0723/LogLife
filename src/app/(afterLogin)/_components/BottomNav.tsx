@@ -1,50 +1,75 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, UserCircle, UsersThree, type Icon } from "@phosphor-icons/react";
+import { Globe, SquaresFour, UsersThree, type Icon } from "@phosphor-icons/react";
 
-export type NavItem = {
-  href: string;
-  icon: Icon;
-  label: string;
-};
+import { DashboardPanel } from "./DashboardPanel";
 
-const NAV_ITEMS: NavItem[] = [
-  { href: "/profile", icon: UserCircle, label: "프로필" },
-  { href: "/main", icon: Globe, label: "메인" },
-  { href: "/friends", icon: UsersThree, label: "친구" },
-];
+export type NavLinkItem = { href: string; icon: Icon; label: string };
+export type NavButtonItem = { onClick: () => void; icon: Icon; label: string; active?: boolean };
+export type NavItem = NavLinkItem | NavButtonItem;
 
 type Props = {
   items?: NavItem[];
 };
 
-export function BottomNav({ items = NAV_ITEMS }: Props) {
+export function BottomNav({ items }: Props) {
   const pathname = usePathname();
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+
+  const navItems: NavItem[] =
+    items ?? [
+      {
+        icon: SquaresFour,
+        label: "대시보드",
+        onClick: () => setIsDashboardOpen((prev) => !prev),
+        active: isDashboardOpen,
+      },
+      { href: "/main", icon: Globe, label: "메인" },
+      { href: "/friends", icon: UsersThree, label: "친구" },
+    ];
 
   return (
-    <nav className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
-      <ul className="flex gap-1 rounded-full border border-gray-200 bg-white/90 px-2 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl">
-        {items.map(({ href, icon: Icon, label }) => {
-          const active = pathname === href;
-          return (
-            <li key={href}>
-              <Link
-                href={href}
-                aria-label={label}
-                className={`flex items-center justify-center rounded-full p-3 transition-all duration-200 ${
-                  active
-                    ? "bg-gray-100 text-gray-900"
-                    : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                }`}
-              >
-                <Icon size={22} weight={active ? "fill" : "regular"} />
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <>
+      <nav className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
+        <ul className="flex gap-1 rounded-full border border-gray-200 bg-white/90 px-2 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl">
+          {navItems.map((item) => {
+            const { icon: Icon, label } = item;
+            const active = "href" in item ? pathname === item.href && !isDashboardOpen : !!item.active;
+            const className = `flex cursor-pointer items-center justify-center rounded-full p-3 transition-all duration-200 ${
+              active
+                ? "bg-gray-100 text-gray-900"
+                : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            }`;
+
+            if ("href" in item) {
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-label={label}
+                    className={className}
+                    onClick={() => setIsDashboardOpen(false)}
+                  >
+                    <Icon size={22} weight={active ? "fill" : "regular"} />
+                  </Link>
+                </li>
+              );
+            }
+
+            return (
+              <li key={label}>
+                <button type="button" onClick={item.onClick} aria-label={label} className={className}>
+                  <Icon size={22} weight={active ? "fill" : "regular"} />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+      <DashboardPanel isOpen={isDashboardOpen} onClose={() => setIsDashboardOpen(false)} />
+    </>
   );
 }
