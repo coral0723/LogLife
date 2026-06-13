@@ -33,18 +33,16 @@ export function CreatePanel({ isOpen, onClose }: Props) {
             transition={{ type: "spring", stiffness: 300, damping: 32 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex-shrink-0 px-5 pt-6 pb-3">
+            <div className="flex-shrink-0 px-5 pt-6 pb-6">
               <h2 className="text-lg font-semibold text-zinc-900">버킷리스트 작성</h2>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 pb-28">
-              <CreateBucketListForm
-                onSuccess={() => {
-                  onClose();
-                  router.refresh();
-                }}
-              />
-            </div>
+            <CreateBucketListForm
+              onSuccess={() => {
+                onClose();
+                router.refresh();
+              }}
+            />
           </motion.div>
         </>
       )}

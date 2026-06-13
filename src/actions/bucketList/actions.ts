@@ -9,10 +9,10 @@ import { prisma } from "@/lib/prisma";
 const visibilitySchema = z.enum(["PRIVATE", "FRIENDS", "PUBLIC"]);
 
 const bucketListInputSchema = z.object({
-  title: z.string().trim().min(1, "제목을 입력해주세요.").max(100),
-  description: z.string().trim().max(2000).optional().nullable(),
+  title: z.string().trim().min(1, "제목을 입력해주세요.").max(20),
+  description: z.string().trim().max(1000).optional().nullable(),
   visibility: visibilitySchema.default("PRIVATE"),
-  deadlineAt: z.coerce.date().nullable().optional(),
+  deadlineAt: z.coerce.date(),
   difficulty: z.number().int().min(1).max(5),
   excitement: z.number().int().min(1).max(5),
   placeId: z.string().min(1, "위치를 선택해주세요."),

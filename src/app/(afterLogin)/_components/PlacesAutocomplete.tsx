@@ -146,13 +146,14 @@ export function PlacesAutocomplete({
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="w-full rounded border border-gray-300 px-3 py-2"
+        spellCheck={false}
+        className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm focus:outline-none"
       />
       {isOpen && (
         <ul
           id={listboxId}
           role="listbox"
-          className="absolute left-0 right-0 mt-1 max-h-64 overflow-auto rounded border border-gray-200 bg-white shadow"
+          className="absolute left-0 right-0 mt-1 max-h-64 overflow-auto rounded-xl border border-zinc-200 bg-white shadow-lg"
         >
           {suggestions.map((s, i) => (
             <li
@@ -165,8 +166,8 @@ export function PlacesAutocomplete({
                 void pick(s);
               }}
               onMouseEnter={() => setActiveIndex(i)}
-              className={`cursor-pointer px-3 py-2 ${
-                i === activeIndex ? "bg-gray-100" : ""
+              className={`cursor-pointer px-3 py-2 text-sm ${
+                i === activeIndex ? "bg-zinc-100" : "hover:bg-zinc-50"
               }`}
             >
               {s.text}
@@ -180,7 +181,7 @@ export function PlacesAutocomplete({
         </p>
       )}
       {isLoading && !error && (
-        <p className="mt-1 text-xs text-gray-500">검색 중…</p>
+        <p className="mt-1 text-xs text-zinc-400">검색 중…</p>
       )}
     </div>
   );
