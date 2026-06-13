@@ -3,6 +3,7 @@
 import { Check } from "@phosphor-icons/react";
 
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
+import { AVATAR_LABELS } from "@/lib/avatar";
 
 type Props = {
   avatars: readonly string[];
@@ -35,6 +36,7 @@ export function AvatarEditPanel({
             key={avatarPath}
             type="button"
             onClick={() => onSelect(avatarPath)}
+            aria-label={`${AVATAR_LABELS[avatarPath]} 아바타로 변경`}
             className="relative cursor-pointer self-end"
           >
             <img src={avatarPath} alt="" className="w-full rounded-lg" />
