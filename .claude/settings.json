@@ -58,7 +58,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -File .claude/hooks/stop-changelog-reminder.ps1"
+            "command": "powershell -NoProfile -File .claude/hooks/stop-test-lint-reminder.ps1"
           }
         ]
       }

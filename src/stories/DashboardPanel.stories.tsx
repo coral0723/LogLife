@@ -80,6 +80,13 @@ const meta = {
   component: DashboardPanel,
   parameters: {
     layout: "fullscreen",
+    // position: fixed 패널은 Docs의 inline 렌더링에서 보이지 않으므로 iframe으로 렌더링
+    docs: {
+      story: {
+        inline: false,
+        iframeHeight: 600,
+      },
+    },
   },
   tags: ["autodocs"],
   args: {
