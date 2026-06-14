@@ -10,7 +10,7 @@ export function FriendsModalClient() {
 
   return (
     <div className="fixed inset-0 z-70 flex flex-col bg-zinc-950 md:items-center md:justify-center">
-      <div className="relative flex w-full flex-1 flex-col overflow-y-auto bg-white md:max-h-[90vh] md:max-w-lg md:flex-none md:rounded-3xl">
+      <div className="relative flex w-full flex-1 flex-col overflow-hidden bg-white md:max-h-[90vh] md:max-w-lg md:flex-none md:rounded-3xl">
         <button
           type="button"
           onClick={() => router.back()}
@@ -19,7 +19,9 @@ export function FriendsModalClient() {
         >
           <X size={20} weight="bold" />
         </button>
-        <FriendsView />
+        <div className="flex-1 overflow-y-auto">
+          <FriendsView />
+        </div>
       </div>
     </div>
   );
