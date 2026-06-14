@@ -1,5 +1,6 @@
 "use client";
 
+import { AchievedTogetherWidget } from "./AchievedTogetherWidget";
 import { CommonBucketMatchesWidget } from "./CommonBucketMatchesWidget";
 import { FriendListSection } from "./FriendListSection";
 import { FriendRequestsSection } from "./FriendRequestsSection";
@@ -15,6 +16,7 @@ export function FriendsView() {
       <FriendListSection />
       <CommonBucketMatchesWidget />
       <HotPlacesWidget />
+      <AchievedTogetherWidget />
     </div>
   );
 }
