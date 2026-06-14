@@ -22,6 +22,12 @@ type UserBasic = {
 
 export type FriendItem = UserBasic & { friendshipId: string };
 
+export type FriendsPage = {
+  items: FriendItem[];
+  nextCursor: string | null;
+  totalCount: number;
+};
+
 export type FriendRequestItem = FriendItem & { createdAt: string };
 
 export type FriendRequestsPage = {
@@ -35,11 +41,12 @@ export type UserSearchResult = UserBasic & {
   friendshipId?: string;
 };
 
-export async function fetchFriends(): Promise<FriendItem[]> {
-  const res = await fetch("/api/friends");
+export async function fetchFriends(cursor?: string): Promise<FriendsPage> {
+  const params = new URLSearchParams();
+  if (cursor) params.set("cursor", cursor);
+  const res = await fetch(`/api/friends?${params}`);
   if (!res.ok) throw new Error("친구 목록 조회 실패");
-  const data = await res.json();
-  return data.items;
+  return res.json();
 }
 
 export async function fetchFriendRequests(cursor?: string): Promise<FriendRequestsPage> {
