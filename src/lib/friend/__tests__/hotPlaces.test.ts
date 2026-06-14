@@ -7,6 +7,7 @@ function createGroup(overrides: Partial<HotPlaceGroupInput> = {}): HotPlaceGroup
     countryCode: "KR",
     displayName: "서울",
     count: 1,
+    placeId: "place-1",
     ...overrides,
   };
 }

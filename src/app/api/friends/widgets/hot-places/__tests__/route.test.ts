@@ -47,15 +47,25 @@ describe("GET /api/friends/widgets/hot-places", () => {
     mockAuth.mockResolvedValue({ user: { id: "user-1" } } as never);
     mockGetAcceptedFriendIds.mockResolvedValue(["friend-1"]);
     mockGroupBy.mockResolvedValue([
-      { countryCode: "JP", displayName: "신주쿠구", _count: { _all: 3 } },
-      { countryCode: "KR", displayName: "강남구", _count: { _all: 5 } },
+      { countryCode: "JP", displayName: "신주쿠구", _count: { _all: 3 }, _min: { placeId: "place-jp" } },
+      { countryCode: "KR", displayName: "강남구", _count: { _all: 5 }, _min: { placeId: "place-kr" } },
     ] as never);
 
     const res = await GET();
 
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body.items[0]).toEqual({ countryCode: "KR", displayName: "강남구", count: 5 });
-    expect(body.items[1]).toEqual({ countryCode: "JP", displayName: "신주쿠구", count: 3 });
+    expect(body.items[0]).toEqual({
+      countryCode: "KR",
+      displayName: "강남구",
+      count: 5,
+      placeId: "place-kr",
+    });
+    expect(body.items[1]).toEqual({
+      countryCode: "JP",
+      displayName: "신주쿠구",
+      count: 3,
+      placeId: "place-jp",
+    });
   });
 });

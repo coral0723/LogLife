@@ -23,6 +23,7 @@ export async function GET() {
     by: ["countryCode", "displayName"],
     where: { userId: { in: friendIds }, visibility: { in: ["FRIENDS", "PUBLIC"] } },
     _count: { _all: true },
+    _min: { placeId: true },
   });
 
   const items = computeHotPlaces(
@@ -30,6 +31,7 @@ export async function GET() {
       countryCode: group.countryCode,
       displayName: group.displayName,
       count: group._count._all,
+      placeId: group._min.placeId ?? "",
     })),
   );
 

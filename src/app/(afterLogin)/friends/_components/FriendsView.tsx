@@ -3,6 +3,7 @@
 import { CommonBucketMatchesWidget } from "./CommonBucketMatchesWidget";
 import { FriendListSection } from "./FriendListSection";
 import { FriendRequestsSection } from "./FriendRequestsSection";
+import { HotPlacesWidget } from "./HotPlacesWidget";
 import { UserSearchSection } from "./UserSearchSection";
 
 export function FriendsView() {
@@ -13,6 +14,7 @@ export function FriendsView() {
       <UserSearchSection />
       <FriendListSection />
       <CommonBucketMatchesWidget />
+      <HotPlacesWidget />
     </div>
   );
 }

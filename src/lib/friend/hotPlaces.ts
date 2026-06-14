@@ -2,6 +2,7 @@ export type HotPlaceGroupInput = {
   countryCode: string;
   displayName: string;
   count: number;
+  placeId: string;
 };
 
 export type HotPlaceItem = HotPlaceGroupInput;
