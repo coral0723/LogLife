@@ -24,6 +24,12 @@ export type FriendItem = UserBasic & { friendshipId: string };
 
 export type FriendRequestItem = FriendItem & { createdAt: string };
 
+export type FriendRequestsPage = {
+  items: FriendRequestItem[];
+  nextCursor: string | null;
+  totalCount: number;
+};
+
 export type UserSearchResult = UserBasic & {
   relation: "none" | "pending_sent" | "pending_received" | "friends";
   friendshipId?: string;
@@ -36,11 +42,12 @@ export async function fetchFriends(): Promise<FriendItem[]> {
   return data.items;
 }
 
-export async function fetchFriendRequests(): Promise<FriendRequestItem[]> {
-  const res = await fetch("/api/friends/requests");
+export async function fetchFriendRequests(cursor?: string): Promise<FriendRequestsPage> {
+  const params = new URLSearchParams();
+  if (cursor) params.set("cursor", cursor);
+  const res = await fetch(`/api/friends/requests?${params}`);
   if (!res.ok) throw new Error("받은 친구 요청 조회 실패");
-  const data = await res.json();
-  return data.items;
+  return res.json();
 }
 
 export async function searchUsers(q: string): Promise<UserSearchResult[]> {
