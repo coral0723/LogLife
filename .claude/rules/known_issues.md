@@ -27,3 +27,13 @@ globs:
 - `git checkout -- <file>`: 워킹트리를 **인덱스**로 복원 (HEAD 아님). HEAD 완전 복원 = `git restore --source=HEAD -- <file> && git restore --staged <file>`
 - Edit 도구가 한국어 파일에서 string-not-found 내면 PowerShell WriteAllText로 우회 (NoBOM 인스턴스 필수)
 - **상세**: `.dev/learnings/2026-06-09_powershell_utf8_file_edit.md`
+
+---
+
+## Vitest unit 테스트 — phosphor-icons import 시 EMFILE (Windows)
+
+- **증상**: phosphor-icons를 import하는 테스트 파일 4개 이상을 같은 배치로 실행하면 일부가 `EMFILE: too many open files`로 setup 단계 실패 (0 tests run)
+- **원인**: `pool: 'vmThreads'` + `@phosphor-icons/react`의 ~1300개 dist 파일 — 동시 import 시 Windows 파일 핸들 한도 초과
+- **판정**: Windows 로컬 환경 한정 이슈. 개별 파일은 항상 정상 통과. `fileParallelism: false` 등으로 고치면 전체 스위트에 플레이키니스 유발 (트레이드오프 나쁨 — 적용하지 않음)
+- **대응**: 설정 변경 불필요. 영향받는 테스트 파일은 나눠서(2~3개씩) 실행
+- **상세**: `.dev/learnings/2026-06-14_vitest_emfile_phosphor_icons.md`
