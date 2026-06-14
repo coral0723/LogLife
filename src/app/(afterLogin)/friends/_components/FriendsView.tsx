@@ -1,5 +1,6 @@
 "use client";
 
+import { CommonBucketMatchesWidget } from "./CommonBucketMatchesWidget";
 import { FriendListSection } from "./FriendListSection";
 import { FriendRequestsSection } from "./FriendRequestsSection";
 import { UserSearchSection } from "./UserSearchSection";
@@ -11,6 +12,7 @@ export function FriendsView() {
       <FriendRequestsSection />
       <UserSearchSection />
       <FriendListSection />
+      <CommonBucketMatchesWidget />
     </div>
   );
 }
