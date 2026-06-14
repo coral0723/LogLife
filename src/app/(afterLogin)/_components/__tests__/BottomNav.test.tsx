@@ -16,11 +16,15 @@ vi.mock("next/link", () => ({
 vi.mock("@phosphor-icons/react", () => ({
   Globe: () => <span data-testid="icon-globe" />,
   SquaresFour: () => <span data-testid="icon-squaresfour" />,
-  UsersThree: () => <span data-testid="icon-usersthree" />,
+  PencilSimple: () => <span data-testid="icon-pencilsimple" />,
 }));
 vi.mock("../DashboardPanel", () => ({
   DashboardPanel: ({ isOpen }: { isOpen: boolean; onClose: () => void }) =>
     isOpen ? <div data-testid="dashboard-panel" /> : null,
+}));
+vi.mock("../CreatePanel", () => ({
+  CreatePanel: ({ isOpen }: { isOpen: boolean; onClose: () => void }) =>
+    isOpen ? <div data-testid="create-panel" /> : null,
 }));
 
 import { usePathname } from "next/navigation";
@@ -30,29 +34,34 @@ describe("BottomNav", () => {
     vi.clearAllMocks();
   });
 
-  it("경로 /main → 메인 링크에 활성 클래스, 대시보드·친구는 없음", () => {
+  it("경로 /main → 메인 링크에 활성 클래스, 대시보드·작성은 비활성", () => {
     (usePathname as ReturnType<typeof vi.fn>).mockReturnValue("/main");
     render(<BottomNav />);
 
     const mainLink = screen.getByRole("link", { name: "메인" });
     const dashboardButton = screen.getByRole("button", { name: "대시보드" });
-    const friendsLink = screen.getByRole("link", { name: "친구" });
+    const createButton = screen.getByRole("button", { name: "작성" });
 
     expect(mainLink).toHaveClass("bg-gray-100", "text-gray-900");
     expect(dashboardButton).not.toHaveClass("bg-gray-100", "text-gray-900");
-    expect(friendsLink).not.toHaveClass("bg-gray-100", "text-gray-900");
+    expect(createButton).not.toHaveClass("bg-gray-100", "text-gray-900");
     expect(screen.queryByTestId("dashboard-panel")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("create-panel")).not.toBeInTheDocument();
   });
 
-  it("경로 /friends → 친구 링크에만 활성 클래스 적용", () => {
-    (usePathname as ReturnType<typeof vi.fn>).mockReturnValue("/friends");
+  it("작성 버튼 클릭 → 버튼 활성화 + CreatePanel 표시, 메인 링크는 비활성화", () => {
+    (usePathname as ReturnType<typeof vi.fn>).mockReturnValue("/main");
     render(<BottomNav />);
 
-    const friendsLink = screen.getByRole("link", { name: "친구" });
+    const createButton = screen.getByRole("button", { name: "작성" });
     const mainLink = screen.getByRole("link", { name: "메인" });
+    expect(mainLink).toHaveClass("bg-gray-100", "text-gray-900");
 
-    expect(friendsLink).toHaveClass("bg-gray-100", "text-gray-900");
+    fireEvent.click(createButton);
+
+    expect(createButton).toHaveClass("bg-gray-100", "text-gray-900");
     expect(mainLink).not.toHaveClass("bg-gray-100", "text-gray-900");
+    expect(screen.getByTestId("create-panel")).toBeInTheDocument();
   });
 
   it("대시보드 버튼 클릭 → 버튼 활성화 + 패널 표시, 메인 링크는 비활성화", () => {
