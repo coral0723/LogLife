@@ -83,7 +83,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - 디버깅·이상 증상 발견 시 → [known_issues.md](.claude/rules/known_issues.md)
 
 ### 🟣 AI 작업 흔적 ([.dev/](.dev/))
-- 여러 커밋 · 복잡한 호출 관계가 얽힌 큰 기능의 구조 정리 → [work-logs/](.dev/work-logs/) (작은 브랜치는 PR 본문 + `/changelog`로 충분, 굳이 작성하지 않음)
+- 브랜치별 작업 내용 정리 → Notion BranchLog DB (`/branchlog`로 기록, PR 작성 전후 실행)
 - 새로 알게 된 패턴 · 주의점 · 재현하기 까다로웠던 오류 기록 → [learnings/](.dev/learnings/)
 - 작업 중 임시 메모 (작업 종료 후 삭제 — 비어있는 게 정상 상태) → [scratchpad/](.dev/scratchpad/)
 

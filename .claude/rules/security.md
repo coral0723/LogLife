@@ -41,4 +41,4 @@ globs:
 ## 참고
 
 - 인증/세션 모델 (AD-05) → [`docs/plan_spec.md`](../../docs/plan_spec.md)
-- Places 프록시 / 레이트 리밋 구현 패턴 → [`.dev/work-logs/feat-3-bucketlist-crud.md`](../../.dev/work-logs/feat-3-bucketlist-crud.md) §3
+- Places 프록시 / 레이트 리밋 구현 패턴 → [`.dev/learnings/2026-06-14_places_proxy_ratelimit_pattern.md`](../../.dev/learnings/2026-06-14_places_proxy_ratelimit_pattern.md)
