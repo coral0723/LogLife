@@ -15,6 +15,7 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
+- For non-trivial tasks, start in Plan Mode and don't implement until the user approves the plan.
 
 ## 2. Simplicity First
 
