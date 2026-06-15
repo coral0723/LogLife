@@ -7,16 +7,17 @@ import { dashboardQueryKeys, fetchAchievementStats } from "@/api/dashboard";
 
 type Props = {
   isOpen: boolean;
+  username?: string;
 };
 
-export function AchievementStatsWidget({ isOpen }: Props) {
+export function AchievementStatsWidget({ isOpen, username }: Props) {
   const {
     data: achievementStats = { achievementRate: 0, avgDays: null, longestItem: null },
     isLoading: isAchievementStatsLoading,
     isError: isAchievementStatsError,
   } = useQuery({
-    queryKey: dashboardQueryKeys.achievementStats(),
-    queryFn: () => fetchAchievementStats(),
+    queryKey: dashboardQueryKeys.achievementStats(username),
+    queryFn: () => fetchAchievementStats(username),
     enabled: isOpen,
   });
 

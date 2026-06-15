@@ -8,6 +8,7 @@ import { dashboardQueryKeys, fetchUpcomingDeadlines } from "@/api/dashboard";
 
 type Props = {
   isOpen: boolean;
+  username?: string;
 };
 
 function getDDay(deadlineAt: string) {
@@ -22,14 +23,14 @@ function getDeadlineBadgeStyle(dDay: number) {
   return "bg-zinc-100 text-zinc-500";
 }
 
-export function UpcomingDeadlinesWidget({ isOpen }: Props) {
+export function UpcomingDeadlinesWidget({ isOpen, username }: Props) {
   const {
     data: upcomingDeadlines = [],
     isLoading: isUpcomingDeadlinesLoading,
     isError: isUpcomingDeadlinesError,
   } = useQuery({
-    queryKey: dashboardQueryKeys.upcomingDeadlines(),
-    queryFn: () => fetchUpcomingDeadlines(),
+    queryKey: dashboardQueryKeys.upcomingDeadlines(username),
+    queryFn: () => fetchUpcomingDeadlines(username),
     enabled: isOpen,
   });
 

@@ -19,9 +19,10 @@ const MAX_VISIBLE_CHIPS_DESKTOP = 5;
 
 type Props = {
   isOpen: boolean;
+  username?: string;
 };
 
-export function DifficultyExcitementMatrixWidget({ isOpen }: Props) {
+export function DifficultyExcitementMatrixWidget({ isOpen, username }: Props) {
   const [selectedQuadrant, setSelectedQuadrant] = useState<QuadrantKey | null>(null);
 
   const {
@@ -29,8 +30,8 @@ export function DifficultyExcitementMatrixWidget({ isOpen }: Props) {
     isLoading: isDifficultyExcitementLoading,
     isError: isDifficultyExcitementError,
   } = useQuery({
-    queryKey: dashboardQueryKeys.difficultyExcitement(),
-    queryFn: () => fetchDifficultyExcitementMatrix(),
+    queryKey: dashboardQueryKeys.difficultyExcitement(username),
+    queryFn: () => fetchDifficultyExcitementMatrix(username),
     enabled: isOpen,
   });
 
