@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { X } from "@phosphor-icons/react";
 
-import { PublicProfileView } from "@/app/(afterLogin)/u/[username]/_components/PublicProfileView";
+import { PublicProfileView } from "@/app/u/[username]/_components/PublicProfileView";
 
 type Props = {
   username: string;
