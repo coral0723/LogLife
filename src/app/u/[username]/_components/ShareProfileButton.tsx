@@ -29,7 +29,7 @@ export function ShareProfileButton({ username }: Props) {
         type="button"
         onClick={handleShare}
         aria-label="프로필 공유"
-        className="flex h-full w-full items-center justify-center transition-transform duration-150 active:scale-[0.98]"
+        className="flex h-full w-full items-center justify-center cursor-pointer transition-transform duration-150 active:scale-[0.98]"
       >
         <ShareNetwork weight="regular" className="text-[#7b7b81] w-4 h-4" />
       </button>
