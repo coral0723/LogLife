@@ -7,6 +7,7 @@ export type { CommonMatchItem, HotPlaceItem, AchievedTogetherMoment };
 export const friendQueryKeys = {
   list: () => ["friends", "list"] as const,
   requests: () => ["friends", "requests"] as const,
+  requestsCount: () => ["friends", "requests", "count"] as const,
   search: (q: string) => ["friends", "search", q] as const,
   commonBuckets: () => ["friends", "widgets", "common-buckets"] as const,
   hotPlaces: () => ["friends", "widgets", "hot-places"] as const,
@@ -55,6 +56,11 @@ export async function fetchFriendRequests(cursor?: string): Promise<FriendReques
   const res = await fetch(`/api/friends/requests?${params}`);
   if (!res.ok) throw new Error("받은 친구 요청 조회 실패");
   return res.json();
+}
+
+export async function fetchFriendRequestsCount(): Promise<number> {
+  const { totalCount } = await fetchFriendRequests();
+  return totalCount;
 }
 
 export async function searchUsers(q: string): Promise<UserSearchResult[]> {

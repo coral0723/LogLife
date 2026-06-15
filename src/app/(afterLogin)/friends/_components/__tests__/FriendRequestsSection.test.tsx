@@ -11,6 +11,7 @@ vi.mock("@/api/friends", () => ({
   fetchFriendRequests: vi.fn(),
   friendQueryKeys: {
     requests: () => ["friends", "requests"],
+    requestsCount: () => ["friends", "requests", "count"],
     list: () => ["friends", "list"],
   },
 }));

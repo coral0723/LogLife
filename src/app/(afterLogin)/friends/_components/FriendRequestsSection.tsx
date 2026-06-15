@@ -73,13 +73,17 @@ export function FriendRequestsSection() {
     onSuccess: (_, friendshipId) => {
       removeRequest(friendshipId);
       queryClient.invalidateQueries({ queryKey: friendQueryKeys.list() });
+      queryClient.invalidateQueries({ queryKey: friendQueryKeys.requestsCount() });
     },
     onError: handleError,
   });
 
   const declineMutation = useMutation({
     mutationFn: declineFriendRequest,
-    onSuccess: (_, friendshipId) => removeRequest(friendshipId),
+    onSuccess: (_, friendshipId) => {
+      removeRequest(friendshipId);
+      queryClient.invalidateQueries({ queryKey: friendQueryKeys.requestsCount() });
+    },
     onError: handleError,
   });
 
