@@ -45,6 +45,7 @@ export function UserSearchResultItem({ user, searchQuery, onSendSuccess }: Props
     onSuccess: () => {
       onSendSuccess("ACCEPTED");
       invalidateAll();
+      queryClient.invalidateQueries({ queryKey: friendQueryKeys.requestsCount() });
     },
     onError: handleError,
   });
