@@ -44,7 +44,7 @@ export async function GET(req: Request) {
         requester: { select: { id: true, username: true, name: true, image: true } },
         addressee: { select: { id: true, username: true, name: true, image: true } },
       },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      orderBy: [{ respondedAt: "desc" }, { id: "desc" }],
       take: PAGE_SIZE + 1,
       ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
     }),
