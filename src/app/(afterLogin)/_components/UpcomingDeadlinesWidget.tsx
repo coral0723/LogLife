@@ -29,7 +29,7 @@ export function UpcomingDeadlinesWidget({ isOpen }: Props) {
     isError: isUpcomingDeadlinesError,
   } = useQuery({
     queryKey: dashboardQueryKeys.upcomingDeadlines(),
-    queryFn: fetchUpcomingDeadlines,
+    queryFn: () => fetchUpcomingDeadlines(),
     enabled: isOpen,
   });
 

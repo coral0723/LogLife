@@ -18,7 +18,7 @@ export function BucketCountWidget({ isOpen }: Props) {
     isError: isBucketCountError,
   } = useQuery({
     queryKey: dashboardQueryKeys.bucketCount(),
-    queryFn: fetchBucketCount,
+    queryFn: () => fetchBucketCount(),
     enabled: isOpen,
   });
 

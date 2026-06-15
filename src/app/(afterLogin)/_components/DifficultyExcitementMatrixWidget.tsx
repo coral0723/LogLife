@@ -30,7 +30,7 @@ export function DifficultyExcitementMatrixWidget({ isOpen }: Props) {
     isError: isDifficultyExcitementError,
   } = useQuery({
     queryKey: dashboardQueryKeys.difficultyExcitement(),
-    queryFn: fetchDifficultyExcitementMatrix,
+    queryFn: () => fetchDifficultyExcitementMatrix(),
     enabled: isOpen,
   });
 

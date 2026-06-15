@@ -16,7 +16,7 @@ export function AchievementStatsWidget({ isOpen }: Props) {
     isError: isAchievementStatsError,
   } = useQuery({
     queryKey: dashboardQueryKeys.achievementStats(),
-    queryFn: fetchAchievementStats,
+    queryFn: () => fetchAchievementStats(),
     enabled: isOpen,
   });
 
