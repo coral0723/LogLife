@@ -184,7 +184,7 @@ describe("CountrySlidePanel", () => {
       );
 
       expect(vi.mocked(fetchBucketsByCountry)).toHaveBeenCalledTimes(2);
-      expect(vi.mocked(fetchBucketsByCountry)).toHaveBeenLastCalledWith("JP", undefined);
+      expect(vi.mocked(fetchBucketsByCountry)).toHaveBeenLastCalledWith("JP", undefined, undefined);
     });
   });
 
@@ -335,7 +335,7 @@ describe("CountrySlidePanel", () => {
       });
 
       expect(vi.mocked(fetchBucketsByCountry)).toHaveBeenCalledTimes(2);
-      expect(vi.mocked(fetchBucketsByCountry)).toHaveBeenLastCalledWith("KR", "cursor-abc");
+      expect(vi.mocked(fetchBucketsByCountry)).toHaveBeenLastCalledWith("KR", "cursor-abc", undefined);
     });
 
     it("isIntersecting: false일 때 추가 fetch 없음", async () => {
