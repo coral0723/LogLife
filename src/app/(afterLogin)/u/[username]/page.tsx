@@ -10,7 +10,6 @@ import { prisma } from "@/lib/prisma";
 import { GlobeClient } from "@/app/(afterLogin)/main/_components/GlobeClient";
 import { StarField } from "@/app/(afterLogin)/main/_components/StarField";
 import { ShareProfileButton } from "./_components/ShareProfileButton";
-import { UserEmptyState } from "./_components/UserEmptyState";
 import { UserPageHeader } from "./_components/UserPageHeader";
 
 type Props = {
@@ -101,7 +100,9 @@ export default async function UserPage(props: Props) {
       {pins.length > 0 ? (
         <GlobeClient pins={pins} username={target.username} />
       ) : (
-        <UserEmptyState />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <p className="text-sm text-zinc-400">등록된 버킷리스트가 없습니다.</p>
+        </div>
       )}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#060d1f]/70 to-transparent" />
       <UserPageHeader
