@@ -26,6 +26,7 @@ const config: StorybookConfig = {
       resolve: {
         alias: {
           '@/actions/bucketList/actions': path.resolve(dirname, './mocks/bucketListActions.ts'),
+          '@/actions/friend/actions': path.resolve(dirname, './mocks/friendActions.ts'),
         },
       },
     }),
