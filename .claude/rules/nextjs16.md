@@ -18,6 +18,7 @@ globs:
 - [ ] `cookies()` / `headers()` 호출 시 `await`
 - [ ] 본인 변경 후 SSR 갱신은 Server Action의 `revalidatePath`, 클라이언트 캐싱은 TanStack Query Hydration (AD-11 참고)
 - [ ] 새로 추가하는 parallel slot에는 `default.tsx` 동봉
+- [ ] `@modal` 등 인터셉트 라우트 추가 시 `[...catchAll]/page.tsx`(→`null`)가 있는지 확인 — 없으면 매칭 안 되는 URL로 소프트 내비게이션 시 이전 모달이 안 닫힘 (LogLife엔 이미 존재, 신규 추가 때만 재확인)
 - [ ] 미들웨어 필요 시 `proxy.ts`로 작성 (edge 런타임 의존성 점검)
 - [ ] 이미지 quality 75 외 값 사용 시 `next.config.images.qualities` 추가
 
