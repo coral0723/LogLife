@@ -19,6 +19,7 @@ import {
   type BucketsByCountryPage,
 } from "@/api/bucketlists";
 import { dashboardQueryKeys } from "@/api/dashboard";
+import { useTodayDateString } from "@/lib/date/useTodayDateString";
 
 type Props = {
   bucketId: string;
@@ -55,7 +56,7 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
   const [toast, setToast] = useState<Toast | null>(null);
   const [resettingDeadline, setResettingDeadline] = useState(false);
   const [deadlineInput, setDeadlineInput] = useState("");
-  const [minDate, setMinDate] = useState<string | undefined>(undefined);
+  const minDate = useTodayDateString();
   const [isPending, startTransition] = useTransition();
   const queryClient = useQueryClient();
 
@@ -70,10 +71,6 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
       window.location.reload();
     }
   }, [isError]);
-
-  useEffect(() => {
-    setMinDate(new Date().toLocaleDateString("en-CA"));
-  }, []);
 
   if (!detail) {
     return (

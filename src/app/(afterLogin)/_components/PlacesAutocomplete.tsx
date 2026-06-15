@@ -153,7 +153,7 @@ export function PlacesAutocomplete({
         <ul
           id={listboxId}
           role="listbox"
-          className="absolute left-0 right-0 mt-1 max-h-64 overflow-auto rounded-xl border border-zinc-200 bg-white shadow-lg"
+          className="absolute left-0 right-0 z-20 mt-1 max-h-64 overflow-auto rounded-xl border border-zinc-200 bg-white shadow-lg"
         >
           {suggestions.map((s, i) => (
             <li

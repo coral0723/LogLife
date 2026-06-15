@@ -5,6 +5,7 @@ import { buildCountryPins } from "@/lib/countryPins";
 import { prisma } from "@/lib/prisma";
 
 import { BottomNav } from "../_components/BottomNav";
+import { FriendBadge } from "../_components/FriendBadge";
 import { ProfileBadge } from "../_components/ProfileBadge";
 import { EmptyState } from "./_components/EmptyState";
 import { GlobeClient } from "./_components/GlobeClient";
@@ -50,6 +51,7 @@ export default async function MainPage() {
       )}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#060d1f]/70 to-transparent" />
       <ProfileBadge />
+      <FriendBadge />
       {pins.length > 0 && <BottomNav />}
     </main>
   );
