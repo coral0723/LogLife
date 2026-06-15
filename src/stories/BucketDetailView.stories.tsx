@@ -20,6 +20,7 @@ const BASE: BucketDetail = {
   displayName: "신주쿠구",
   countryCode: "JP",
   shareToken: "abc123",
+  user: { username: "traveler", name: "여행자", image: null },
 };
 
 // 스토리별로 QueryClient 캐시에 detail을 주입하는 데코레이터

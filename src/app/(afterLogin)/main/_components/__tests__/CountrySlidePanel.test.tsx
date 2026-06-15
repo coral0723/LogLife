@@ -77,6 +77,7 @@ const sampleDetail: BucketDetail = {
   displayName: "도쿄 타워, 일본",
   countryCode: "JP",
   shareToken: "token-abc",
+  user: { username: "tester", name: "테스터", image: null },
 };
 
 function renderWithQuery(ui: React.ReactElement) {

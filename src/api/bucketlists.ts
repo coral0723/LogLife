@@ -29,20 +29,25 @@ export type BucketDetail = {
   displayName: string;
   countryCode: string;
   shareToken: string;
+  user: { username: string; name: string | null; image: string | null };
 };
 
 export const bucketQueryKeys = {
-  byCountry: (countryCode: string) =>
-    ["bucketlists", "by-country", countryCode] as const,
+  byCountry: (countryCode: string, username?: string) =>
+    username
+      ? (["bucketlists", "by-country", countryCode, username] as const)
+      : (["bucketlists", "by-country", countryCode] as const),
   detail: (id: string) => ["bucketlists", "detail", id] as const,
 };
 
 export async function fetchBucketsByCountry(
   countryCode: string,
   cursor?: string,
+  username?: string,
 ): Promise<BucketsByCountryPage> {
   const params = new URLSearchParams({ countryCode });
   if (cursor) params.set("cursor", cursor);
+  if (username) params.set("username", username);
   const res = await fetch(`/api/bucketlists/by-country?${params}`);
   if (!res.ok) throw new Error("버킷리스트 목록 조회 실패");
   return res.json();

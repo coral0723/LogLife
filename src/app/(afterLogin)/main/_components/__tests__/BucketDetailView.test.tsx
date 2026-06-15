@@ -54,6 +54,7 @@ const baseDetail: BucketDetail = {
   displayName: "도쿄 타워, 일본",
   countryCode: "JP",
   shareToken: "token-abc",
+  user: { username: "tester", name: "테스터", image: null },
 };
 
 // QueryClient 캐시에 detail을 미리 주입하고 렌더링 — fetch 없이 즉시 data 반환
