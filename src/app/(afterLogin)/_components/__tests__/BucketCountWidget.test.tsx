@@ -61,7 +61,7 @@ vi.mock("framer-motion", async () => {
     return { stop: () => {} };
   }
 
-  const span = ({ children, className }: { children: unknown; className?: string }) => {
+  const MotionSpan = ({ children, className }: { children: unknown; className?: string }) => {
     const isMotionValue =
       children !== null &&
       typeof children === "object" &&
@@ -82,7 +82,7 @@ vi.mock("framer-motion", async () => {
   };
 
   return {
-    motion: { span },
+    motion: { span: MotionSpan },
     useMotionValue,
     useTransform,
     animate,

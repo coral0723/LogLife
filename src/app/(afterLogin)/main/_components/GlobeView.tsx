@@ -127,6 +127,13 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
     const minAltitude = 1 / Math.sin(halfAngleRad) - 1;
     const altitude = Math.max(2.5, minAltitude);
 
+    // 줌 한도 — 화면에 맞춘 거리(fitDistance) 기준: 줌아웃 전면 차단(maxDistance),
+    // 줌인은 카메라 거리 1/3(지구본 약 3배 크기)까지 허용(minDistance)
+    const fitDistance = globeRef.current.getGlobeRadius() * (1 + altitude);
+    const controls = globeRef.current.controls();
+    controls.maxDistance = fitDistance;
+    controls.minDistance = fitDistance / 3;
+
     if (!hasSetInitialPov.current) {
       globeRef.current.pointOfView({ lat: 36, lng: 128, altitude }, 0);
       hasSetInitialPov.current = true;

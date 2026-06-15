@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import {
   PlacesAutocomplete,
@@ -9,6 +9,7 @@ import {
 } from "@/app/(afterLogin)/_components/PlacesAutocomplete";
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
 import { createBucketList } from "@/actions/bucketList/actions";
+import { useTodayDateString } from "@/lib/date/useTodayDateString";
 
 import { DotRatingInput } from "./DotRatingInput";
 
@@ -32,11 +33,7 @@ export function CreateBucketListForm({ onSuccess }: Props) {
   const [deadlineFocused, setDeadlineFocused] = useState(false);
   const [difficulty, setDifficulty] = useState(3);
   const [excitement, setExcitement] = useState(3);
-  const [minDate, setMinDate] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    setMinDate(new Date().toLocaleDateString("en-CA"));
-  }, []);
+  const minDate = useTodayDateString();
 
   const canSubmit = title.trim() !== "" && place !== null && deadlineAt !== "";
 
