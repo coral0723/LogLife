@@ -259,7 +259,7 @@ describe("BucketDetailView", () => {
     });
 
     it("img 로드 실패 → Camera 아이콘 폴백 표시", () => {
-      const { container } = renderWithDetail(baseDetail);
+      const { container } = renderWithDetail(baseDetail, { isOwner: true });
       const img = container.querySelector("img");
       expect(img).not.toBeNull();
 
@@ -309,9 +309,9 @@ describe("BucketDetailView", () => {
       expect(screen.queryByRole("button", { name: "공유하기" })).not.toBeInTheDocument();
     });
 
-    it("FRIENDS → 공유하기 버튼 없음", () => {
+    it("FRIENDS → 공유하기 버튼 렌더링", () => {
       renderWithDetail({ ...baseDetail, visibility: "FRIENDS" });
-      expect(screen.queryByRole("button", { name: "공유하기" })).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "공유하기" })).toBeInTheDocument();
     });
 
     it("클릭 시 clipboard.writeText에 올바른 URL(/b/{shareToken}) 전달", async () => {
