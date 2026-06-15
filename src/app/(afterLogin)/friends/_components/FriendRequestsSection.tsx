@@ -74,6 +74,7 @@ export function FriendRequestsSection() {
       removeRequest(friendshipId);
       queryClient.invalidateQueries({ queryKey: friendQueryKeys.list() });
       queryClient.invalidateQueries({ queryKey: friendQueryKeys.requestsCount() });
+      queryClient.invalidateQueries({ queryKey: friendQueryKeys.requests() });
     },
     onError: handleError,
   });
@@ -83,6 +84,7 @@ export function FriendRequestsSection() {
     onSuccess: (_, friendshipId) => {
       removeRequest(friendshipId);
       queryClient.invalidateQueries({ queryKey: friendQueryKeys.requestsCount() });
+      queryClient.invalidateQueries({ queryKey: friendQueryKeys.requests() });
     },
     onError: handleError,
   });

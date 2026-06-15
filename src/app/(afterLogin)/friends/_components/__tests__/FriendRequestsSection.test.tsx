@@ -143,11 +143,9 @@ describe("FriendRequestsSection", () => {
   });
 
   it("수락 클릭 시 acceptFriendRequest가 호출되고 목록·배지에서 제거되며 친구 목록을 무효화한다", async () => {
-    mockFetchFriendRequests.mockResolvedValue({
-      items: [REQUEST_ITEM],
-      nextCursor: null,
-      totalCount: 1,
-    });
+    mockFetchFriendRequests
+      .mockResolvedValueOnce({ items: [REQUEST_ITEM], nextCursor: null, totalCount: 1 })
+      .mockResolvedValueOnce({ items: [], nextCursor: null, totalCount: 0 });
     mockAcceptFriendRequest.mockResolvedValue(undefined);
     renderSection();
     openDropdown();
@@ -166,11 +164,9 @@ describe("FriendRequestsSection", () => {
   });
 
   it("거절 클릭 시 declineFriendRequest가 호출되고 목록에서 제거된다", async () => {
-    mockFetchFriendRequests.mockResolvedValue({
-      items: [REQUEST_ITEM],
-      nextCursor: null,
-      totalCount: 1,
-    });
+    mockFetchFriendRequests
+      .mockResolvedValueOnce({ items: [REQUEST_ITEM], nextCursor: null, totalCount: 1 })
+      .mockResolvedValueOnce({ items: [], nextCursor: null, totalCount: 0 });
     mockDeclineFriendRequest.mockResolvedValue(undefined);
     renderSection();
     openDropdown();
@@ -189,11 +185,9 @@ describe("FriendRequestsSection", () => {
 
   it("받은 요청을 1건 처리하면 배지 숫자가 1 줄어든다", async () => {
     const otherItem = { ...REQUEST_ITEM, friendshipId: "fs-2", id: "user-2", username: "bob", name: "보브" };
-    mockFetchFriendRequests.mockResolvedValue({
-      items: [REQUEST_ITEM, otherItem],
-      nextCursor: null,
-      totalCount: 2,
-    });
+    mockFetchFriendRequests
+      .mockResolvedValueOnce({ items: [REQUEST_ITEM, otherItem], nextCursor: null, totalCount: 2 })
+      .mockResolvedValueOnce({ items: [otherItem], nextCursor: null, totalCount: 1 });
     mockAcceptFriendRequest.mockResolvedValue(undefined);
     renderSection();
     openDropdown();
