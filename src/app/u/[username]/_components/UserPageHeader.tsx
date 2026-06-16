@@ -28,7 +28,7 @@ type Props = {
 const CONTAINER_CLASSNAME = "fixed left-4 top-14 z-30 flex items-center gap-2 md:left-8 md:top-8 lg:left-14 lg:top-14";
 
 const ICON_BUTTON_CLASSNAME =
-  "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:h-12 md:w-12";
+  "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:h-10 md:w-10";
 
 const PROFILE_BADGE_CLASSNAME =
   "flex items-center gap-3 rounded-3xl md:rounded-4xl border-2 border-[#A1A1AA] bg-[#F3F4F6] pl-2 pr-3 pt-0.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl transition-transform duration-150 active:scale-[0.98] md:pr-5";
@@ -62,7 +62,7 @@ export function UserPageHeader({ username, targetUser, isLoggedIn, relation, isS
         <ImageWithFallback
           src={targetUser.image ?? AVATAR_PATHS[0]}
           alt={targetUser.name ?? targetUser.username}
-          containerClassName="flex h-6 w-6 flex-shrink-0 items-center justify-center ml-[6px] md:h-8 md:w-8 lg:h-10 md:w-10"
+          containerClassName="flex h-6 w-6 flex-shrink-0 items-center justify-center ml-[6px] md:h-8 md:w-8 lg:h-10 lg:w-10"
           objectFit="contain"
           iconSize={18}
           iconClassName="text-zinc-300"
