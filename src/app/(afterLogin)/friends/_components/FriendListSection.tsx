@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { CaretDown, Users } from "@phosphor-icons/react";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { CaretDown, Trash, Users } from "@phosphor-icons/react";
 
-import { friendQueryKeys, fetchFriends } from "@/api/friends";
+import { friendQueryKeys, fetchFriends, deleteFriend } from "@/api/friends";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
 import { AVATAR_PATHS } from "@/lib/avatar";
@@ -15,6 +15,22 @@ const AVATAR_CONTAINER_CLASSNAME = "h-10 w-10 flex-shrink-0 overflow-hidden roun
 export function FriendListSection() {
   const [isOpen, setIsOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const queryClient = useQueryClient();
+  const { mutate: removeFriend } = useMutation({
+    mutationFn: deleteFriend,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: friendQueryKeys.list() });
+    },
+    onError: (e) => {
+      alert(e instanceof Error ? e.message : "처리 중 오류가 발생했습니다.");
+    },
+  });
+
+  const handleDelete = (friendshipId: string, displayName: string) => {
+    if (!window.confirm(`${displayName}님을 친구 목록에서 삭제하시겠습니까?`)) return;
+    removeFriend(friendshipId);
+  };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
     queryKey: friendQueryKeys.list(),
@@ -80,10 +96,13 @@ export function FriendListSection() {
           ) : (
             <ul className="flex flex-col gap-2">
               {items.map((friend) => (
-                <li key={friend.friendshipId}>
+                <li
+                  key={friend.friendshipId}
+                  className="flex items-center gap-2 rounded-2xl border border-zinc-100 bg-zinc-50 p-3"
+                >
                   <Link
                     href={`/u/${friend.username}`}
-                    className="flex items-center gap-3 rounded-2xl border border-zinc-100 bg-zinc-50 p-3"
+                    className="flex min-w-0 flex-1 items-center gap-3"
                   >
                     <ImageWithFallback
                       src={friend.image ?? AVATAR_PATHS[0]}
@@ -100,6 +119,13 @@ export function FriendListSection() {
                       <p className="truncate text-xs text-zinc-400">@{friend.username}</p>
                     </div>
                   </Link>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(friend.friendshipId, friend.name ?? friend.username)}
+                    className="shrink-0 p-1 text-zinc-500 hover:text-zinc-700 cursor-pointer"
+                  >
+                    <Trash size={16} weight="bold" />
+                  </button>
                 </li>
               ))}
               <div ref={sentinelRef} className="h-1" />

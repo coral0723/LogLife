@@ -4,6 +4,7 @@ import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query
 
 import { auth } from "@/auth";
 import { bucketQueryKeys } from "@/api/bucketlists";
+import { areFriends } from "@/lib/friend/relation";
 import { getBucketByShareToken } from "@/lib/bucketList/getBucketByShareToken";
 import { getPlacePhotoUrl } from "@/lib/getPlacePhotoUrl";
 import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
@@ -21,7 +22,16 @@ export default async function BucketSharePage(
 
   if (!item) notFound();
 
-  if (item.visibility !== "PUBLIC") {
+  const session = await auth();
+  const viewerId = session?.user?.id;
+  const isOwner = viewerId === item.userId;
+
+  let canView = item.visibility === "PUBLIC" || isOwner;
+  if (!canView && item.visibility === "FRIENDS" && viewerId) {
+    canView = await areFriends(viewerId, item.userId);
+  }
+
+  if (!canView) {
     return (
       <main className="relative min-h-[100dvh] bg-[#060d1f] flex items-center justify-center overflow-hidden">
         <StarField />
@@ -29,9 +39,6 @@ export default async function BucketSharePage(
       </main>
     );
   }
-
-  const session = await auth();
-  const isOwner = session?.user?.id === item.userId;
 
   // userId는 서버 전용 — 클라이언트(setQueryData)로 직렬화되지 않도록 제거
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -4,6 +4,10 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
+const deleteBodySchema = z.object({
+  friendshipId: z.string(),
+});
+
 export const runtime = "nodejs";
 
 const querySchema = z.object({
@@ -69,4 +73,32 @@ export async function GET(req: Request) {
   const nextCursor = hasMore ? items[items.length - 1].friendshipId : null;
 
   return NextResponse.json({ items, nextCursor, totalCount });
+}
+
+export async function DELETE(req: Request) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) {
+    return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
+  }
+
+  let body: z.infer<typeof deleteBodySchema>;
+  try {
+    body = deleteBodySchema.parse(await req.json());
+  } catch {
+    return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
+  }
+
+  const result = await prisma.friendship.deleteMany({
+    where: {
+      id: body.friendshipId,
+      OR: [{ requesterId: userId }, { addresseeId: userId }],
+    },
+  });
+
+  if (result.count === 0) {
+    return NextResponse.json({ error: "친구 관계를 찾을 수 없습니다." }, { status: 404 });
+  }
+
+  return NextResponse.json({ success: true });
 }

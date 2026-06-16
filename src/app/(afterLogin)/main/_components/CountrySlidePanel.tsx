@@ -23,9 +23,10 @@ type View =
 type Props = {
   countryCode: string | null;
   onClose: () => void;
+  username?: string;
 };
 
-export function CountrySlidePanel({ countryCode, onClose }: Props) {
+export function CountrySlidePanel({ countryCode, onClose, username }: Props) {
   const [view, setView] = useState<View>({ kind: "list" });
   const [prevCountryCode, setPrevCountryCode] = useState(countryCode);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -38,9 +39,9 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: bucketQueryKeys.byCountry(countryCode ?? ""),
+    queryKey: bucketQueryKeys.byCountry(countryCode ?? "", username),
     queryFn: ({ pageParam }) =>
-      fetchBucketsByCountry(countryCode!, pageParam ?? undefined),
+      fetchBucketsByCountry(countryCode!, pageParam ?? undefined, username),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage: BucketsByCountryPage) => lastPage.nextCursor ?? undefined,
     enabled: !!countryCode,
@@ -234,7 +235,7 @@ export function CountrySlidePanel({ countryCode, onClose }: Props) {
                   <BucketDetailView
                     bucketId={view.itemId}
                     onBack={() => setView({ kind: "list" })}
-                    isOwner
+                    isOwner={!username}
                   />
                 </motion.div>
               )}

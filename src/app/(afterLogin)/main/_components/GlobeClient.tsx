@@ -9,6 +9,7 @@ import { CountrySlidePanel } from "./CountrySlidePanel";
 
 interface Props {
   pins: CountryPin[];
+  username?: string;
 }
 
 const GlobeView = dynamic(
@@ -16,7 +17,7 @@ const GlobeView = dynamic(
   { ssr: false }
 );
 
-export function GlobeClient({ pins }: Props) {
+export function GlobeClient({ pins, username }: Props) {
   const [selectedCountryCode, setSelectedCountryCode] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   const handleReady = useCallback(() => setIsReady(true), []);
@@ -40,6 +41,7 @@ export function GlobeClient({ pins }: Props) {
       <CountrySlidePanel
         countryCode={selectedCountryCode}
         onClose={() => setSelectedCountryCode(null)}
+        username={username}
       />
     </div>
   );

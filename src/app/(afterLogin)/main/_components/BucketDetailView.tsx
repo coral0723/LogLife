@@ -12,6 +12,7 @@ import { useQuery, useQueryClient, type InfiniteData } from "@tanstack/react-que
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketList/bucketStatus";
 import { toggleAchieved, updateDeadline } from "@/actions/bucketList/actions";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
+import { AVATAR_PATHS } from "@/lib/avatar";
 import {
   fetchBucketDetail,
   bucketQueryKeys,
@@ -196,8 +197,28 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
           </button>
         )}
 
-        {/* 공유 버튼 — PUBLIC 아이템만 표시 */}
-        {detail.visibility === "PUBLIC" && (
+        {/* 작성자 프로필 배지 — 본인 소유가 아닐 때만 표시 */}
+        {!isOwner && (
+          <Link
+            href={`/u/${detail.user.username}`}
+            className={`absolute top-3 ${onBack ? "left-14" : "left-3"} flex h-9 items-center gap-1.5 rounded-full bg-black/50 pl-1 pr-3 text-white hover:bg-black/70 transition-colors`}
+          >
+            <ImageWithFallback
+              src={detail.user.image ?? AVATAR_PATHS[0]}
+              alt={detail.user.name ?? detail.user.username}
+              containerClassName="h-7 w-7 flex-shrink-0 overflow-hidden rounded-full"
+              objectFit="cover"
+              iconSize={14}
+              iconClassName="text-white"
+            />
+            <span className="text-xs font-medium">
+              {detail.user.name ?? detail.user.username}
+            </span>
+          </Link>
+        )}
+
+        {/* 공유 버튼 — PUBLIC/FRIENDS 아이템만 표시 */}
+        {(detail.visibility === "PUBLIC" || detail.visibility === "FRIENDS") && (
           <div className="absolute top-3 right-3">
             <button
               onClick={handleShare}
