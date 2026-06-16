@@ -22,6 +22,9 @@ export function FriendListSection() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: friendQueryKeys.list() });
     },
+    onError: (e) => {
+      alert(e instanceof Error ? e.message : "처리 중 오류가 발생했습니다.");
+    },
   });
 
   const handleDelete = (friendshipId: string, displayName: string) => {
