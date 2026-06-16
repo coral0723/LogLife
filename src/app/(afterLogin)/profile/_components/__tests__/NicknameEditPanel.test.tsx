@@ -57,7 +57,7 @@ describe("NicknameEditPanel", () => {
 
     const confirmButton = screen.getByRole("button", { name: "변경하기" });
     expect(confirmButton).toBeEnabled();
-    expect(confirmButton).toHaveClass("bg-zinc-900");
+    expect(confirmButton).toHaveClass("bg-[#2cc2f7]");
   });
 
   it("value가 빈 문자열이면 변경하기 버튼이 비활성화된다", () => {

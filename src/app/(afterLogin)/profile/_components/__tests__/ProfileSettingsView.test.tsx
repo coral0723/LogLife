@@ -18,6 +18,7 @@ vi.mock("@/api/user", () => ({
 vi.mock("@/actions/user/actions", () => ({
   updateAvatar: vi.fn(),
   updateNickname: vi.fn(),
+  deleteAccount: vi.fn(),
 }));
 
 const mockFetchCurrentUser = vi.mocked(fetchCurrentUser);

@@ -20,7 +20,7 @@ export function DotRatingInput({ name, value, onChange, max = 5 }: Props) {
           aria-label={`${score}점`}
           onClick={() => onChange(score)}
           className={`h-6 w-6 rounded-full transition-colors cursor-pointer ${
-            score <= value ? "bg-zinc-800" : "bg-zinc-200 hover:bg-zinc-300"
+            score <= value ? "bg-[#2cc2f7]" : "bg-zinc-200 hover:bg-zinc-300"
           }`}
         />
       ))}

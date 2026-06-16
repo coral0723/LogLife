@@ -82,6 +82,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - 배포 / next.config / Vercel 관련 → [deploy.md](.claude/rules/deploy.md)
 - 라우트/페이지(page/layout/route.ts) 작성 시 → [nextjs16.md](.claude/rules/nextjs16.md)
 - 디버깅·이상 증상 발견 시 → [known_issues.md](.claude/rules/known_issues.md)
+- 새 컴포넌트/UI 작성 시 → [design.md](.claude/rules/design.md)
 
 ### 🟣 AI 작업 흔적 ([.dev/](.dev/))
 - 브랜치별 작업 내용 정리 → Notion BranchLog DB (`/branchlog`로 기록, PR 작성 전후 실행)
