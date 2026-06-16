@@ -50,7 +50,7 @@ describe("AvatarEditPanel", () => {
 
     const confirmButton = screen.getByRole("button", { name: "변경하기" });
     expect(confirmButton).toBeEnabled();
-    expect(confirmButton).toHaveClass("bg-zinc-900");
+    expect(confirmButton).toHaveClass("bg-[#2cc2f7]");
   });
 
   it("활성화된 변경하기 버튼 클릭 시 onConfirm이 호출된다", () => {

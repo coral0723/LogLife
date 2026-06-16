@@ -12,6 +12,7 @@ import { useQuery, useQueryClient, type InfiniteData } from "@tanstack/react-que
 import { getStatus, STATUS_CONFIG, VISIBILITY_CONFIG } from "@/lib/bucketList/bucketStatus";
 import { toggleAchieved, updateDeadline } from "@/actions/bucketList/actions";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
+import { Button } from "@/app/(afterLogin)/_components/Button";
 import { AVATAR_PATHS } from "@/lib/avatar";
 import {
   fetchBucketDetail,
@@ -38,7 +39,7 @@ function DotRating({ value, max = 5 }: { value: number; max?: number }) {
         <span
           key={i}
           className={`w-2.5 h-2.5 rounded-full ${
-            i < value ? "bg-zinc-800" : "bg-zinc-200"
+            i < value ? "bg-[#2cc2f7]" : "bg-zinc-200"
           }`}
         />
       ))}
@@ -324,35 +325,38 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
           )}
 
           {status === "pending" && (
-            <button
+            <Button
               type="button"
+              variant="primary"
               onClick={handleToggleAchieved}
               disabled={isPending}
-              className="w-full rounded-xl bg-zinc-900 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 cursor-pointer"
+              className="w-full py-2.5 text-sm font-medium transition-colors"
             >
               달성으로 표시
-            </button>
+            </Button>
           )}
 
           {status === "achieved" && (
-            <button
+            <Button
               type="button"
+              variant="cancel"
               onClick={handleToggleAchieved}
               disabled={isPending}
-              className="w-full rounded-xl border border-zinc-200 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-50 disabled:opacity-50 cursor-pointer"
+              className="w-full py-2.5 text-sm font-medium transition-colors"
             >
               달성 취소
-            </button>
+            </Button>
           )}
 
           {status === "expired" && !resettingDeadline && (
-            <button
+            <Button
               type="button"
+              variant="cancel"
               onClick={() => setResettingDeadline(true)}
-              className="w-full rounded-xl border border-zinc-200 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 cursor-pointer"
+              className="w-full py-2.5 text-sm font-medium transition-colors"
             >
               마감일 다시 설정
-            </button>
+            </Button>
           )}
 
           {status === "expired" && resettingDeadline && (
@@ -372,13 +376,14 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
                 aria-label="새 마감일"
                 className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-700"
               />
-              <button
+              <Button
                 type="submit"
+                variant="primary"
                 disabled={isPending}
-                className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 cursor-pointer"
+                className="px-4 py-2 text-sm font-medium transition-colors"
               >
                 확인
-              </button>
+              </Button>
             </form>
           )}
         </div>

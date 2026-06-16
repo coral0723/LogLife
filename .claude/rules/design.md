@@ -11,6 +11,7 @@ Meta의 {colors.primary}(#0064E0) 대신 LogLife 브랜드 블루 사용:
 버튼 체계: Meta의 두 단계(마케팅 black / 구매 cobalt) 대신 LogLife는 단일 primary blue:
 - variant="primary" → bg-[#2cc2f7] text-white (hover: bg-[#1aade0])
 - variant="cancel"  → border border-zinc-200 bg-white text-zinc-600 (hover: bg-zinc-50)
+- variant="danger"  → bg-red-500 text-white (hover: bg-red-600) — 탈퇴·삭제 등 파괴적 액션 전용
 - disabled          → bg-zinc-300 text-white cursor-not-allowed (variant 무관)
 - 모든 버튼은 rounded-full (Meta 컨벤션 동일)
 
