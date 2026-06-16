@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-query";
 import { CaretDown } from "@phosphor-icons/react";
 
+import Link from "next/link";
+
 import { acceptFriendRequest, declineFriendRequest } from "@/actions/friend/actions";
 import { friendQueryKeys, fetchFriendRequests, type FriendRequestsPage } from "@/api/friends";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
@@ -134,20 +136,25 @@ export function FriendRequestsSection() {
                     key={request.friendshipId}
                     className="flex items-center gap-3 rounded-2xl border border-zinc-100 bg-zinc-50 p-3"
                   >
-                    <ImageWithFallback
-                      src={request.image ?? AVATAR_PATHS[0]}
-                      alt={request.name ?? request.username}
-                      containerClassName={AVATAR_CONTAINER_CLASSNAME}
-                      objectFit="cover"
-                      iconSize={18}
-                      iconClassName="text-zinc-300"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-zinc-900">
-                        {request.name ?? request.username}
-                      </p>
-                      <p className="truncate text-xs text-zinc-400">@{request.username}</p>
-                    </div>
+                    <Link
+                      href={`/u/${request.username}`}
+                      className="flex min-w-0 flex-1 items-center gap-3"
+                    >
+                      <ImageWithFallback
+                        src={request.image ?? AVATAR_PATHS[0]}
+                        alt={request.name ?? request.username}
+                        containerClassName={AVATAR_CONTAINER_CLASSNAME}
+                        objectFit="cover"
+                        iconSize={18}
+                        iconClassName="text-zinc-300"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-zinc-900">
+                          {request.name ?? request.username}
+                        </p>
+                        <p className="truncate text-xs text-zinc-400">@{request.username}</p>
+                      </div>
+                    </Link>
                     <div className="flex flex-shrink-0 gap-2">
                       <button
                         type="button"

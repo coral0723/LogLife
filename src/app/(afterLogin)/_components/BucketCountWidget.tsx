@@ -9,16 +9,17 @@ import { dashboardQueryKeys, fetchBucketCount } from "@/api/dashboard";
 
 type Props = {
   isOpen: boolean;
+  username?: string;
 };
 
-export function BucketCountWidget({ isOpen }: Props) {
+export function BucketCountWidget({ isOpen, username }: Props) {
   const {
     data: bucketCount,
     isLoading: isBucketCountLoading,
     isError: isBucketCountError,
   } = useQuery({
-    queryKey: dashboardQueryKeys.bucketCount(),
-    queryFn: fetchBucketCount,
+    queryKey: dashboardQueryKeys.bucketCount(username),
+    queryFn: () => fetchBucketCount(username),
     enabled: isOpen,
   });
 

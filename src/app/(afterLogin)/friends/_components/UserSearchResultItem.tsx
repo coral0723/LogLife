@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { acceptFriendRequest, sendFriendRequest } from "@/actions/friend/actions";
@@ -52,18 +53,20 @@ export function UserSearchResultItem({ user, searchQuery, onSendSuccess }: Props
 
   return (
     <li className="flex items-center gap-3 rounded-2xl border border-zinc-100 bg-zinc-50 p-3">
-      <ImageWithFallback
-        src={user.image ?? AVATAR_PATHS[0]}
-        alt={user.name ?? user.username}
-        containerClassName={AVATAR_CONTAINER_CLASSNAME}
-        objectFit="cover"
-        iconSize={18}
-        iconClassName="text-zinc-300"
-      />
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-zinc-900">{user.name ?? user.username}</p>
-        <p className="truncate text-xs text-zinc-400">@{user.username}</p>
-      </div>
+      <Link href={`/u/${user.username}`} className="flex min-w-0 flex-1 items-center gap-3">
+        <ImageWithFallback
+          src={user.image ?? AVATAR_PATHS[0]}
+          alt={user.name ?? user.username}
+          containerClassName={AVATAR_CONTAINER_CLASSNAME}
+          objectFit="cover"
+          iconSize={18}
+          iconClassName="text-zinc-300"
+        />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium text-zinc-900">{user.name ?? user.username}</p>
+          <p className="truncate text-xs text-zinc-400">@{user.username}</p>
+        </div>
+      </Link>
       {user.relation === "none" && (
         <button
           type="button"

@@ -63,6 +63,15 @@ export async function fetchFriendRequestsCount(): Promise<number> {
   return totalCount;
 }
 
+export async function deleteFriend(friendshipId: string): Promise<void> {
+  const res = await fetch("/api/friends", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ friendshipId }),
+  });
+  if (!res.ok) throw new Error("친구 삭제 실패");
+}
+
 export async function searchUsers(q: string): Promise<UserSearchResult[]> {
   const params = new URLSearchParams({ q });
   const res = await fetch(`/api/friends/search?${params}`);

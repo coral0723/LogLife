@@ -22,6 +22,7 @@ export async function getBucketByShareToken(
       countryCode: true,
       shareToken: true,
       userId: true,
+      user: { select: { username: true, name: true, image: true } },
     },
   });
   if (!item) return null;
