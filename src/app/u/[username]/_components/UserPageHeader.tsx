@@ -39,7 +39,7 @@ export function UserPageHeader({ username, targetUser, isLoggedIn, relation, isS
     onError: (e) => alert(e instanceof Error ? e.message : "처리 중 오류가 발생했습니다."),
   });
 
-  const showFriendIcon = !isSelf && relation !== "friends";
+  const showFriendIcon = !isSelf && relation !== "friends" && relation !== "pending_received";
 
   return (
     <div className={CONTAINER_CLASSNAME}>
