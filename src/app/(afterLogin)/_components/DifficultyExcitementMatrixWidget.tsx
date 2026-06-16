@@ -196,12 +196,12 @@ function MatrixQuadrantCell({ label, items, position, onSelect }: MatrixQuadrant
           </span>
         ))}
         {mobileOverflow > 0 && (
-          <span className="text-[11px] font-medium text-zinc-400 md:hidden">
+          <span className={`text-[11px] font-medium md:hidden ${styles.labelText}`}>
             +{mobileOverflow}개 더보기
           </span>
         )}
         {desktopOverflow > 0 && (
-          <span className="hidden text-sm font-medium text-zinc-400 md:inline-flex lg:text-base">
+          <span className={`hidden text-sm font-medium md:inline-flex lg:text-base ${styles.labelText}`}>
             +{desktopOverflow}개 더보기
           </span>
         )}
