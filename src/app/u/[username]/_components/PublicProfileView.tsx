@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { User } from "@phosphor-icons/react";
 
 import { fetchPublicUser, userQueryKeys } from "@/api/user";
 import { AVATAR_PATHS } from "@/lib/avatar";
@@ -32,25 +31,27 @@ export function PublicProfileView({ username }: Props) {
     );
   }
 
-  const nickname = isError ? "-" : data?.name ?? data?.username ?? "";
+  if (isError) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-10">
+        <p className="text-sm text-zinc-400">사용자 정보를 불러올 수 없습니다.</p>
+      </div>
+    );
+  }
+
+  const nickname = data?.name ?? data?.username ?? "";
 
   return (
     <div className="flex flex-1 flex-col px-6 pt-16 pb-16">
       <div className="flex flex-col items-center gap-3">
-        {isError ? (
-          <div className={`${AVATAR_CONTAINER_CLASSNAME} flex items-center justify-center`}>
-            <User size={40} className="text-zinc-300" weight="regular" />
-          </div>
-        ) : (
-          <ImageWithFallback
-            src={data?.image ?? AVATAR_PATHS[0]}
-            alt={nickname}
-            containerClassName={AVATAR_CONTAINER_CLASSNAME}
-            objectFit="contain"
-            iconSize={40}
-            iconClassName="text-zinc-300"
-          />
-        )}
+        <ImageWithFallback
+          src={data?.image ?? AVATAR_PATHS[0]}
+          alt={nickname}
+          containerClassName={AVATAR_CONTAINER_CLASSNAME}
+          objectFit="contain"
+          iconSize={40}
+          iconClassName="text-zinc-300"
+        />
         <p className="text-sm font-medium text-zinc-900">{nickname}</p>
       </div>
 
