@@ -42,7 +42,7 @@ export async function GET(
   }
 
   const isOwner = viewerId === item.userId;
-  if (!isOwner) {
+  if (!isOwner && item.visibility !== "PUBLIC") {
     const canSeeFriendsContent = viewerId ? await areFriends(viewerId, item.userId) : false;
     if (!getViewableVisibilities(canSeeFriendsContent).includes(item.visibility)) {
       return NextResponse.json({ error: "찾을 수 없습니다." }, { status: 404 });
