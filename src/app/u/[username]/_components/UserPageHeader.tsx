@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, UserPlus } from "@phosphor-icons/react";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 
 import { sendFriendRequest } from "@/actions/friend/actions";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
@@ -33,12 +34,18 @@ const PROFILE_BADGE_CLASSNAME =
   "flex items-center gap-3 rounded-3xl md:rounded-4xl border-2 border-[#A1A1AA] bg-[#F3F4F6] pl-2 pr-3 pt-0.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl transition-transform duration-150 active:scale-[0.98] md:pr-5";
 
 export function UserPageHeader({ username, targetUser, isLoggedIn, relation, isSelf }: Props) {
+  const [requestSent, setRequestSent] = useState(false);
+
   const sendMutation = useMutation({
     mutationFn: sendFriendRequest,
-    onSuccess: () => alert("친구 신청이 되었습니다."),
+    onSuccess: () => {
+      setRequestSent(true);
+      alert("친구 신청이 되었습니다.");
+    },
     onError: (e) => alert(e instanceof Error ? e.message : "처리 중 오류가 발생했습니다."),
   });
 
+  const isPendingSent = requestSent || relation === "pending_sent";
   const showFriendIcon = !isSelf && relation !== "friends" && relation !== "pending_received";
 
   return (
@@ -66,7 +73,7 @@ export function UserPageHeader({ username, targetUser, isLoggedIn, relation, isS
       </Link>
 
       {showFriendIcon &&
-        (relation === "pending_sent" ? (
+        (isPendingSent ? (
           <button
             type="button"
             disabled
@@ -81,7 +88,7 @@ export function UserPageHeader({ username, targetUser, isLoggedIn, relation, isS
             onClick={() => sendMutation.mutate(targetUser.id)}
             disabled={sendMutation.isPending}
             aria-label="친구 추가"
-            className={`${ICON_BUTTON_CLASSNAME} bg-[#2cc2f7] text-white transition-transform duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50`}
+            className={`${ICON_BUTTON_CLASSNAME} cursor-pointer bg-[#2cc2f7] text-white transition-transform duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50`}
           >
             <UserPlus size={18} weight="bold" />
           </button>
@@ -89,7 +96,7 @@ export function UserPageHeader({ username, targetUser, isLoggedIn, relation, isS
           <Link
             href="/login"
             aria-label="친구 추가"
-            className={`${ICON_BUTTON_CLASSNAME} bg-[#2cc2f7] text-white transition-transform duration-150 active:scale-[0.98]`}
+            className={`${ICON_BUTTON_CLASSNAME} cursor-pointer bg-[#2cc2f7] text-white transition-transform duration-150 active:scale-[0.98]`}
           >
             <UserPlus size={18} weight="bold" />
           </Link>
