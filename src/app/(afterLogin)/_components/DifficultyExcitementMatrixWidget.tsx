@@ -83,14 +83,14 @@ export function DifficultyExcitementMatrixWidget({ isOpen, username }: Props) {
               {/* 세로축: 난이도 (위쪽 화살표) */}
               <div className="absolute left-1/2 top-2 bottom-0 w-px -translate-x-1/2 bg-zinc-400 md:top-3 md:w-0.5" />
               <div className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-x-[5px] border-b-8 border-x-transparent border-b-zinc-400 md:border-x-[7px] md:border-b-12" />
-              <span className="absolute left-1/2 top-2 translate-x-2 text-[6px] font-medium text-zinc-500 md:top-3 md:translate-x-3 md:text-sm lg:text-base">
+              <span className="absolute left-1/2 top-2 translate-x-2 text-[8px] font-medium text-zinc-400 md:top-3 md:translate-x-3 md:text-sm lg:text-base">
                 난이도
               </span>
 
               {/* 가로축: 설렘 (오른쪽 화살표) */}
               <div className="absolute left-0 right-2 top-1/2 h-px -translate-y-1/2 bg-zinc-400 md:right-3 md:h-0.5" />
               <div className="absolute right-0 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[5px] border-l-8 border-y-transparent border-l-zinc-400 md:border-y-[7px] md:border-l-12" />
-              <span className="absolute right-2 top-1/2 translate-y-2 text-[6px] font-medium text-zinc-500 md:right-3 md:translate-y-3 md:text-sm lg:text-base">
+              <span className="absolute right-2 top-1/2 translate-y-2 text-[8px] font-medium text-zinc-400 md:right-3 md:translate-y-3 md:text-sm lg:text-base">
                 설렘
               </span>
             </div>
