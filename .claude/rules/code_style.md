@@ -46,6 +46,13 @@ globs:
 - **api vs lib 구분**: 외부 fetch 호출 → `src/api/`, 순수 유틸·변환 로직 → `src/lib/`
 - **타입 co-location**: 타입은 사용하는 파일·폴더 가까이 정의. 전역 공유 타입만 `src/types/`
 
+## 컴포넌트 재사용
+
+- 동일한 디자인이 필요하면 새 컴포넌트를 복사해 만들지 말 것
+- 기존 컴포넌트에 onClick / variant / className props를 확장해 재사용
+- props가 3개 이상 늘어나는 경우에만 별도 컴포넌트 분리 검토
+- 공유 Button, Badge 등 원자 컴포넌트는 `src/app/(afterLogin)/_components/`에 위치
+
 ## 일반
 
 - 들여쓰기·세미콜론·따옴표는 ESLint / Prettier 설정을 따른다 (수동 결정 금지).
