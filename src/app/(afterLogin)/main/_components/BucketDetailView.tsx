@@ -229,7 +229,7 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
               <ShareNetwork size={18} weight="bold" />
             </button>
             {copied && (
-              <span className="absolute right-0 top-11 whitespace-nowrap text-xs bg-zinc-900 text-white px-2.5 py-1.5 rounded-lg shadow-lg">
+              <span className="absolute right-0 top-11 whitespace-nowrap text-xs bg-[#2cc2f7] text-white px-2.5 py-1.5 rounded-lg shadow-lg">
                 링크 복사됨
               </span>
             )}
@@ -310,7 +310,7 @@ export function BucketDetailView({ bucketId, onBack, photoSrc, isOwner = false }
         <div className="relative flex-shrink-0 border-t border-zinc-100 bg-white px-5 py-3">
           {/* 토스트 — 되돌리기 액션 포함 */}
           {toast && (
-            <div className="absolute inset-x-4 bottom-full mb-3 z-20 flex items-center justify-between gap-3 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm text-white shadow-lg">
+            <div className="absolute inset-x-4 bottom-full mb-3 z-20 flex items-center justify-between gap-3 rounded-xl bg-[#2cc2f7] px-4 py-2.5 text-sm text-white shadow-lg">
               <span>{toast.message}</span>
               {toast.onUndo && (
                 <button

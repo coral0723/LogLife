@@ -34,7 +34,7 @@ export function ShareProfileButton({ username }: Props) {
         <ShareNetwork weight="regular" className="text-[#7b7b81] w-4 h-4" />
       </button>
       {copied && (
-        <span className="absolute right-0 top-11 whitespace-nowrap text-xs bg-zinc-900 text-white px-2.5 py-1.5 rounded-lg shadow-lg">
+        <span className="absolute right-0 top-11 whitespace-nowrap text-xs bg-[#2cc2f7] text-white px-2.5 py-1.5 rounded-lg shadow-lg">
           링크 복사됨
         </span>
       )}

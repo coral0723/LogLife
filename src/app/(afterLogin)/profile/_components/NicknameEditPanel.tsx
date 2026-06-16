@@ -44,7 +44,7 @@ export function NicknameEditPanel({
 
       <div className="sticky bottom-0 -mx-6 mt-auto flex gap-3 border-t border-zinc-100 bg-white px-6 py-4">
         {errorMessage && (
-          <div className="absolute inset-x-4 bottom-full mb-3 flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2.5 text-sm text-white shadow-lg">
+          <div className="absolute inset-x-4 bottom-full mb-3 flex items-center justify-center rounded-xl bg-[#2cc2f7] px-4 py-2.5 text-sm text-white shadow-lg">
             {errorMessage}
           </div>
         )}
