@@ -18,9 +18,9 @@ export default async function UserProfilePage(props: Props) {
   if (!target) notFound();
 
   return (
-    <div className="relative flex min-h-dvh flex-col bg-white">
+    <div className="relative flex h-dvh flex-col overflow-hidden bg-white">
       <ProfileCloseLink href={`/u/${username}`} />
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-y-auto">
         <PublicProfileView username={username} />
       </div>
     </div>

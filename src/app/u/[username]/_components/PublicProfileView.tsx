@@ -11,7 +11,7 @@ import { BucketCountWidget } from "@/app/(afterLogin)/_components/BucketCountWid
 import { DifficultyExcitementMatrixWidget } from "@/app/(afterLogin)/_components/DifficultyExcitementMatrixWidget";
 import { UpcomingDeadlinesWidget } from "@/app/(afterLogin)/_components/UpcomingDeadlinesWidget";
 
-const AVATAR_CONTAINER_CLASSNAME = "h-32 w-24 md:h-42 md:w-34";
+const AVATAR_CONTAINER_CLASSNAME = "h-18 w-18 md:h-24 md:w-24";
 
 type Props = {
   username: string;
@@ -52,7 +52,7 @@ export function PublicProfileView({ username }: Props) {
           iconSize={40}
           iconClassName="text-zinc-300"
         />
-        <p className="text-sm font-medium text-zinc-900">{nickname}</p>
+        <p className="text-sm font-bold text-zinc-900 md:text-lg">{nickname}</p>
       </div>
 
       <div className="mt-6 space-y-4">
