@@ -26,7 +26,7 @@ export function PublicProfileView({ username }: Props) {
   if (isLoading) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-10">
-        <LoadingSpinner size="lg" />
+        <LoadingSpinner size="sm" />
       </div>
     );
   }
