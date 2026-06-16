@@ -344,6 +344,61 @@ describe("BucketDetailView", () => {
       });
       expect(screen.queryByText("링크 복사됨")).not.toBeInTheDocument();
     });
+
+    it("isOwner=true + PUBLIC → 공유하기 버튼 렌더링", () => {
+      renderWithDetail({ ...baseDetail, visibility: "PUBLIC" }, { isOwner: true });
+      expect(screen.getByRole("button", { name: "공유하기" })).toBeInTheDocument();
+    });
+
+    it("isOwner=true + FRIENDS → 공유하기 버튼 렌더링", () => {
+      renderWithDetail({ ...baseDetail, visibility: "FRIENDS" }, { isOwner: true });
+      expect(screen.getByRole("button", { name: "공유하기" })).toBeInTheDocument();
+    });
+
+    it("isOwner=true + PRIVATE → 공유하기 버튼 없음", () => {
+      renderWithDetail({ ...baseDetail, visibility: "PRIVATE" }, { isOwner: true });
+      expect(screen.queryByRole("button", { name: "공유하기" })).not.toBeInTheDocument();
+    });
+  });
+
+  describe("소유자 배지", () => {
+    it("isOwner=false(기본값) → 배지 렌더링", () => {
+      renderWithDetail(baseDetail);
+      expect(screen.getByText("테스터")).toBeInTheDocument();
+    });
+
+    it("isOwner=true → 배지 없음", () => {
+      renderWithDetail(baseDetail, { isOwner: true });
+      expect(screen.queryByText("테스터")).not.toBeInTheDocument();
+    });
+
+    it("user.name 있으면 name 표시", () => {
+      renderWithDetail({ ...baseDetail, user: { username: "tester", name: "홍길동", image: null } });
+      expect(screen.getByText("홍길동")).toBeInTheDocument();
+    });
+
+    it("user.name null이면 username 표시", () => {
+      renderWithDetail({ ...baseDetail, user: { username: "tester", name: null, image: null } });
+      expect(screen.getByText("tester")).toBeInTheDocument();
+    });
+
+    it("/u/[username] 링크로 래핑", () => {
+      renderWithDetail(baseDetail);
+      const nameEl = screen.getByText("테스터");
+      expect(nameEl.closest("a")).toHaveAttribute("href", "/u/tester");
+    });
+
+    it("onBack 없으면 left-3 포지션", () => {
+      renderWithDetail(baseDetail);
+      const nameEl = screen.getByText("테스터");
+      expect(nameEl.closest("a")).toHaveClass("left-3");
+    });
+
+    it("onBack 있으면 left-14 포지션", () => {
+      renderWithDetail(baseDetail, { onBack: vi.fn() });
+      const nameEl = screen.getByText("테스터");
+      expect(nameEl.closest("a")).toHaveClass("left-14");
+    });
   });
 
   describe("본인 소유 액션 (isOwner)", () => {

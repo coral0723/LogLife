@@ -139,3 +139,20 @@ export const Private: Story = {
   name: "비공개",
   decorators: [withQueryCache({ ...BASE, visibility: "PRIVATE" })],
 };
+
+export const Friends: Story = {
+  name: "친구 공개 (소유자)",
+  decorators: [withQueryCache({ ...BASE, visibility: "FRIENDS" })],
+};
+
+export const ViewerMode: Story = {
+  name: "뷰어 모드 — 타인 PUBLIC",
+  args: { isOwner: false },
+  decorators: [withQueryCache(BASE)],
+};
+
+export const FriendsViewer: Story = {
+  name: "뷰어 모드 — 타인 FRIENDS",
+  args: { isOwner: false },
+  decorators: [withQueryCache({ ...BASE, visibility: "FRIENDS" })],
+};
