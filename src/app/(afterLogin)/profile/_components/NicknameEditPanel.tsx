@@ -1,6 +1,7 @@
 "use client";
 
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
+import { Button } from "@/app/(afterLogin)/_components/Button";
 
 const MAX_NICKNAME_LENGTH = 15;
 
@@ -43,24 +44,24 @@ export function NicknameEditPanel({
 
       <div className="sticky bottom-0 -mx-6 mt-auto flex gap-3 border-t border-zinc-100 bg-white px-6 py-4">
         {errorMessage && (
-          <div className="absolute inset-x-4 bottom-full mb-3 flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2.5 text-sm text-white shadow-lg">
+          <div className="absolute inset-x-4 bottom-full mb-3 flex items-center justify-center rounded-xl bg-[#2cc2f7] px-4 py-2.5 text-sm text-white shadow-lg">
             {errorMessage}
           </div>
         )}
-        <button
+        <Button
           type="button"
+          variant="cancel"
           onClick={onCancel}
-          className="flex-1 cursor-pointer rounded-xl border border-zinc-200 bg-white py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-50"
+          className="flex-1 py-2.5 text-sm font-medium"
         >
           취소
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="primary"
           onClick={onConfirm}
           disabled={confirmDisabled}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium text-white ${
-            confirmDisabled ? "bg-zinc-300" : "cursor-pointer bg-zinc-900 hover:bg-zinc-800"
-          }`}
+          className="flex flex-1 items-center justify-center gap-2 py-2.5 text-sm font-medium"
         >
           {isPending ? (
             <>
@@ -70,7 +71,7 @@ export function NicknameEditPanel({
           ) : (
             "변경하기"
           )}
-        </button>
+        </Button>
       </div>
     </div>
   );

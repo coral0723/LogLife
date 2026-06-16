@@ -57,7 +57,7 @@ export function UserSearchSection() {
       </div>
 
       {toastMessage && (
-        <div className="rounded-xl bg-zinc-900 px-4 py-2 text-center text-sm text-white">
+        <div className="rounded-xl bg-[#2cc2f7] px-4 py-2 text-center text-sm text-white">
           {toastMessage}
         </div>
       )}

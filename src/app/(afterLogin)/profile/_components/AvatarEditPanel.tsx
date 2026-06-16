@@ -3,6 +3,7 @@
 import { Check } from "@phosphor-icons/react";
 
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
+import { Button } from "@/app/(afterLogin)/_components/Button";
 import { AVATAR_LABELS } from "@/lib/avatar";
 
 type Props = {
@@ -50,20 +51,20 @@ export function AvatarEditPanel({
       </div>
 
       <div className="sticky bottom-0 -mx-6 mt-auto flex gap-3 border-t border-zinc-100 bg-white px-6 py-4">
-        <button
+        <Button
           type="button"
+          variant="cancel"
           onClick={onCancel}
-          className="flex-1 cursor-pointer rounded-xl border border-zinc-200 bg-white py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-50"
+          className="flex-1 py-2.5 text-sm font-medium"
         >
           취소
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="primary"
           onClick={onConfirm}
           disabled={confirmDisabled}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium text-white ${
-            confirmDisabled ? "bg-zinc-300" : "cursor-pointer bg-zinc-900 hover:bg-zinc-800"
-          }`}
+          className="flex flex-1 items-center justify-center gap-2 py-2.5 text-sm font-medium"
         >
           {isPending ? (
             <>
@@ -73,7 +74,7 @@ export function AvatarEditPanel({
           ) : (
             "변경하기"
           )}
-        </button>
+        </Button>
       </div>
     </div>
   );

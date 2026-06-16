@@ -8,6 +8,7 @@ import {
   type NormalizedPlace,
 } from "@/app/(afterLogin)/_components/PlacesAutocomplete";
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
+import { Button } from "@/app/(afterLogin)/_components/Button";
 import { createBucketList } from "@/actions/bucketList/actions";
 import { useTodayDateString } from "@/lib/date/useTodayDateString";
 
@@ -163,14 +164,15 @@ export function CreateBucketListForm({ onSuccess }: Props) {
             {error}
           </p>
         )}
-        <button
+        <Button
           type="submit"
+          variant="primary"
           disabled={isPending || !canSubmit}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 py-3 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 cursor-pointer"
+          className="flex w-full items-center justify-center gap-2 py-3 text-sm font-medium transition-colors"
         >
           {isPending && <LoadingSpinner size="xs" />}
           작성하기
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -9,6 +9,7 @@ import { fetchCurrentUser, userQueryKeys, type CurrentUser } from "@/api/user";
 import { deleteAccount, updateAvatar, updateNickname } from "@/actions/user/actions";
 import { AVATAR_PATHS } from "@/lib/avatar";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
+import { Button } from "@/app/(afterLogin)/_components/Button";
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
 import { AvatarEditPanel } from "./AvatarEditPanel";
 import { NicknameEditPanel } from "./NicknameEditPanel";
@@ -158,21 +159,23 @@ export function ProfileSettingsView() {
           </button>
 
           <div className="mt-auto flex flex-col gap-2 pt-6">
-            <button
+            <Button
               type="button"
+              variant="cancel"
               onClick={handleLogout}
-              className="w-full cursor-pointer rounded-xl border border-zinc-900 bg-white py-2.5 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
+              className="w-full py-2.5 text-sm font-medium"
             >
               로그아웃
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="danger"
               onClick={handleWithdraw}
               disabled={deleteAccountMutation.isPending}
-              className="w-full cursor-pointer rounded-xl bg-red-500 py-2.5 text-sm font-medium text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full py-2.5 text-sm font-medium"
             >
               탈퇴하기
-            </button>
+            </Button>
           </div>
         </>
       )}

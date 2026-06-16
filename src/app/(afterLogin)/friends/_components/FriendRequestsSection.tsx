@@ -15,6 +15,7 @@ import { acceptFriendRequest, declineFriendRequest } from "@/actions/friend/acti
 import { friendQueryKeys, fetchFriendRequests, type FriendRequestsPage } from "@/api/friends";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
 import LoadingSpinner from "@/app/(afterLogin)/_components/LoadingSpinner";
+import { Button } from "@/app/(afterLogin)/_components/Button";
 import { AVATAR_PATHS } from "@/lib/avatar";
 
 const AVATAR_CONTAINER_CLASSNAME = "h-10 w-10 flex-shrink-0 overflow-hidden rounded-full";
@@ -156,22 +157,26 @@ export function FriendRequestsSection() {
                       </div>
                     </Link>
                     <div className="flex flex-shrink-0 gap-2">
-                      <button
+                      <Button
                         type="button"
+                        variant="primary"
+                        shape="pill"
                         onClick={() => acceptMutation.mutate(request.friendshipId)}
                         disabled={isPending}
-                        className="cursor-pointer rounded-full bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        className="px-3 py-1.5 text-xs font-medium"
                       >
                         수락
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
+                        variant="cancel"
+                        shape="pill"
                         onClick={() => declineMutation.mutate(request.friendshipId)}
                         disabled={isPending}
-                        className="cursor-pointer rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="px-3 py-1.5 text-xs font-medium"
                       >
                         거절
-                      </button>
+                      </Button>
                     </div>
                   </li>
                 );

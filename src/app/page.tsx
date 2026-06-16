@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  openGraph: {
+    title: "LogLife",
+    description: "버킷리스트를 지구본 위에 기록하세요",
+    images: [{ url: "/logo.png" }],
+  },
+};
 
 export default function Home() {
   return (

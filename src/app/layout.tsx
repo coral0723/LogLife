@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "LogLife",
   description: "버킷리스트를 지구본 위에 기록하세요",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

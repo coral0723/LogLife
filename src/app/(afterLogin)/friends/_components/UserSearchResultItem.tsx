@@ -6,12 +6,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { acceptFriendRequest, sendFriendRequest } from "@/actions/friend/actions";
 import { friendQueryKeys, type UserSearchResult } from "@/api/friends";
 import { ImageWithFallback } from "@/app/(afterLogin)/_components/ImageWithFallback";
+import { Button } from "@/app/(afterLogin)/_components/Button";
 import { AVATAR_PATHS } from "@/lib/avatar";
 
 const AVATAR_CONTAINER_CLASSNAME = "h-10 w-10 flex-shrink-0 overflow-hidden rounded-full";
-const ACTION_BUTTON_CLASSNAME =
-  "flex-shrink-0 cursor-pointer rounded-full bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white disabled:cursor-not-allowed disabled:opacity-50";
-
 type Props = {
   user: UserSearchResult;
   searchQuery: string;
@@ -68,14 +66,16 @@ export function UserSearchResultItem({ user, searchQuery, onSendSuccess }: Props
         </div>
       </Link>
       {user.relation === "none" && (
-        <button
+        <Button
           type="button"
+          variant="primary"
+          shape="pill"
           onClick={() => sendMutation.mutate(user.id)}
           disabled={sendMutation.isPending}
-          className={ACTION_BUTTON_CLASSNAME}
+          className="flex-shrink-0 px-3 py-1.5 text-xs font-medium"
         >
           친구 추가
-        </button>
+        </Button>
       )}
       {user.relation === "pending_sent" && (
         <span className="flex-shrink-0 rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-400">
@@ -83,14 +83,16 @@ export function UserSearchResultItem({ user, searchQuery, onSendSuccess }: Props
         </span>
       )}
       {user.relation === "pending_received" && friendshipId && (
-        <button
+        <Button
           type="button"
+          variant="primary"
+          shape="pill"
           onClick={() => acceptMutation.mutate(friendshipId)}
           disabled={acceptMutation.isPending}
-          className={ACTION_BUTTON_CLASSNAME}
+          className="flex-shrink-0 px-3 py-1.5 text-xs font-medium"
         >
           수락
-        </button>
+        </Button>
       )}
       {user.relation === "friends" && (
         <span className="flex-shrink-0 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-600">
