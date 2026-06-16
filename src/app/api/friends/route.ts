@@ -89,18 +89,16 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
   }
 
-  const friendship = await prisma.friendship.findFirst({
+  const result = await prisma.friendship.deleteMany({
     where: {
       id: body.friendshipId,
       OR: [{ requesterId: userId }, { addresseeId: userId }],
     },
   });
 
-  if (!friendship) {
+  if (result.count === 0) {
     return NextResponse.json({ error: "친구 관계를 찾을 수 없습니다." }, { status: 404 });
   }
-
-  await prisma.friendship.delete({ where: { id: body.friendshipId } });
 
   return NextResponse.json({ success: true });
 }
