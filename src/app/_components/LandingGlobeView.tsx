@@ -95,7 +95,7 @@ export function LandingGlobeView() {
           ref={globeCallbackRef as any}
           width={size.width}
           height={size.height}
-          backgroundColor="rgba(0,0,0,0)"
+          backgroundColor="#0a0a0a"
           atmosphereAltitude={0.15}
           globeImageUrl={oceanTexture}
           polygonsData={polygons}

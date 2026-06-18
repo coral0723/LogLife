@@ -11,7 +11,7 @@ export function LandingHeader() {
 
       <Link
         href="/login"
-        className="rounded-full bg-[#2cc2f7] px-5 py-2 text-sm font-semibold text-[#0a0a0a] transition hover:bg-[#1aade0]"
+        className="rounded-full bg-[#2cc2f7] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#1aade0]"
       >
         Log In
       </Link>
