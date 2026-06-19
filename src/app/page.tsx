@@ -137,7 +137,7 @@ export default function Home() {
       </section>
 
       {/* 하단 CTA */}
-      <section className="relative py-32 text-center">
+      <section className="relative flex min-h-dvh items-center justify-center text-center">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(44,194,247,0.06),transparent_65%)]" />
         <ScrollReveal className="relative z-10">
           <h2 className="mb-4 text-4xl font-bold leading-tight text-white lg:text-6xl">
