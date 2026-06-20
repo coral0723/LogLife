@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 
-import { DifficultyExcitementMatrixWidget } from "../app/(afterLogin)/_components/DifficultyExcitementMatrixWidget";
+import { DifficultyExcitementMatrixWidget } from "@/components/dashboard/DifficultyExcitementMatrixWidget";
 import { dashboardQueryKeys } from "../api/dashboard";
 import type { DifficultyExcitementItem } from "../lib/bucketList/difficultyExcitementMatrix";
 

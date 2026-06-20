@@ -7,8 +7,8 @@ import { bucketQueryKeys } from "@/api/bucketlists";
 import { areFriends } from "@/lib/friend/relation";
 import { getBucketByShareToken } from "@/lib/bucketList/getBucketByShareToken";
 import { getPlacePhotoUrl } from "@/lib/getPlacePhotoUrl";
-import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
-import { StarField } from "@/app/(afterLogin)/main/_components/StarField";
+import { BucketDetailView } from "@/components/bucket/BucketDetailView";
+import { StarField } from "@/components/globe/StarField";
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },

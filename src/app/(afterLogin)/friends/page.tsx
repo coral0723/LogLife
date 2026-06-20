@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
-import { FriendsCloseLink } from "./_components/FriendsCloseLink";
-import { FriendsView } from "./_components/FriendsView";
+import { FriendsCloseLink } from "@/components/friends/FriendsCloseLink";
+import { FriendsView } from "@/components/friends/FriendsView";
 
 export default async function FriendsPage() {
   const session = await auth();

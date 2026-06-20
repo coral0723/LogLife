@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 import { Bell, Gear, House, Globe, PencilSimple, SquaresFour } from "@phosphor-icons/react";
 
-import { BottomNav, type NavItem } from "../app/(afterLogin)/_components/BottomNav";
+import { BottomNav, type NavItem } from "@/components/nav/BottomNav";
 
 const meta = {
   title: "Components/BottomNav",

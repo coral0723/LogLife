@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signIn } from "@/auth";
-import { StarField } from "@/app/(afterLogin)/main/_components/StarField";
+import { StarField } from "@/components/globe/StarField";
 
 export default function LoginPage() {
   return (

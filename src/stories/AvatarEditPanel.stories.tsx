@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { AvatarEditPanel } from "../app/(afterLogin)/profile/_components/AvatarEditPanel";
+import { AvatarEditPanel } from "@/components/profile/AvatarEditPanel";
 import { AVATAR_PATHS } from "../lib/avatar";
 
 const meta = {

@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
-import { ProfileCloseLink } from "@/app/(afterLogin)/profile/_components/ProfileCloseLink";
-import { PublicProfileView } from "../_components/PublicProfileView";
+import { ProfileCloseLink } from "@/components/profile/ProfileCloseLink";
+import { PublicProfileView } from "@/components/user/PublicProfileView";
 
 type Props = {
   params: Promise<{ username: string }>;

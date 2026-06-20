@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { BucketDetailView } from "@/app/(afterLogin)/main/_components/BucketDetailView";
+import { BucketDetailView } from "@/components/bucket/BucketDetailView";
 
 type Props = {
   bucketId: string;

@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
-import { ProfileCloseLink } from "./_components/ProfileCloseLink";
-import { ProfileSettingsView } from "./_components/ProfileSettingsView";
+import { ProfileCloseLink } from "@/components/profile/ProfileCloseLink";
+import { ProfileSettingsView } from "@/components/profile/ProfileSettingsView";
 
 export default async function ProfilePage() {
   const session = await auth();

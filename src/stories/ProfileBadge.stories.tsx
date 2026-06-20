@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 
-import { ProfileBadge } from "../app/(afterLogin)/_components/ProfileBadge";
+import { ProfileBadge } from "@/components/nav/ProfileBadge";
 import { userQueryKeys, type CurrentUser } from "../api/user";
 
 // 스토리별로 QueryClient에 me 쿼리 상태를 미리 주입하는 데코레이터

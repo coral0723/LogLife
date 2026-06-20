@@ -7,10 +7,10 @@ import { AVATAR_PATHS } from "@/lib/avatar";
 import { getViewableVisibilities } from "@/lib/bucketList/visibility";
 import { getFriendRelation, type FriendRelation } from "@/lib/friend/relation";
 import { prisma } from "@/lib/prisma";
-import { GlobeClient } from "@/app/(afterLogin)/main/_components/GlobeClient";
-import { StarField } from "@/app/(afterLogin)/main/_components/StarField";
-import { ShareProfileButton } from "./_components/ShareProfileButton";
-import { UserPageHeader } from "./_components/UserPageHeader";
+import { GlobeClient } from "@/components/globe/GlobeClient";
+import { StarField } from "@/components/globe/StarField";
+import { ShareProfileButton } from "@/components/user/ShareProfileButton";
+import { UserPageHeader } from "@/components/user/UserPageHeader";
 
 type Props = {
   params: Promise<{ username: string }>;
