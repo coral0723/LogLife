@@ -51,15 +51,6 @@ export const Default: Story = {
   decorators: [withQueryCache((qc) => qc.setQueryData(userQueryKeys.me(), sampleUser))],
 };
 
-export const UsernameOnly: Story = {
-  name: "username만",
-  decorators: [
-    withQueryCache((qc) =>
-      qc.setQueryData(userQueryKeys.me(), { ...sampleUser, name: null }),
-    ),
-  ],
-};
-
 export const Loading: Story = {
   name: "로딩",
   decorators: [
