@@ -91,7 +91,7 @@ export function FirstBucketStep() {
         {/* 제목 */}
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-zinc-400">
-            제목 <span className="text-[#2cc2f7]">*</span>
+            제목 
           </span>
           <input
             name="title"
@@ -111,7 +111,7 @@ export function FirstBucketStep() {
         {/* 내용 */}
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-zinc-400">
-            내용
+            내용 
           </span>
           <textarea
             name="description"
@@ -120,7 +120,7 @@ export function FirstBucketStep() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             spellCheck={false}
-            placeholder="상세 내용을 입력하세요 (선택)"
+            placeholder="상세 내용을 입력하세요"
             className={`${inputCls} resize-none`}
           />
           <p className="mt-1 text-right text-xs text-zinc-600">
@@ -131,15 +131,15 @@ export function FirstBucketStep() {
         {/* 위치 */}
         <div>
           <span className="mb-1.5 block text-sm font-medium text-zinc-400">
-            위치 <span className="text-[#2cc2f7]">*</span>
+            위치 
           </span>
-          <PlacesAutocomplete onSelect={setPlace} />
+          <PlacesAutocomplete onSelect={setPlace} inputClassName={inputCls} />
         </div>
 
         {/* 마감일 */}
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-zinc-400">
-            마감일 <span className="text-[#2cc2f7]">*</span>
+            마감일 
           </span>
           <div className="relative">
             <input
@@ -151,7 +151,8 @@ export function FirstBucketStep() {
               onChange={(e) => setDeadlineAt(e.target.value)}
               onFocus={() => setDeadlineFocused(true)}
               onBlur={() => setDeadlineFocused(false)}
-              className={`${inputCls} ${deadlineAt || deadlineFocused ? "" : "text-transparent"}`}
+              className={inputCls}
+              style={!deadlineAt && !deadlineFocused ? { color: "transparent" } : undefined}
             />
             {!deadlineAt && !deadlineFocused && (
               <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm text-zinc-600">
@@ -192,21 +193,28 @@ export function FirstBucketStep() {
           <span className="mb-1.5 block text-sm font-medium text-zinc-400">
             공개 범위
           </span>
-          <select
-            name="visibility"
-            defaultValue="PUBLIC"
-            className="w-full cursor-pointer rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-sm text-white focus:outline-none focus:border-[#2cc2f7]/40 transition-colors"
-          >
-            <option value="PRIVATE" className="bg-zinc-900">
-              비공개
-            </option>
-            <option value="FRIENDS" className="bg-zinc-900">
-              친구 공개
-            </option>
-            <option value="PUBLIC" className="bg-zinc-900">
-              전체 공개
-            </option>
-          </select>
+          <div className="relative">
+            <select
+              name="visibility"
+              defaultValue="PUBLIC"
+              className="w-full cursor-pointer appearance-none rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 pr-10 text-sm text-white focus:outline-none focus:border-[#2cc2f7]/40 transition-colors"
+            >
+              <option value="PRIVATE" className="bg-zinc-900">
+                비공개
+              </option>
+              <option value="FRIENDS" className="bg-zinc-900">
+                친구 공개
+              </option>
+              <option value="PUBLIC" className="bg-zinc-900">
+                전체 공개
+              </option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400" />
+              </svg>
+            </div>
+          </div>
         </label>
 
         {error && (
@@ -220,10 +228,10 @@ export function FirstBucketStep() {
           variant="primary"
           shape="pill"
           disabled={isPending || !canSubmit}
-          className="flex w-full items-center justify-center gap-2 py-3.5 text-sm font-semibold shadow-[0_0_28px_rgba(44,194,247,0.3)] transition-all hover:shadow-[0_0_44px_rgba(44,194,247,0.5)] active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 py-3.5 text-sm font-semibold shadow-[0_0_28px_rgba(44,194,247,0.3)] transition-all enabled:hover:shadow-[0_0_44px_rgba(44,194,247,0.5)] active:scale-[0.98]"
         >
           {isPending && <LoadingSpinner size="xs" />}
-          로그라이프 시작하기
+          등록하고 시작하기
         </Button>
       </form>
     </div>

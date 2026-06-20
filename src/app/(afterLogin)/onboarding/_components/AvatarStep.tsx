@@ -65,7 +65,7 @@ export function AvatarStep({ onNext }: Props) {
               aria-label={label}
               aria-pressed={isSelected}
               onClick={() => setSelected(src)}
-              className={`relative h-14 w-14 overflow-hidden rounded-2xl border-2 transition-all duration-200 sm:h-16 sm:w-16 ${
+              className={`cursor-pointer relative h-18 w-14 overflow-hidden rounded-2xl border-2 transition-all duration-200 sm:h-24 sm:w-18 ${
                 isSelected
                   ? "border-[#2cc2f7] shadow-[0_0_18px_rgba(44,194,247,0.45)] scale-105"
                   : "border-white/10 hover:border-white/30 hover:scale-[1.03]"

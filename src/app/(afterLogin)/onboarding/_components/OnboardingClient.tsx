@@ -30,7 +30,7 @@ export function OnboardingClient() {
         <StepProgress current={step} />
       </header>
 
-      <main className="mx-auto w-full max-w-md px-6 pb-20">
+      <main className="mx-auto w-full max-w-lg px-6 pb-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
