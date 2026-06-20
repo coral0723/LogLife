@@ -21,6 +21,10 @@
 /.next/
 /out/
 
+# serwist (빌드 산출물)
+/public/sw.js
+/public/sw.js.map
+
 # production
 /build
 
@@ -61,7 +65,7 @@ yarn-error.log*
 # local tool artifacts
 .harness/
 .playwright-mcp/
-/HANDOFF.md
+/HANDOFF*.md
 
 # typescript
 *.tsbuildinfo

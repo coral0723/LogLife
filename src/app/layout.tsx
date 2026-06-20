@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import RQProviders from "./_providers/RQProviders";
+import OfflineOverlay from "@/components/ui/OfflineOverlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,11 +14,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#2cc2f7",
+};
+
 export const metadata: Metadata = {
   title: "LogLife",
   description: "버킷리스트를 지구본 위에 기록하세요",
+  manifest: "/manifest.json",
   icons: {
     icon: "/logo.png",
+    apple: "/icons/icon-192.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "LogLife",
+    statusBarStyle: "black-translucent",
   },
 };
 
@@ -33,6 +45,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <RQProviders>{children}</RQProviders>
+        <OfflineOverlay />
       </body>
     </html>
   );
