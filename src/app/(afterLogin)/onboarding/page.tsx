@@ -13,7 +13,8 @@ export default async function OnboardingPage() {
     where: { id: session.user.id },
     select: { isOnboarded: true },
   });
-  if (user?.isOnboarded) redirect("/main");
+  if (!user) redirect("/login");
+  if (user.isOnboarded) redirect("/main");
 
   return <OnboardingClient />;
 }
