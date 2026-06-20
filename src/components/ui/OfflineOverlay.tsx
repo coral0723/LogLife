@@ -6,10 +6,18 @@ export default function OfflineOverlay() {
   const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
-    setIsOffline(!navigator.onLine);
+    const isCurrentlyOffline = !navigator.onLine;
+    setIsOffline(isCurrentlyOffline);
+    if (isCurrentlyOffline) document.body.style.overflow = "hidden";
 
-    const handleOffline = () => setIsOffline(true);
-    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => {
+      setIsOffline(true);
+      document.body.style.overflow = "hidden";
+    };
+    const handleOnline = () => {
+      setIsOffline(false);
+      document.body.style.overflow = "";
+    };
 
     window.addEventListener("offline", handleOffline);
     window.addEventListener("online", handleOnline);
@@ -17,6 +25,7 @@ export default function OfflineOverlay() {
     return () => {
       window.removeEventListener("offline", handleOffline);
       window.removeEventListener("online", handleOnline);
+      document.body.style.overflow = "";
     };
   }, []);
 
