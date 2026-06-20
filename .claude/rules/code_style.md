@@ -36,8 +36,10 @@ globs:
 
 ## 파일·폴더 구조
 
-- **컴포넌트 위치**: 사용하는 페이지 라우트 폴더 하위 `_components/`에 배치
-  - 예: `app/(afterLogin)/main/_components/MyCard.tsx`
+- **컴포넌트 위치**: 기능 단위로 `src/components/{feature}/`에 배치 (라우트 기준 아님)
+  - feature 목록: `ui` (원자), `nav`, `bucket`, `dashboard`, `friends`, `profile`, `onboarding`, `globe`, `user`, `landing`
+  - 예: `src/components/bucket/CreatePanel.tsx`, `src/components/ui/Button.tsx`
+  - `@modal/` 하위 `*ModalClient.tsx`처럼 얇은 라우트 래퍼만 라우트 폴더(`_components/`)에 유지
 - **컴포넌트 분리**: 한 파일 안에 컴포넌트가 2개 이상이면 별도 파일로 분리
 - **API 요청 로직**: `src/api/` 폴더에 카테고리별로 배치. 신규 작성 전 기존 파일 확인
   - 예: `src/api/bucketlists.ts`, `src/api/places.ts`
@@ -51,7 +53,7 @@ globs:
 - 동일한 디자인이 필요하면 새 컴포넌트를 복사해 만들지 말 것
 - 기존 컴포넌트에 onClick / variant / className props를 확장해 재사용
 - props가 3개 이상 늘어나는 경우에만 별도 컴포넌트 분리 검토
-- 공유 Button, Badge 등 원자 컴포넌트는 `src/app/(afterLogin)/_components/`에 위치
+- 공유 Button, Badge 등 원자 컴포넌트는 `src/components/ui/`에 위치
 
 ## 일반
 
