@@ -40,7 +40,7 @@ export function DifficultyExcitementMatrixWidget({ isOpen, username }: Props) {
 
   return (
     <>
-      <section className="rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
+      <section className="@container rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
         <p className="mb-3 text-sm text-zinc-400">난이도 × 설렘 매트릭스</p>
 
         {isDifficultyExcitementLoading ? (
@@ -81,16 +81,16 @@ export function DifficultyExcitementMatrixWidget({ isOpen, username }: Props) {
             {/* 좌표축 오버레이: 세로선(난이도↑) + 가로선(설렘→) */}
             <div className="pointer-events-none absolute inset-0">
               {/* 세로축: 난이도 (위쪽 화살표) */}
-              <div className="absolute left-1/2 top-2 bottom-0 w-px -translate-x-1/2 bg-zinc-400 md:top-3 md:w-0.5" />
-              <div className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-x-[5px] border-b-8 border-x-transparent border-b-zinc-400 md:border-x-[7px] md:border-b-12" />
-              <span className="absolute left-1/2 top-2 translate-x-2 text-[8px] font-medium text-zinc-400 md:top-3 md:translate-x-3 md:text-sm lg:text-base">
+              <div className="absolute left-1/2 top-2 bottom-0 w-px -translate-x-1/2 bg-zinc-400 @md:top-3 @md:w-0.5" />
+              <div className="absolute left-1/2 top-0 h-0 w-0 -translate-x-1/2 border-x-[5px] border-b-8 border-x-transparent border-b-zinc-400 @md:border-x-[7px] @md:border-b-12" />
+              <span className="absolute left-1/2 top-2 translate-x-2 text-[8px] font-medium text-zinc-400 @md:top-3 @md:translate-x-3 @md:text-sm @lg:text-base">
                 난이도
               </span>
 
               {/* 가로축: 설렘 (오른쪽 화살표) */}
-              <div className="absolute left-0 right-2 top-1/2 h-px -translate-y-1/2 bg-zinc-400 md:right-3 md:h-0.5" />
-              <div className="absolute right-0 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[5px] border-l-8 border-y-transparent border-l-zinc-400 md:border-y-[7px] md:border-l-12" />
-              <span className="absolute right-2 top-1/2 translate-y-2 text-[8px] font-medium text-zinc-400 md:right-3 md:translate-y-3 md:text-sm lg:text-base">
+              <div className="absolute left-0 right-2 top-1/2 h-px -translate-y-1/2 bg-zinc-400 @md:right-3 @md:h-0.5" />
+              <div className="absolute right-0 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[5px] border-l-8 border-y-transparent border-l-zinc-400 @md:border-y-[7px] @md:border-l-12" />
+              <span className="absolute right-2 top-1/2 translate-y-2 text-[8px] font-medium text-zinc-400 @md:right-3 @md:translate-y-3 @md:text-sm @lg:text-base">
                 설렘
               </span>
             </div>
@@ -177,31 +177,31 @@ function MatrixQuadrantCell({ label, items, position, onSelect }: MatrixQuadrant
   const hasItems = items.length > 0;
 
   const labelEl = (
-    <span className={`text-sm font-bold md:text-lg lg:text-xl ${hasItems ? styles.labelText : "text-zinc-400"}`}>{label}</span>
+    <span className={`text-sm font-bold @md:text-lg @lg:text-xl ${hasItems ? styles.labelText : "text-zinc-400"}`}>{label}</span>
   );
 
   const contentEl =
     items.length === 0 ? (
-      <span className="text-xs text-zinc-400 md:text-base lg:text-lg">아직 없어요</span>
+      <span className="text-xs text-zinc-400 @md:text-base @lg:text-lg">아직 없어요</span>
     ) : (
-      <div className={`flex flex-wrap gap-1.5 md:gap-2 ${styles.chipsJustify}`}>
+      <div className={`flex flex-wrap gap-1.5 @md:gap-2 ${styles.chipsJustify}`}>
         {visibleItems.map((item, index) => (
           <span
             key={item.id}
-            className={`max-w-full truncate rounded-full border font-medium border-zinc-200 bg-white/80 px-2 py-0.5 text-[11px] text-zinc-600 md:px-3 md:py-1 md:text-sm lg:text-base ${
-              index >= MAX_VISIBLE_CHIPS_MOBILE ? "hidden md:inline-flex" : ""
+            className={`max-w-full truncate rounded-full border font-medium border-zinc-200 bg-white/80 px-2 py-0.5 text-[11px] text-zinc-600 @md:px-3 @md:py-1 @md:text-sm @lg:text-base ${
+              index >= MAX_VISIBLE_CHIPS_MOBILE ? "hidden @md:inline-flex" : ""
             }`}
           >
             {item.title}
           </span>
         ))}
         {mobileOverflow > 0 && (
-          <span className={`text-[11px] font-medium md:hidden ${styles.labelText}`}>
+          <span className={`text-[11px] font-medium @md:hidden ${styles.labelText}`}>
             +{mobileOverflow}개 더보기
           </span>
         )}
         {desktopOverflow > 0 && (
-          <span className={`hidden text-sm font-medium md:inline-flex lg:text-base ${styles.labelText}`}>
+          <span className={`hidden text-sm font-medium @md:inline-flex @lg:text-base ${styles.labelText}`}>
             +{desktopOverflow}개 더보기
           </span>
         )}
@@ -213,7 +213,7 @@ function MatrixQuadrantCell({ label, items, position, onSelect }: MatrixQuadrant
       type="button"
       disabled={items.length === 0}
       onClick={onSelect}
-      className={`flex h-full w-full flex-col gap-1.5 overflow-hidden p-3 text-left transition-transform md:gap-2 md:p-5 lg:p-6 ${styles.rounded} ${hasItems ? styles.bg : "bg-zinc-100"} ${styles.justify} ${styles.items} ${
+      className={`flex h-full w-full flex-col gap-1.5 overflow-hidden p-3 text-left transition-transform @md:gap-2 @md:p-5 @lg:p-6 ${styles.rounded} ${hasItems ? styles.bg : "bg-zinc-100"} ${styles.justify} ${styles.items} ${
         hasItems ? "active:scale-[0.98] cursor-pointer" : "cursor-default"
       }`}
     >
