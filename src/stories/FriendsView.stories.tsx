@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import { QueryClient, QueryClientProvider, type InfiniteData } from "@tanstack/react-query";
 import { userEvent } from "storybook/test";
 
-import { FriendsView } from "../app/(afterLogin)/friends/_components/FriendsView";
+import { FriendsView } from "@/components/friends/FriendsView";
 import {
   friendQueryKeys,
   type AchievedTogetherMoment,

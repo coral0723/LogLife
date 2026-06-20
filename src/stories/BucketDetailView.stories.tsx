@@ -2,7 +2,7 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { BucketDetailView } from "../app/(afterLogin)/main/_components/BucketDetailView";
+import { BucketDetailView } from "@/components/bucket/BucketDetailView";
 import type { BucketDetail } from "../api/bucketlists";
 
 const BASE: BucketDetail = {

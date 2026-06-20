@@ -4,11 +4,11 @@ import { auth } from "@/auth";
 import { buildCountryPins } from "@/lib/countryPins";
 import { prisma } from "@/lib/prisma";
 
-import { BottomNav } from "../_components/BottomNav";
-import { FriendBadge } from "../_components/FriendBadge";
-import { ProfileBadge } from "../_components/ProfileBadge";
-import { GlobeClient } from "./_components/GlobeClient";
-import { StarField } from "./_components/StarField";
+import { BottomNav } from "@/components/nav/BottomNav";
+import { FriendBadge } from "@/components/nav/FriendBadge";
+import { ProfileBadge } from "@/components/nav/ProfileBadge";
+import { GlobeClient } from "@/components/globe/GlobeClient";
+import { StarField } from "@/components/globe/StarField";
 
 export default async function MainPage() {
   const session = await auth();

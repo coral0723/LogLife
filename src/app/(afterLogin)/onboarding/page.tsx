@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
-import { OnboardingClient } from "./_components/OnboardingClient";
+import { OnboardingClient } from "@/components/onboarding/OnboardingClient";
 
 export default async function OnboardingPage() {
   const session = await auth();

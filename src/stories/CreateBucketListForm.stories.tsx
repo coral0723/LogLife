@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, fireEvent, fn, userEvent, waitFor, within } from "storybook/test";
 
-import { CreateBucketListForm } from "../app/(afterLogin)/create/_components/CreateBucketListForm";
+import { CreateBucketListForm } from "@/components/bucket/CreateBucketListForm";
 import { placesHandlers } from "../mocks/handlers/places";
 
 const meta = {

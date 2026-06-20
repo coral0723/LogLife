@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { X } from "@phosphor-icons/react";
 
-import { ProfileSettingsView } from "@/app/(afterLogin)/profile/_components/ProfileSettingsView";
+import { ProfileSettingsView } from "@/components/profile/ProfileSettingsView";
 
 export function ProfileModalClient() {
   const router = useRouter();
