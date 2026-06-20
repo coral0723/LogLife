@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { CountrySlidePanel } from "../app/(afterLogin)/main/_components/CountrySlidePanel";
+import { CountrySlidePanel } from "@/components/globe/CountrySlidePanel";
 import { bucketlistHandlers } from "../mocks/handlers/bucketlists";
 
 const queryClient = new QueryClient();

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import type { ComponentType } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { DashboardPanel } from "../app/(afterLogin)/_components/DashboardPanel";
+import { DashboardPanel } from "@/components/dashboard/DashboardPanel";
 import { dashboardQueryKeys, type UpcomingDeadlineItem } from "../api/dashboard";
 import type { DifficultyExcitementItem } from "../lib/bucketList/difficultyExcitementMatrix";
 import type { AchievementStats } from "../lib/bucketList/achievementStats";

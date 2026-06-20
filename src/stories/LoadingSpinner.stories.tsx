@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import LoadingSpinner from '../app/(afterLogin)/_components/LoadingSpinner';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const meta = {
   title: 'Components/LoadingSpinner',

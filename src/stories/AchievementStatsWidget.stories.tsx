@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 
-import { AchievementStatsWidget } from "../app/(afterLogin)/_components/AchievementStatsWidget";
+import { AchievementStatsWidget } from "@/components/dashboard/AchievementStatsWidget";
 import { dashboardQueryKeys } from "../api/dashboard";
 import type { AchievementStats } from "../lib/bucketList/achievementStats";
 

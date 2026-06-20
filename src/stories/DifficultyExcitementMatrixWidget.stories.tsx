@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 
-import { DifficultyExcitementMatrixWidget } from "../app/(afterLogin)/_components/DifficultyExcitementMatrixWidget";
+import { DifficultyExcitementMatrixWidget } from "@/components/dashboard/DifficultyExcitementMatrixWidget";
 import { dashboardQueryKeys } from "../api/dashboard";
 import type { DifficultyExcitementItem } from "../lib/bucketList/difficultyExcitementMatrix";
 
@@ -39,8 +39,8 @@ function makeItem(overrides: Partial<DifficultyExcitementItem> = {}): Difficulty
 // 사분면별 1~2개씩 균형 있게 채운 기본 데이터
 const balancedItems: DifficultyExcitementItem[] = [
   makeItem({ id: "1", title: "풀코스 마라톤 완주", difficulty: 5, excitement: 2 }), // 마음먹고 천천히
-  makeItem({ id: "2", title: "오로라 보러 아이슬란드 여행", difficulty: 5, excitement: 5 }), // 버킷리스트의 꽃
-  makeItem({ id: "3", title: "에베레스트 베이스캠프 트레킹", difficulty: 4, excitement: 5 }), // 버킷리스트의 꽃
+  makeItem({ id: "2", title: "아이슬란드 여행", difficulty: 5, excitement: 5 }), // 버킷리스트의 꽃
+  makeItem({ id: "3", title: "에베레스트 트레킹", difficulty: 4, excitement: 5 }), // 버킷리스트의 꽃
   makeItem({ id: "4", title: "동네 카페 투어", difficulty: 1, excitement: 2 }), // 여유 있을 때
   makeItem({ id: "5", title: "번지점프 체험", difficulty: 2, excitement: 5 }), // 지금 도전!
 ];

@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LandingHeader } from "./_components/LandingHeader";
-import { LandingGlobe } from "./_components/LandingGlobe";
-import { LandingFeature1Mock } from "./_components/LandingFeature1Mock";
-import { LandingFeature2Mock } from "./_components/LandingFeature2Mock";
-import { LandingFeatureMatrixMock } from "./_components/LandingFeatureMatrixMock";
-import { LandingFeature3Mock } from "./_components/LandingFeature3Mock";
-import { ScrollReveal } from "./_components/ScrollReveal";
-import { StarField } from "./(afterLogin)/main/_components/StarField";
-import { HeroContent } from "./_components/HeroContent";
+import { LandingHeader } from "@/components/landing/LandingHeader";
+import { LandingGlobe } from "@/components/landing/LandingGlobe";
+import { LandingFeature1Mock } from "@/components/landing/LandingFeature1Mock";
+import { LandingFeature2Mock } from "@/components/landing/LandingFeature2Mock";
+import { LandingFeatureMatrixMock } from "@/components/landing/LandingFeatureMatrixMock";
+import { LandingFeature3Mock } from "@/components/landing/LandingFeature3Mock";
+import { ScrollReveal } from "@/components/landing/ScrollReveal";
+import { StarField } from "@/components/globe/StarField";
+import { HeroContent } from "@/components/landing/HeroContent";
 
 export const metadata: Metadata = {
   title: "LogLife — 버킷리스트를 지구본 위에 기록하세요",

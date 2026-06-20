@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { GlobeView } from "../app/(afterLogin)/main/_components/GlobeView";
+import { GlobeView } from "@/components/globe/GlobeView";
 
 const meta = {
   title: "Components/GlobeView",

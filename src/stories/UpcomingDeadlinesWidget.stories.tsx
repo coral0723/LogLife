@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw";
 
-import { UpcomingDeadlinesWidget } from "../app/(afterLogin)/_components/UpcomingDeadlinesWidget";
+import { UpcomingDeadlinesWidget } from "@/components/dashboard/UpcomingDeadlinesWidget";
 import { dashboardQueryKeys, type UpcomingDeadlineItem } from "../api/dashboard";
 
 // 스토리별로 QueryClient에 upcomingDeadlines 쿼리 상태를 미리 주입하는 데코레이터

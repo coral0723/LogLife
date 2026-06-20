@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { NicknameEditPanel } from "../app/(afterLogin)/profile/_components/NicknameEditPanel";
+import { NicknameEditPanel } from "@/components/profile/NicknameEditPanel";
 
 const meta = {
   title: "Components/NicknameEditPanel",

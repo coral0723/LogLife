@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { X } from "@phosphor-icons/react";
 
-import { FriendsView } from "@/app/(afterLogin)/friends/_components/FriendsView";
+import { FriendsView } from "@/components/friends/FriendsView";
 
 export function FriendsModalClient() {
   const router = useRouter();

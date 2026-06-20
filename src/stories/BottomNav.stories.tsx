@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 import { Bell, Gear, House, Globe, PencilSimple, SquaresFour } from "@phosphor-icons/react";
 
-import { BottomNav, type NavItem } from "../app/(afterLogin)/_components/BottomNav";
+import { BottomNav, type NavItem } from "@/components/nav/BottomNav";
 
 const meta = {
   title: "Components/BottomNav",
@@ -67,16 +67,34 @@ export const Default: Story = {
   },
 };
 
+function CustomItemsDemo() {
+  const [activeLabel, setActiveLabel] = useState<string | null>("알림");
+
+  const items: NavItem[] = [
+    {
+      icon: House,
+      label: "홈",
+      onClick: () => setActiveLabel((prev) => (prev === "홈" ? null : "홈")),
+      active: activeLabel === "홈",
+    },
+    {
+      icon: Bell,
+      label: "알림",
+      onClick: () => setActiveLabel((prev) => (prev === "알림" ? null : "알림")),
+      active: activeLabel === "알림",
+    },
+    {
+      icon: Gear,
+      label: "설정",
+      onClick: () => setActiveLabel((prev) => (prev === "설정" ? null : "설정")),
+      active: activeLabel === "설정",
+    },
+  ];
+
+  return <BottomNav items={items} />;
+}
+
 export const CustomItems: Story = {
   name: "커스텀 아이템",
-  args: {
-    items: [
-      { href: "/home", icon: House, label: "홈" },
-      { href: "/notifications", icon: Bell, label: "알림" },
-      { href: "/settings", icon: Gear, label: "설정" },
-    ],
-  },
-  parameters: {
-    nextjs: { navigation: { pathname: "/notifications" } },
-  },
+  render: () => <CustomItemsDemo />,
 };
