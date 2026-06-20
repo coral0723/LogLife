@@ -58,10 +58,15 @@ export default function LoginPage() {
             </button>
           </form>
 
+          <form
+            action={async () => {
+              "use server";
+              await signIn("kakao", { redirectTo: "/main" });
+            }}
+          >
           <button
-            type="button"
-            disabled
-            className="flex w-full cursor-not-allowed items-center justify-center gap-3 rounded-full bg-[#FEE500] px-6 py-3 text-sm font-semibold text-[#191919] opacity-50"
+            type="submit"
+            className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full bg-[#FEE500] px-6 py-3 text-sm font-semibold text-[#191919] transition hover:bg-[#F0D800]"
           >
             <svg
               width="18"
@@ -79,6 +84,7 @@ export default function LoginPage() {
             </svg>
             카카오로 계속하기
           </button>
+          </form>
         </div>
 
         <p className="text-center text-xs text-white/40">
