@@ -12,7 +12,7 @@ import { DotRatingInput } from "@/components/bucket/DotRatingInput";
 import { createBucketList } from "@/actions/bucketList/actions";
 import { useTodayDateString } from "@/lib/date/useTodayDateString";
 
-import { completeOnboarding } from "@/app/(afterLogin)/onboarding/actions";
+import { completeOnboarding } from "@/actions/onboarding/actions";
 
 type Visibility = "PRIVATE" | "FRIENDS" | "PUBLIC";
 

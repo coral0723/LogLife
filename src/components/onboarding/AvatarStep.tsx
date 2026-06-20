@@ -5,7 +5,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/Button";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { updateAvatar } from "@/app/(afterLogin)/onboarding/actions";
+import { updateAvatar } from "@/actions/onboarding/actions";
 
 const AVATAR_PATHS: { src: string; label: string }[] = [
   { src: "/avatars/astronaut.png", label: "우주인" },
