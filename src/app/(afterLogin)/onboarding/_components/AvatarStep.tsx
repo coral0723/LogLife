@@ -25,12 +25,17 @@ type Props = { onNext: () => void };
 export function AvatarStep({ onNext }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   const handleNext = () => {
     if (!selected) return;
     startTransition(async () => {
-      await updateAvatar(selected);
-      onNext();
+      try {
+        await updateAvatar(selected);
+        onNext();
+      } catch {
+        setError("아바타 저장에 실패했어요. 다시 시도해주세요.");
+      }
     });
   };
 
@@ -101,6 +106,7 @@ export function AvatarStep({ onNext }: Props) {
         {isPending && <LoadingSpinner size="xs" />}
         다음으로
       </Button>
+      {error && <p className="mt-3 text-xs text-red-400">{error}</p>}
     </div>
   );
 }
