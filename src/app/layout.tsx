@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import RQProviders from "./_providers/RQProviders";
+import OfflineOverlay from "@/components/ui/OfflineOverlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <RQProviders>{children}</RQProviders>
+        <OfflineOverlay />
       </body>
     </html>
   );
