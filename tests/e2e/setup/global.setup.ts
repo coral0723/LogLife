@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 export const TEST_USER_EMAIL = 'e2e-test@loglife.local';
+export const TEST_UNBOARDED_USER_EMAIL = 'e2e-unboarded@loglife.local';
 
 function loadEnv() {
   const envPath = path.resolve(process.cwd(), '.env.local');
@@ -38,13 +39,27 @@ export default async function globalSetup() {
       await prisma.bucketList.deleteMany({ where: { userId: existing.id } });
       await prisma.user.delete({ where: { email: TEST_USER_EMAIL } });
     }
+    const existingUnboarded = await prisma.user.findUnique({ where: { email: TEST_UNBOARDED_USER_EMAIL } });
+    if (existingUnboarded) {
+      await prisma.user.delete({ where: { email: TEST_UNBOARDED_USER_EMAIL } });
+    }
 
-    // 테스트 유저 생성
+    // 온보딩 완료 테스트 유저 생성
     const user = await prisma.user.create({
       data: {
         email: TEST_USER_EMAIL,
         username: 'e2e-test-user',
         name: 'E2E Test',
+        isOnboarded: true,
+      },
+    });
+
+    // 온보딩 spec용 미온보딩 유저 생성
+    await prisma.user.create({
+      data: {
+        email: TEST_UNBOARDED_USER_EMAIL,
+        username: 'e2e-unboarded-user',
+        name: 'E2E Unboarded',
       },
     });
 

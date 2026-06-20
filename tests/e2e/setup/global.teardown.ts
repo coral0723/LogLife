@@ -4,7 +4,7 @@ import path from 'path';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
-import { TEST_USER_EMAIL } from './global.setup';
+import { TEST_USER_EMAIL, TEST_UNBOARDED_USER_EMAIL } from './global.setup';
 
 function loadEnv() {
   const envPath = path.resolve(process.cwd(), '.env.local');
@@ -34,6 +34,10 @@ export default async function globalTeardown() {
     if (user) {
       await prisma.bucketList.deleteMany({ where: { userId: user.id } });
       await prisma.user.delete({ where: { email: TEST_USER_EMAIL } });
+    }
+    const unboarded = await prisma.user.findUnique({ where: { email: TEST_UNBOARDED_USER_EMAIL } });
+    if (unboarded) {
+      await prisma.user.delete({ where: { email: TEST_UNBOARDED_USER_EMAIL } });
     }
   } finally {
     await prisma.$disconnect();
