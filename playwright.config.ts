@@ -19,7 +19,7 @@ if (fs.existsSync('.env.local')) {
 process.env.E2E = 'true';
 
 const authFile = 'tests/e2e/setup/.auth/user.json';
-const unborderedAuthFile = 'tests/e2e/setup/.auth/unboarded.json';
+const unboardedAuthFile = 'tests/e2e/setup/.auth/unboarded.json';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -53,7 +53,7 @@ export default defineConfig({
       name: 'onboarding-chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: unborderedAuthFile,
+        storageState: unboardedAuthFile,
       },
       dependencies: ['onboarding-setup'],
     },
