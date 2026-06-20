@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { signOut } from "next-auth/react";
+import { logout } from "@/actions/user/actions";
 import { User, CaretRight } from "@phosphor-icons/react";
 
 import { fetchCurrentUser, userQueryKeys, type CurrentUser } from "@/api/user";
@@ -57,7 +57,7 @@ export function ProfileSettingsView() {
   const deleteAccountMutation = useMutation({
     mutationFn: deleteAccount,
     onSuccess: () => {
-      signOut({ redirectTo: "/" });
+      logout();
     },
   });
 
@@ -85,7 +85,7 @@ export function ProfileSettingsView() {
 
   const handleLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
-      signOut({ redirectTo: "/" });
+      logout();
     }
   };
 

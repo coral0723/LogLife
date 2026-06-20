@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const STAR_COUNT = 65;
+const STAR_COUNT = 160;
 
 // XorShift32 — Math.random() 대신 시드 고정 난수 사용 (테스팅 가이드 준수)
 function createRng(seed: number) {
@@ -31,7 +31,7 @@ export function StarField() {
     for (let i = 0; i < STAR_COUNT; i++) {
       const x = rand() * canvas.width;
       const y = rand() * canvas.height;
-      const r = rand() * 1.0 + 0.3;
+      const r = rand() * 1.5 + 0.5;
       const opacity = rand() * 0.55 + 0.25;
 
       ctx.beginPath();

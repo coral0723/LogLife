@@ -146,15 +146,22 @@ export function CreateBucketListForm({ onSuccess }: Props) {
 
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-zinc-700">공개 범위</span>
-          <select
-            name="visibility"
-            defaultValue="PUBLIC"
-            className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm focus:outline-none"
-          >
-            <option value="PRIVATE">비공개</option>
-            <option value="FRIENDS">친구 공개</option>
-            <option value="PUBLIC">전체 공개</option>
-          </select>
+          <div className="relative">
+            <select
+              name="visibility"
+              defaultValue="PUBLIC"
+              className="w-full cursor-pointer appearance-none rounded-xl border border-zinc-200 bg-white px-3 py-2.5 pr-9 text-sm focus:outline-none"
+            >
+              <option value="PRIVATE">비공개</option>
+              <option value="FRIENDS">친구 공개</option>
+              <option value="PUBLIC">전체 공개</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400" />
+              </svg>
+            </div>
+          </div>
         </label>
       </div>
 

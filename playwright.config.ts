@@ -19,6 +19,7 @@ if (fs.existsSync('.env.local')) {
 process.env.E2E = 'true';
 
 const authFile = 'tests/e2e/setup/.auth/user.json';
+const unboardedAuthFile = 'tests/e2e/setup/.auth/unboarded.json';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -34,7 +35,11 @@ export default defineConfig({
   projects: [
     {
       name: 'auth-setup',
-      testMatch: /auth\.setup\.ts/,
+      testMatch: /[\/\\]auth\.setup\.ts$/,
+    },
+    {
+      name: 'onboarding-setup',
+      testMatch: /[\/\\]onboarding-auth\.setup\.ts$/,
     },
     {
       name: 'chromium',
@@ -44,12 +49,20 @@ export default defineConfig({
       },
       dependencies: ['auth-setup'],
     },
+    {
+      name: 'onboarding-chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: unboardedAuthFile,
+      },
+      dependencies: ['onboarding-setup'],
+    },
   ],
   // 일반 dev(3000)와 충돌하지 않도록 포트 3001 사용
   webServer: {
     command: 'pnpm exec next dev -p 3001',
     port: 3001,
-    reuseExistingServer: false,
+    reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     env: {
       E2E: 'true',
