@@ -60,9 +60,12 @@ export function FirstBucketStep() {
       } catch (e) {
         setError(e instanceof Error ? e.message : "저장에 실패했습니다.");
       }
-      // redirect()를 포함한 completeOnboarding은 try/catch 밖에서 호출
       if (created) {
-        await completeOnboarding();
+        try {
+          await completeOnboarding();
+        } catch (e) {
+          setError(e instanceof Error ? e.message : "온보딩 완료에 실패했습니다.");
+        }
       }
     });
   };
