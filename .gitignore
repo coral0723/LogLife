@@ -65,7 +65,7 @@ yarn-error.log*
 # local tool artifacts
 .harness/
 .playwright-mcp/
-/HANDOFF.md
+/HANDOFF*.md
 
 # typescript
 *.tsbuildinfo
