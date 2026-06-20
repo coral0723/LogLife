@@ -37,3 +37,12 @@ globs:
 - **판정**: Windows 로컬 환경 한정 이슈. 개별 파일은 항상 정상 통과. `fileParallelism: false` 등으로 고치면 전체 스위트에 플레이키니스 유발 (트레이드오프 나쁨 — 적용하지 않음)
 - **대응**: 설정 변경 불필요. 영향받는 테스트 파일은 나눠서(2~3개씩) 실행
 - **상세**: `.dev/learnings/2026-06-14_vitest_emfile_phosphor_icons.md`
+
+---
+
+## Bash 도구에서 git commit 멀티라인 메시지 — PowerShell here-string 금지
+
+- **증상**: 커밋 제목 앞에 `@ ` 접두사가 붙음 (예: `@ feat: 제목`)
+- **원인**: Bash 도구(POSIX sh)에서 PowerShell `@'...'@` here-string을 파싱하지 못하고 `@`를 리터럴로 처리
+- **대응**: Bash 도구에서는 `git commit -m "$(cat <<'EOF'...EOF)"` 패턴 또는 이중 인용부호 사용. `@'...'@` 금지.
+- **상세**: `.dev/learnings/2026-06-18_powershell_heredoc_git_commit.md`

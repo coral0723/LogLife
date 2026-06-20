@@ -97,13 +97,8 @@ export default async function UserPage(props: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <StarField />
-      {pins.length > 0 ? (
-        <GlobeClient pins={pins} username={target.username} />
-      ) : (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <p className="text-sm text-zinc-400">등록된 버킷리스트가 없습니다.</p>
-        </div>
-      )}
+      <GlobeClient pins={pins} username={target.username} />
+
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#060d1f]/70 to-transparent" />
       <UserPageHeader
         username={target.username}

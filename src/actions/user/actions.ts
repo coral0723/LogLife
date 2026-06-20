@@ -2,9 +2,13 @@
 
 import { z } from "zod";
 
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { AVATAR_PATHS } from "@/lib/avatar";
+
+export async function logout() {
+  await signOut({ redirectTo: "/" });
+}
 
 const avatarPathSchema = z.enum(AVATAR_PATHS);
 const nicknameSchema = z.string().trim().min(1).max(15);

@@ -22,6 +22,7 @@ type Props = {
   placeholder?: string;
   languageCode?: string;
   regionCode?: string;
+  inputClassName?: string;
 };
 
 const DEBOUNCE_MS = 300;
@@ -31,6 +32,7 @@ export function PlacesAutocomplete({
   placeholder = "장소 검색",
   languageCode = "ko",
   regionCode,
+  inputClassName = "w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm text-zinc-800 focus:outline-none",
 }: Props) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -147,7 +149,7 @@ export function PlacesAutocomplete({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         spellCheck={false}
-        className="w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm focus:outline-none"
+        className={inputClassName}
       />
       {isOpen && (
         <ul
@@ -166,7 +168,7 @@ export function PlacesAutocomplete({
                 void pick(s);
               }}
               onMouseEnter={() => setActiveIndex(i)}
-              className={`cursor-pointer px-3 py-2 text-sm ${
+              className={`cursor-pointer px-3 py-2 text-sm text-zinc-800 ${
                 i === activeIndex ? "bg-zinc-100" : "hover:bg-zinc-50"
               }`}
             >

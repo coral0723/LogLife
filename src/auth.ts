@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Kakao from "next-auth/providers/kakao";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
@@ -42,6 +43,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
   providers: [
     Google,
+    Kakao({
+      // 카카오는 이메일 권한이 비즈니스 앱 인증 없이는 불가 — Kakao ID로 가상 이메일 생성
+      profile(profile) {
+        return {
+          id: String(profile.id),
+          name:
+            profile.kakao_account?.profile?.nickname ??
+            profile.properties?.nickname ??
+            "카카오 사용자",
+          email:
+            profile.kakao_account?.email ??
+            `kakao_${profile.id}@kakao.placeholder`,
+          image:
+            profile.kakao_account?.profile?.profile_image_url ??
+            profile.properties?.profile_image ??
+            null,
+        };
+      },
+    }),
     // E2E 테스트 전용 — Google OAuth 없이 이메일로 직접 로그인
     ...(process.env.E2E === 'true' ? [
       Credentials({
