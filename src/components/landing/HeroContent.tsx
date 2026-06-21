@@ -36,7 +36,7 @@ export function HeroContent() {
 
       <motion.h1
         variants={fadeUp}
-        className="mb-5 text-balance text-4xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-6xl lg:text-[76px]"
+        className="mb-5 text-balance text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-6xl lg:text-[76px]"
       >
         죽기 전에 하고 싶은 것들,
         <br />
