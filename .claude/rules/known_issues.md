@@ -46,3 +46,12 @@ globs:
 - **원인**: Bash 도구(POSIX sh)에서 PowerShell `@'...'@` here-string을 파싱하지 못하고 `@`를 리터럴로 처리
 - **대응**: Bash 도구에서는 `git commit -m "$(cat <<'EOF'...EOF)"` 패턴 또는 이중 인용부호 사용. `@'...'@` 금지.
 - **상세**: `.dev/learnings/2026-06-18_powershell_heredoc_git_commit.md`
+
+---
+
+## .github 폴더 하위 파일 삭제 시 상위 폴더 전체 삭제 금지
+
+- **패턴**: `workflows/` 안 파일 하나 삭제 후 "빈 폴더 정리" 목적으로 `.github`에 `-Recurse` 적용 → `ISSUE_TEMPLATE`, `PULL_REQUEST_TEMPLATE.md`, `chromatic.yml` 전부 삭제됨
+- **대응**: 파일 삭제는 항상 대상 파일 경로만 지정. 상위 폴더 삭제 전 `git ls-tree HEAD .github`로 내용물 확인 필수
+- **복원**: `git checkout HEAD -- .github`
+- **상세**: `.dev/learnings/2026-06-21_github_folder_recursive_delete.md`
