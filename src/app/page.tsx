@@ -60,7 +60,7 @@ export default function Home() {
         <HeroContent />
 
         {/* 지구본 하단 1/3이 섹션 아래로 잘림 */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[30%] h-207.5 w-screen md:h-225 md:w-[min(1020px,90vw)] md:translate-y-[45%]">
+        <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[30%] h-207.5 w-screen md:h-225 md:w-[min(1020px,90vw)] md:translate-y-[45%]">
           <LandingGlobe />
         </div>
       </section>
