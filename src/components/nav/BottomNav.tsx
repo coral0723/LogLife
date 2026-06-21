@@ -46,7 +46,9 @@ export function BottomNav({ items }: Props) {
 
   return (
     <>
-      <nav className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2">
+      <nav className={`fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transition-all duration-200 ${
+        isDashboardOpen || isCreateOpen ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : ""
+      }`}>
         <ul className="flex gap-1 rounded-full border border-gray-200 bg-white/90 px-2 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl">
           {navItems.map((item) => {
             const { icon: Icon, label } = item;

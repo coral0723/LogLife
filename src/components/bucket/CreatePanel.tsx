@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { X } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 
 import { CreateBucketListForm } from "@/components/bucket/CreateBucketListForm";
@@ -33,8 +34,16 @@ export function CreatePanel({ isOpen, onClose }: Props) {
             transition={{ type: "spring", stiffness: 300, damping: 32 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex-shrink-0 px-5 pt-6 pb-6">
+            <div className="flex-shrink-0 flex items-center justify-between px-5 pt-6 pb-6">
               <h2 className="text-lg font-semibold text-zinc-900">버킷리스트 작성</h2>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="닫기"
+                className="lg:hidden rounded-full p-2 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-colors"
+              >
+                <X size={20} />
+              </button>
             </div>
 
             <CreateBucketListForm
