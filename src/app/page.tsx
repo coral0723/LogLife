@@ -54,13 +54,13 @@ export default function Home() {
       <LandingHeader />
 
       {/* Hero */}
-      <section className="relative h-dvh overflow-hidden flex flex-col items-center">
+      <section className="relative overflow-hidden flex flex-col items-center pb-96 lg:pb-180 min-h-dvh">
         <div className="pointer-events-none absolute bottom-0 left-1/2 h-150 w-150 -translate-x-1/2 translate-y-1/4 rounded-full bg-[#2cc2f7]/8 blur-[120px]" />
 
         <HeroContent />
 
         {/* 지구본 하단 1/3이 섹션 아래로 잘림 */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[30%] h-207.5 w-screen md:h-225 md:w-[min(1020px,90vw)] md:translate-y-[45%]">
+        <div className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[35%] h-207.5 w-screen md:h-325 md:w-[min(1480px,100vw)] md:translate-y-[45%] lg:translate-y-[35%]">
           <LandingGlobe />
         </div>
       </section>
@@ -94,11 +94,11 @@ export default function Home() {
       {/* 피처 2 — 현황 */}
       <section>
         <div className="mx-auto max-w-6xl lg:min-h-dvh flex flex-col lg:flex-row items-center gap-12 lg:gap-20 px-6 lg:px-20 py-16">
-          <ScrollReveal className="w-full lg:flex-1">
+          <ScrollReveal className="w-full lg:flex-1 order-last lg:order-first">
             <LandingFeature2Mock />
           </ScrollReveal>
 
-          <ScrollReveal className="w-full lg:flex-1">
+          <ScrollReveal className="w-full lg:flex-1 order-first lg:order-last">
             <FeatureLabel step="02" label="TRACK" />
             <h2 className="mb-5 text-3xl font-bold leading-[1.15] tracking-tight text-white lg:text-5xl">
               달성 현황을<br />한눈에
@@ -140,11 +140,11 @@ export default function Home() {
       {/* 피처 3 — 아카이브 */}
       <section>
         <div className="mx-auto max-w-6xl lg:min-h-dvh flex flex-col lg:flex-row items-center gap-12 lg:gap-20 px-6 lg:px-20 py-16">
-          <ScrollReveal className="w-full lg:flex-1">
+          <ScrollReveal className="w-full lg:flex-1 order-last lg:order-first">
             <LandingFeature3Mock />
           </ScrollReveal>
 
-          <ScrollReveal className="w-full lg:flex-1">
+          <ScrollReveal className="w-full lg:flex-1 order-first lg:order-last">
             <FeatureLabel step="04" label="ARCHIVE" />
             <h2 className="mb-5 text-3xl font-bold leading-[1.15] tracking-tight text-white lg:text-5xl">
               소중한 경험을<br />간직하세요
