@@ -94,11 +94,11 @@ export default function Home() {
       {/* 피처 2 — 현황 */}
       <section>
         <div className="mx-auto max-w-6xl lg:min-h-dvh flex flex-col lg:flex-row items-center gap-12 lg:gap-20 px-6 lg:px-20 py-16">
-          <ScrollReveal className="w-full lg:flex-1">
+          <ScrollReveal className="w-full lg:flex-1 order-last lg:order-first">
             <LandingFeature2Mock />
           </ScrollReveal>
 
-          <ScrollReveal className="w-full lg:flex-1">
+          <ScrollReveal className="w-full lg:flex-1 order-first lg:order-last">
             <FeatureLabel step="02" label="TRACK" />
             <h2 className="mb-5 text-3xl font-bold leading-[1.15] tracking-tight text-white lg:text-5xl">
               달성 현황을<br />한눈에
@@ -140,11 +140,11 @@ export default function Home() {
       {/* 피처 3 — 아카이브 */}
       <section>
         <div className="mx-auto max-w-6xl lg:min-h-dvh flex flex-col lg:flex-row items-center gap-12 lg:gap-20 px-6 lg:px-20 py-16">
-          <ScrollReveal className="w-full lg:flex-1">
+          <ScrollReveal className="w-full lg:flex-1 order-last lg:order-first">
             <LandingFeature3Mock />
           </ScrollReveal>
 
-          <ScrollReveal className="w-full lg:flex-1">
+          <ScrollReveal className="w-full lg:flex-1 order-first lg:order-last">
             <FeatureLabel step="04" label="ARCHIVE" />
             <h2 className="mb-5 text-3xl font-bold leading-[1.15] tracking-tight text-white lg:text-5xl">
               소중한 경험을<br />간직하세요
