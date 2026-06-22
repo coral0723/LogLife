@@ -258,3 +258,199 @@ erDiagram
     User ||--o{ Friendship : "sends"
     User ||--o{ Friendship : "receives"
 ```
+
+<br>
+
+## 5. 디렉토리 구조  
+- **컴포넌트** — 라우트가 아닌 기능 단위(`bucket` · `dashboard` · `friends`)로 구성
+- **데이터 레이어** — `actions/`(쓰기) · `app/api/`(읽기·프록시) · `src/api/`(클라이언트 fetch) 세 레이어로 분리
+- **라우팅** — Parallel + Intercepting Routes로 모달을 URL 기반으로 관리
+
+### 파일 트리  
+```
+LogLife/
+├── prisma/
+│   └── schema.prisma
+├── public/
+│   ├── avatars/                  # 10종 프리셋 아바타
+│   ├── geo/
+│   │   └── countries-110m.json   # 지구본 국가 폴리곤 데이터
+│   ├── icons/
+│   └── manifest.json             # PWA manifest
+├── src/
+│   ├── actions/                  # Server Actions (mutation)
+│   │   ├── bucketList/
+│   │   ├── friend/
+│   │   ├── onboarding/
+│   │   └── user/
+│   ├── api/                      # 클라이언트 fetch 함수
+│   │   ├── bucketlists.ts
+│   │   ├── dashboard.ts
+│   │   ├── friends.ts
+│   │   ├── places.ts
+│   │   └── user.ts
+│   ├── app/
+│   │   ├── (afterLogin)/
+│   │   │   ├── @modal/           # Parallel + Intercepting Routes
+│   │   │   │   ├── (.)b/[token]/
+│   │   │   │   ├── (.)friends/
+│   │   │   │   ├── (.)profile/
+│   │   │   │   └── (.)u/[username]/profile/
+│   │   │   ├── friends/
+│   │   │   ├── main/
+│   │   │   ├── onboarding/
+│   │   │   └── profile/
+│   │   ├── (auth)/
+│   │   │   └── login/
+│   │   ├── (e2e)/                # E2E 테스트 전용 라우트
+│   │   ├── _providers/
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   ├── bucketlists/
+│   │   │   ├── dashboard/
+│   │   │   ├── friends/
+│   │   │   ├── places/           # Google Places 프록시
+│   │   │   └── users/
+│   │   ├── b/[token]/            # 공유 풀페이지
+│   │   ├── u/[username]/         # 공개 사용자 페이지
+│   │   ├── layout.tsx
+│   │   ├── page.tsx              # 랜딩 페이지
+│   │   └── sw.ts                 # PWA Service Worker
+│   ├── auth.ts
+│   ├── components/
+│   │   ├── bucket/
+│   │   ├── dashboard/
+│   │   ├── friends/
+│   │   ├── globe/
+│   │   ├── landing/
+│   │   ├── nav/
+│   │   ├── onboarding/
+│   │   ├── profile/
+│   │   └── ui/
+│   ├── lib/
+│   │   ├── bucketList/
+│   │   ├── friend/
+│   │   ├── date/
+│   │   ├── prisma.ts
+│   │   ├── rateLimit.ts
+│   │   └── ...
+│   └── types/
+│       └── next-auth.d.ts
+├── tests/
+│   └── e2e/
+│       ├── setup/                # globalSetup / teardown / auth
+│       └── specs/                # E2E 시나리오
+├── docs/
+├── .storybook/
+├── proxy.ts
+├── next.config.ts
+├── vitest.config.ts
+└── package.json
+```
+
+### 코드 레이어 구조 다이어그램
+```mermaid
+flowchart TD
+
+subgraph group_grp_app["App shell"]
+  node_n_app_shell["App routes<br/>nextjs router"]
+  node_n_auth_area["Login<br/>auth segment<br/>[page.tsx]"]
+  node_n_after_login["Authed app<br/>protected segment"]
+  node_n_modal_overlay["Modal routes<br/>parallel routes"]
+  node_n_api_routes["API routes<br/>route handlers"]
+end
+
+subgraph group_grp_features["Features"]
+  node_n_features["UI features<br/>feature UI"]
+  node_n_dashboard_ui["Dashboard UI<br/>widgets"]
+  node_n_bucket_ui["Bucket UI<br/>bucket flows"]
+  node_n_friends_ui["Friends UI<br/>social widgets"]
+  node_n_profile_ui["Profile UI<br/>settings views"]
+  node_n_user_ui["Public profile UI"]
+  node_n_globe_ui{{"Globe UI<br/>visualization"}}
+end
+
+subgraph group_grp_domain["Domain"]
+  node_n_actions["Server actions<br/>mutations"]
+  node_n_domain_logic["Domain logic<br/>pure helpers"]
+end
+
+subgraph group_grp_data["Data & integrations"]
+  node_n_prisma[("Prisma data<br/>database client<br/>[prisma.ts]")]
+  node_n_auth_system["Auth system<br/>nextauth session<br/>[route.ts]"]
+  node_n_places_api["Places API<br/>external integration"]
+  node_n_geo_data["Geo data<br/>country assets"]
+end
+
+subgraph group_grp_quality["Quality"]
+  node_n_e2e_routes["E2E routes<br/>test routes"]
+  node_n_offline_support["Offline support<br/>pwa layer<br/>[sw.ts]"]
+  node_n_test_system["Testing stack<br/>vitest/playwright/msw"]
+end
+
+node_n_app_shell -->|"public auth"| node_n_auth_area
+node_n_app_shell -->|"protected app"| node_n_after_login
+node_n_app_shell -.->|"test routes"| node_n_e2e_routes
+node_n_after_login -->|"overlays"| node_n_modal_overlay
+node_n_after_login -->|"renders"| node_n_features
+node_n_modal_overlay -->|"detail modal"| node_n_bucket_ui
+node_n_modal_overlay -->|"friends modal"| node_n_friends_ui
+node_n_modal_overlay -->|"profile modal"| node_n_profile_ui
+node_n_modal_overlay -->|"user modal"| node_n_user_ui
+node_n_after_login -->|"mutations"| node_n_actions
+node_n_after_login -->|"data fetch"| node_n_api_routes
+node_n_actions -->|"business rules"| node_n_domain_logic
+node_n_api_routes -->|"business rules"| node_n_domain_logic
+node_n_actions -->|"write data"| node_n_prisma
+node_n_api_routes -->|"read/write"| node_n_prisma
+node_n_api_routes -->|"places"| node_n_places_api
+node_n_features -->|"dashboard"| node_n_dashboard_ui
+node_n_features -->|"bucket lists"| node_n_bucket_ui
+node_n_features -->|"friends"| node_n_friends_ui
+node_n_features -->|"profile"| node_n_profile_ui
+node_n_features -->|"public users"| node_n_user_ui
+node_n_features -->|"globe"| node_n_globe_ui
+node_n_dashboard_ui -->|"widgets"| node_n_api_routes
+node_n_friends_ui -->|"social data"| node_n_api_routes
+node_n_bucket_ui -->|"location lookup"| node_n_places_api
+node_n_globe_ui -->|"country data"| node_n_geo_data
+node_n_auth_system -->|"session gate"| node_n_app_shell
+node_n_offline_support -->|"degraded UI"| node_n_features
+node_n_test_system -.->|"component tests"| node_n_features
+node_n_test_system -.->|"route tests"| node_n_api_routes
+node_n_test_system -.->|"action tests"| node_n_actions
+node_n_test_system -.->|"browser flows"| node_n_app_shell
+
+click node_n_app_shell "https://github.com/coral0723/loglife/tree/main/src/app"
+click node_n_auth_area "https://github.com/coral0723/loglife/blob/main/src/app/(auth)/login/page.tsx"
+click node_n_after_login "https://github.com/coral0723/loglife/tree/main/src/app/(afterLogin)"
+click node_n_modal_overlay "https://github.com/coral0723/loglife/tree/main/src/app/(afterLogin)/@modal"
+click node_n_e2e_routes "https://github.com/coral0723/loglife/tree/main/src/app/(e2e)"
+click node_n_api_routes "https://github.com/coral0723/loglife/tree/main/src/app/api"
+click node_n_actions "https://github.com/coral0723/loglife/tree/main/src/actions"
+click node_n_features "https://github.com/coral0723/loglife/tree/main/src/components"
+click node_n_dashboard_ui "https://github.com/coral0723/loglife/tree/main/src/components/dashboard"
+click node_n_bucket_ui "https://github.com/coral0723/loglife/tree/main/src/components/bucket"
+click node_n_friends_ui "https://github.com/coral0723/loglife/tree/main/src/components/friends"
+click node_n_profile_ui "https://github.com/coral0723/loglife/tree/main/src/components/profile"
+click node_n_user_ui "https://github.com/coral0723/loglife/tree/main/src/components/user"
+click node_n_globe_ui "https://github.com/coral0723/loglife/tree/main/src/components/globe"
+click node_n_domain_logic "https://github.com/coral0723/loglife/tree/main/src/lib"
+click node_n_prisma "https://github.com/coral0723/loglife/blob/main/src/lib/prisma.ts"
+click node_n_auth_system "https://github.com/coral0723/loglife/blob/main/src/app/api/auth/[...nextauth]/route.ts"
+click node_n_places_api "https://github.com/coral0723/loglife/tree/main/src/app/api/places"
+click node_n_geo_data "https://github.com/coral0723/loglife/blob/main/src/lib/countryCentroids.ts"
+click node_n_offline_support "https://github.com/coral0723/loglife/blob/main/src/app/sw.ts"
+click node_n_test_system "https://github.com/coral0723/loglife/tree/main/tests/e2e"
+
+classDef toneBlue fill:#dbeafe,stroke:#2563eb,stroke-width:1.5px,color:#172554
+classDef toneAmber fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#78350f
+classDef toneMint fill:#dcfce7,stroke:#16a34a,stroke-width:1.5px,color:#14532d
+classDef toneRose fill:#ffe4e6,stroke:#e11d48,stroke-width:1.5px,color:#881337
+classDef toneIndigo fill:#e0e7ff,stroke:#4f46e5,stroke-width:1.5px,color:#312e81
+class node_n_app_shell,node_n_auth_area,node_n_after_login,node_n_modal_overlay,node_n_api_routes toneBlue
+class node_n_features,node_n_dashboard_ui,node_n_bucket_ui,node_n_friends_ui,node_n_profile_ui,node_n_user_ui,node_n_globe_ui toneAmber
+class node_n_actions,node_n_domain_logic toneMint
+class node_n_prisma,node_n_auth_system,node_n_places_api,node_n_geo_data toneRose
+class node_n_e2e_routes,node_n_offline_support,node_n_test_system toneIndigo
+```
