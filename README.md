@@ -1,4 +1,4 @@
-# 🌍 LogLife — 죽기 전에 하고 싶은 것들을 지구본 위에 기록하는 서비스
+# 🌍 LogLife — 버킷리스트를 지구본 위에 기록하는 서비스
 
 <div align="center">
   <img width="300" height="300" alt="logo" src="https://github.com/user-attachments/assets/59fdc361-2518-48c8-8663-d48d33446d70" />
