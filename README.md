@@ -454,3 +454,100 @@ class node_n_actions,node_n_domain_logic toneMint
 class node_n_prisma,node_n_auth_system,node_n_places_api,node_n_geo_data toneRose
 class node_n_e2e_routes,node_n_offline_support,node_n_test_system toneIndigo
 ```
+<br>
+
+## 6. AI 워크플로우
+
+```mermaid
+flowchart TD
+    User(["👤 사용자"])
+
+    subgraph P1["① 계획 → 승인 → 구현"]
+        Plan["Plan Mode\n계획 수립"]
+        Approve{"사용자 승인"}
+        Impl["구현 작업\nClaude Code"]
+    end
+
+    subgraph P2["② 역할별 AI 분리"]
+        subgraph Auto["자동 위임 — OMC"]
+            direction LR
+            explore["explore"]
+            executor["executor"]
+            debugger["debugger"]
+        end
+        subgraph Gates["수동 검증 게이트 — 새 세션"]
+            direction LR
+            test["/test\ntest-engineer"]
+            e2e["/e2e\nqa-tester"]
+            sec["/security-review\nsecurity-reviewer"]
+            qual["/quality-review\ncode-reviewer"]
+        end
+        Gemini["Gemini Code Assistant\n교차 리뷰"]
+    end
+
+    subgraph P3["③ 로그 파이프라인"]
+        direction LR
+        Hooks["훅 자동 수집\nUserPromptSubmit · PostToolUse"]
+        JSONL[".dev/session-logs/*.jsonl"]
+        NotionLog["Notion DB\n/sessionlog · /branchlog"]
+    end
+
+    subgraph P4["④ 지식 누적 루프"]
+        direction LR
+        Learnings["/learnings\n.dev/learnings/"]
+        Rules[".claude/rules/\nknown_issues · code_style · security · testing · deploy"]
+    end
+
+    User --> Plan
+    Plan --> Approve
+    Approve -->|반려| Plan
+    Approve -->|승인| Impl
+    Impl <-->|복잡한 작업 자동 분해| Auto
+    Impl -->|단계 완료| Gates
+    Gates -->|PR 단계| Gemini
+    Auto ~~~ Hooks
+    Impl --> Hooks
+    Hooks --> JSONL --> NotionLog
+    Hooks ~~~ Learnings
+    Impl -->|실수 반복| Learnings
+    Learnings --> Rules
+    Rules -.->|다음 세션 자동 주입| Impl
+```
+
+### 1️⃣ Plan Mode 선진입과 사용자 승인 강제
+
+AI는 즉시 구현하려는 경향이 있기에 방향이 틀린 채 작업이 끝나면 되돌리는 비용이 큽니다.  
+그래서 아래의 방법으로 작업을 진행했습니다.   
+
+- **규칙화**: CLAUDE.md에 Karpathy 4원칙과 **"Plan Mode 우선, 승인 전 구현 금지"** 명시
+- **운영**: 기능 세션마다 **Plan Mode 진입 → 계획 수립 → 사용자 승인 → 구현** 순서 준수
+
+### 2️⃣ 역할별 AI 에이전트 사용
+
+- **컨텍스트 격리**: 다른 역할 에이전트는 항상 새 세션으로 전환 — 구현 컨텍스트 오염 방지
+- **자동 위임**: 구현 중 OMC가 `explore` · `executor` 등 서브에이전트를 자동 선택해 복잡 작업을 전문 역할로 분해
+- **수동 검증 게이트**: 단계별 전용 스킬 수동 호출:
+  - `/test` (test-engineer) — 코드 작성 후
+  - `/e2e` (qa-tester) — 기능 흐름 완성 후
+  - `/security-review` (security-reviewer) — auth · api 작업 후
+  - `/quality-review` (code-reviewer) — PR 전
+- **교차 리뷰**: PR 단계에서 **Gemini Code Assistant** 추가 — 동일 AI 편향 해소
+
+### 3️⃣ AI 작업 흔적 이중 기록
+
+- **훅 자동 수집**: `UserPromptSubmit` · `PostToolUse` 시 프롬프트 텍스트 · 파일 수정 · 명령어 실행을 `.dev/session-logs/YYYY-M-DD_{브랜치명}.jsonl`에 실시간 기록
+- **세션 로그**(`/sessionlog`): — JSONL을 선택하면 Notion "AI Agent Logs" DB에 챕터별 정리
+- **브랜치 로그**(`/branchlog`): — `git diff` · `git log` 기반 분석·정리 후 Notion "BranchLog" DB에 기록. `/pr` 실행 시 큰 작업 브랜치로 판단되면 자동 권장
+
+### 4️⃣ AI 실수 · 반복 방지
+
+- **포착**: `/learnings` 스킬로 `.dev/learnings/YYYY-MM-DD_{topic}.md`에 증상 · 원인 · 결론 구조화
+- **압축**: 핵심 1~2줄로 요약 후 유형별 md 파일에 누적:
+  - 버그 · 환경 → `known_issues.md`
+  - 코딩 스타일 → `code_style.md`
+  - 테스트 → `testing_guide.md`
+  - 보안 → `security.md`
+  - 배포 → `deploy.md`
+- **자동 활성화**: CLAUDE.md에 매핑 명시 → 다음 세션부터 자동 주입. 이상 증상 발견 시 `known_issues.md` 우선 확인
+
+<br>
