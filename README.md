@@ -56,3 +56,107 @@
 | 용도 | 기술 |
 |---|---|
 | 배포 플랫폼 | <img src="https://img.shields.io/badge/Vercel-black?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" /> |
+
+<br>
+
+## 2. 주요 기능
+
+<div align="center">
+  
+| **메인 페이지** |
+|:---:|
+| <img width="240" alt="3D 지구본 핀 시각화" src="https://github.com/user-attachments/assets/c6bf9b52-bdf5-4527-8b3f-05344658d494" /> |
+
+| **🟡 금색** | **🔴 붉은색** | **⬜ 회색** |
+|:---:|:---:|:---:|
+| 전부 달성 | 하나라도 마감일이 지남 | 그 외의 경우 |
+
+</div>
+
+- 지구본을 드래그해 자유롭게 회전하며 등록한 버킷리스트 핀을 한눈에 확인할 수 있습니다.
+- 핀은 국가별로 클러스터링되어 개수가 함께 표시됩니다.
+- 핀 색상은 해당 국가 버킷리스트의 달성 상태에 따라 변경됩니다.
+
+<br>
+
+<div align="center">
+
+| **버킷리스트 작성** |
+|:---:|
+| <img width="240" alt="버킷리스트 작성" src="https://github.com/user-attachments/assets/87246c2a-eb31-4fd8-923a-ec3fa8c8bc63" /> |
+
+</div>
+
+- 하단 내비게이션의 우측 버튼을 누르면 작성 패널이 나타납니다.
+- 제목, 내용, 장소, 난이도, 설레임, 공개 범위를 입력해 버킷리스트를 작성할 수 있습니다.
+
+<br>
+
+<div align="center">
+
+| **버킷리스트 상세 화면** |
+|:---:|
+| <img src="https://github.com/user-attachments/assets/63b07968-1e72-4790-b373-9ee666194bfe" width="240" alt="핀 클릭 → 목록 → 상세" /> |
+
+</div>
+
+- 핀을 클릭하면 해당 국가의 버킷리스트 목록이 슬라이드업 패널로 표시됩니다.
+- 항목을 선택하면 버킷리스트 상세 화면으로 전환됩니다.
+- 우측 상단의 버튼을 통해 공유할 수 있습니다.
+
+<br>
+
+<div align="center">
+
+| **버킷리스트 상태 변경** |
+|:---:|
+| <img src="https://github.com/user-attachments/assets/439de303-c4c5-4c7e-9318-0e30bce1efdf" width="240" alt="달성 토글 + 축하 팝업" /> |
+
+</div>
+
+- **미달성 항목**은 달성 처리할 수 있습니다.
+- **달성한 항목**은 미달성 상태로 되돌릴 수 있습니다.
+- **마감일이 지난 항목**은 새 마감일을 지정할 수 있습니다.
+
+<br>
+
+<div align="center">
+
+| **대시보드 위젯** |
+|:---:|
+| <img src="https://github.com/user-attachments/assets/7a9ed893-42a6-41a0-9102-080124e519b6" width="240" alt="대시보드 위젯" /> |
+
+</div>
+
+- 하단 내비게이션의 대시보드 버튼을 클릭하면 4개의 통계 위젯을 확인할 수 있습니다.
+- 매트릭스 위젯을 클릭하면 상세 슬라이드 패널로 전환됩니다.  
+
+<br>
+
+<div align="center">
+
+| **친구 페이지** | **친구 추가** |
+|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/4ae5f7c5-c509-4778-a77c-542351c59633" width="240" alt="친구 페이지" /> | <img src="https://github.com/user-attachments/assets/4cd2dd5c-4ec1-4b51-91d7-c9f0a3ccde2a" width="240" alt="친구 추가" /> |
+
+</div>
+
+- 친구 아이콘을 클릭하면 친구 목록 페이지로 이동합니다.
+- 친구 이름을 클릭하면 해당 사용자의 버킷리스트 페이지를 확인할 수 있습니다.
+- 친구 페이지에서 닉네임으로 사용자를 검색하고 친구 요청을 보낼 수 있습니다.
+
+<br>
+
+<div align="center">
+
+| **프로필 배지** | **프로필 사진 변경** | **닉네임 변경** |
+|:---:|:---:|:---:|
+| <img src="https://github.com/user-attachments/assets/984eedac-e369-4fab-96b8-87cb660ac0d3" width="240" alt="프로필 배지" /> | <img src="https://github.com/user-attachments/assets/68f22489-a8df-4762-96ec-194fcb2a2064" width="240" alt="프로필 사진 변경" /> | <img src="https://github.com/user-attachments/assets/589492e4-eba8-4fd5-a193-dc17e64fd165" width="240" alt="닉네임 변경" /> |
+
+</div>
+
+- 프로필 배지를 클릭하면 내 프로필 화면으로 이동합니다.
+- 프로필 화면에서 변경 버튼을 클릭해 프리셋 아바타 중 원하는 사진으로 변경할 수 있습니다.
+- 프로필 화면에서 닉네임 변경 버튼을 클릭해 새로운 닉네임으로 수정할 수 있습니다.
+
+<br>
