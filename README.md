@@ -551,3 +551,56 @@ AI는 즉시 구현하려는 경향이 있기에 방향이 틀린 채 작업이 
 - **자동 활성화**: CLAUDE.md에 매핑 명시 → 다음 세션부터 자동 주입. 이상 증상 발견 시 `known_issues.md` 우선 확인
 
 <br>
+
+## 7. 로컬 실행 방법
+
+### 사전 요구사항
+
+```
+Node.js 20.9+
+pnpm 10+
+```
+
+### 환경변수 설정
+
+`.env.example`을 복사해 `.env` 파일을 생성하고 아래 값을 채운다.
+
+```env
+# Supabase PostgreSQL
+DATABASE_URL="postgresql://user:password@host/dbname?sslmode=verify-full"
+
+# NextAuth v5
+AUTH_SECRET=""
+AUTH_GOOGLE_ID=""
+AUTH_GOOGLE_SECRET=""
+AUTH_KAKAO_ID=""
+AUTH_KAKAO_SECRET=""
+
+# Google Places API (서버 전용)
+GOOGLE_PLACES_API_KEY=""
+```
+
+### 설치 및 DB 초기화
+
+로컬 DB 설치 불필요 — Vercel Neon(서버리스 PostgreSQL)에 직접 연결
+
+```bash
+pnpm install                  # 패키지 설치 + prisma generate (postinstall 자동 실행)
+pnpm prisma migrate deploy    # 마이그레이션 Neon DB에 적용
+```
+
+### 개발 서버 실행
+
+```bash
+pnpm dev
+```
+
+http://localhost:3000 에서 확인
+
+### 테스트 실행
+
+```bash
+pnpm test              # 단위 테스트 (Vitest)
+pnpm test:e2e:ui       # E2E 테스트 (Playwright UI 모드)
+pnpm storybook         # 컴포넌트 카탈로그 (포트 6006)
+```
