@@ -188,3 +188,73 @@ flowchart TD
     API -->|"Prisma ORM"| PG
     API -->|"서버 프록시"| Places
 ```
+
+<br>
+
+## 4. ERD
+
+```mermaid
+erDiagram
+    User {
+        String id PK
+        String email UK
+        String username UK
+        String name
+        String image
+        Boolean isOnboarded
+        Int tokenVersion
+        DateTime createdAt
+        DateTime updatedAt
+    }
+
+    Account {
+        String id PK
+        String userId FK
+        String provider
+        String providerAccountId
+        String type
+    }
+
+    Session {
+        String id PK
+        String userId FK
+        String sessionToken UK
+        DateTime expires
+    }
+
+    BucketList {
+        String id PK
+        String shareToken UK
+        String userId FK
+        String title
+        String description
+        Visibility visibility
+        DateTime deadlineAt
+        Int difficulty
+        Int excitement
+        Boolean achieved
+        DateTime achievedAt
+        String placeId
+        Float lat
+        Float lng
+        String countryCode
+        String displayName
+        DateTime createdAt
+        DateTime updatedAt
+    }
+
+    Friendship {
+        String id PK
+        String requesterId FK
+        String addresseeId FK
+        FriendshipStatus status
+        DateTime createdAt
+        DateTime respondedAt
+    }
+
+    User ||--o{ Account : "has"
+    User ||--o{ Session : "has"
+    User ||--o{ BucketList : "owns"
+    User ||--o{ Friendship : "sends"
+    User ||--o{ Friendship : "receives"
+```
