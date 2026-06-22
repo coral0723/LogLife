@@ -160,3 +160,31 @@
 - 프로필 화면에서 닉네임 변경 버튼을 클릭해 새로운 닉네임으로 수정할 수 있습니다.
 
 <br>
+
+## 3. 아키텍처 구조
+별도 백엔드 서버 없이 **Next.js App Router** 위에서 **인증·DB·외부 API**를 모두 처리하는 서버리스 아키텍처입니다.  
+```mermaid
+flowchart TD
+    User(["사용자\nBrowser / PWA"])
+
+    subgraph Vercel["Vercel — Next.js 16"]
+        SSR["SSR / RSC\n페이지 렌더링"]
+        API["API Routes\nPlaces 프록시 · Auth 콜백"]
+        SA["Server Actions\n버킷리스트 CRUD"]
+    end
+
+    subgraph Supabase["Supabase"]
+        PG[("PostgreSQL")]
+    end
+
+    OAuth["Google / Kakao OAuth 2.0"]
+    Places["Google Places API\nAutocomplete · Details · Photos"]
+
+    User -->|HTTPS| SSR
+    User -->|OAuth 로그인| OAuth
+    OAuth -->|"NextAuth v5 콜백"| API
+    SSR --> SA
+    SA -->|"Prisma ORM"| PG
+    API -->|"Prisma ORM"| PG
+    API -->|"서버 프록시"| Places
+```
