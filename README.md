@@ -262,7 +262,7 @@ erDiagram
 <br>
 
 ## 5. 디렉토리 구조  
-- **컴포넌트** — 라우트가 아닌 기능 단위(`bucket` · `dashboard` · `friends`)로 구성
+- **컴포넌트** — 라우트가 아닌 기능 단위()로 구성
 - **데이터 레이어** — `actions/`(쓰기) · `app/api/`(읽기·프록시) · `src/api/`(클라이언트 fetch) 세 레이어로 분리
 - **라우팅** — Parallel + Intercepting Routes로 모달을 URL 기반으로 관리
 
@@ -270,7 +270,7 @@ erDiagram
 ```
 LogLife/
 ├── prisma/
-│   └── schema.prisma
+│   └── schema.prisma             # DB 스키마 정의 (User·BucketList·Friendship 등 5개 모델)
 ├── public/
 │   ├── avatars/                  # 10종 프리셋 아바타
 │   ├── geo/
@@ -278,24 +278,11 @@ LogLife/
 │   ├── icons/
 │   └── manifest.json             # PWA manifest
 ├── src/
-│   ├── actions/                  # Server Actions (mutation)
-│   │   ├── bucketList/
-│   │   ├── friend/
-│   │   ├── onboarding/
-│   │   └── user/
-│   ├── api/                      # 클라이언트 fetch 함수
-│   │   ├── bucketlists.ts
-│   │   ├── dashboard.ts
-│   │   ├── friends.ts
-│   │   ├── places.ts
-│   │   └── user.ts
+│   ├── actions/                  # Server Actions — 도메인별 mutation
+│   ├── api/                      # 클라이언트 fetch 함수 — 도메인별 파일로 분류
 │   ├── app/
 │   │   ├── (afterLogin)/
-│   │   │   ├── @modal/           # Parallel + Intercepting Routes
-│   │   │   │   ├── (.)b/[token]/
-│   │   │   │   ├── (.)friends/
-│   │   │   │   ├── (.)profile/
-│   │   │   │   └── (.)u/[username]/profile/
+│   │   │   ├── @modal/           # Parallel + Intercepting Routes (모달 오버레이)
 │   │   │   ├── friends/
 │   │   │   ├── main/
 │   │   │   ├── onboarding/
@@ -303,48 +290,42 @@ LogLife/
 │   │   ├── (auth)/
 │   │   │   └── login/
 │   │   ├── (e2e)/                # E2E 테스트 전용 라우트
-│   │   ├── _providers/
-│   │   ├── api/
-│   │   │   ├── auth/
-│   │   │   ├── bucketlists/
-│   │   │   ├── dashboard/
-│   │   │   ├── friends/
-│   │   │   ├── places/           # Google Places 프록시
-│   │   │   └── users/
+│   │   ├── _providers/           # TanStack Query·NextAuth 등 전역 Provider 래퍼
+│   │   ├── api/                  # Route Handlers — 도메인별 읽기·프록시 (auth·places 포함)
 │   │   ├── b/[token]/            # 공유 풀페이지
 │   │   ├── u/[username]/         # 공개 사용자 페이지
-│   │   ├── layout.tsx
+│   │   ├── layout.tsx            # 루트 레이아웃 (폰트·메타데이터·Provider 마운트)
 │   │   ├── page.tsx              # 랜딩 페이지
 │   │   └── sw.ts                 # PWA Service Worker
-│   ├── auth.ts
-│   ├── components/
-│   │   ├── bucket/
-│   │   ├── dashboard/
-│   │   ├── friends/
-│   │   ├── globe/
-│   │   ├── landing/
-│   │   ├── nav/
-│   │   ├── onboarding/
-│   │   ├── profile/
-│   │   └── ui/
-│   ├── lib/
-│   │   ├── bucketList/
-│   │   ├── friend/
-│   │   ├── date/
-│   │   ├── prisma.ts
-│   │   ├── rateLimit.ts
-│   │   └── ...
-│   └── types/
-│       └── next-auth.d.ts
+│   ├── auth.ts                   # NextAuth v5 설정 (OAuth 제공자·콜백·세션 전략)
+│   ├── components/               # 기능 단위(bucket·dashboard·friends·globe·nav 등)로 분류
+│   ├── lib/                      # 순수 유틸·도메인 로직 — 도메인별 분류 (bucketList·friend·date 등)
+│   └── types/                    # next-auth 세션 타입 확장 등 전역 공유 타입
 ├── tests/
 │   └── e2e/
 │       ├── setup/                # globalSetup / teardown / auth
 │       └── specs/                # E2E 시나리오
-├── docs/
-├── .storybook/
-├── proxy.ts
-├── next.config.ts
-├── vitest.config.ts
+├── docs/                         # 프로젝트 문서
+│   ├── plan_spec.md              # 비즈니스 도메인 사양 · ADR · 페이지 사양
+│   ├── cost_constraint.md        # 0원 운영 제약 정의
+│   └── templates/                # commit · issue · PR 메시지 양식
+├── .storybook/                   # Storybook 설정 (addon·webpack·preview)
+├── .agents/
+│   └── skills/                   # UI 스타일 스킬 모음 (design-taste-frontend 등 12종)
+├── .claude/                      # Claude Code 하네스 설정
+│   ├── rules/                    # 작업 유형별 규칙 파일 (code_style·security·deploy·testing 등 8종)
+│   ├── skills/                   # 로컬 스킬 정의 (/commit·/pr·/handoff·/e2e 등)
+│   ├── hooks/                    # PreToolUse·PostToolUse 이벤트 훅 스크립트
+│   ├── memory/                   # 세션 간 자동 메모리 저장소 (MEMORY.md + 개별 md 파일)
+│   └── settings.json             # 도구 권한·환경변수·hooks 등록
+├── .dev/                         # AI 작업 흔적 (git 추적 제외)
+│   ├── learnings/                # 작업 중 발견한 패턴·이슈·재현 어려웠던 오류 기록
+│   └── scratchpad/               # 임시 메모 (작업 종료 후 삭제 — 비어있는 게 정상)
+├── CLAUDE.md                     # AI 작업 지침·규칙 맵 (작업 전 필독)
+├── AGENTS.md                     # AI 에이전트 설정 파일
+├── proxy.ts                      # Next.js 16 미들웨어 대체 라우팅 프록시
+├── next.config.ts                # Next.js 빌드·이미지·PWA 설정
+├── vitest.config.ts              # unit·storybook 프로젝트 분리 테스트 설정
 └── package.json
 ```
 
