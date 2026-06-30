@@ -503,7 +503,7 @@ AI는 즉시 구현하려는 경향이 있기에 방향이 틀린 채 작업이 
 - **규칙화**: CLAUDE.md에 Karpathy 4원칙과 **"Plan Mode 우선, 승인 전 구현 금지"** 명시
 - **운영**: 기능 세션마다 **Plan Mode 진입 → 계획 수립 → 사용자 승인 → 구현** 순서 준수
 
-### 2️⃣ 역할별 AI 에이전트 사용
+### 2️⃣ AI 역할을 분리하여 구현과 검증을 독립시키는 품질 관리 구조 설계
 
 - **컨텍스트 격리**: 다른 역할 에이전트는 항상 새 세션으로 전환 — 구현 컨텍스트 오염 방지
 - **자동 위임**: 구현 중 OMC가 `explore` · `executor` 등 서브에이전트를 자동 선택해 복잡 작업을 전문 역할로 분해
@@ -514,13 +514,7 @@ AI는 즉시 구현하려는 경향이 있기에 방향이 틀린 채 작업이 
   - `/quality-review` (code-reviewer) — PR 전
 - **교차 리뷰**: PR 단계에서 **Gemini Code Assistant** 추가 — 동일 AI 편향 해소
 
-### 3️⃣ AI 작업 흔적 이중 기록
-
-- **훅 자동 수집**: `UserPromptSubmit` · `PostToolUse` 시 프롬프트 텍스트 · 파일 수정 · 명령어 실행을 `.dev/session-logs/YYYY-M-DD_{브랜치명}.jsonl`에 실시간 기록
-- **세션 로그**(`/sessionlog`): — JSONL을 선택하면 Notion "AI Agent Logs" DB에 챕터별 정리
-- **브랜치 로그**(`/branchlog`): — `git diff` · `git log` 기반 분석·정리 후 Notion "BranchLog" DB에 기록. `/pr` 실행 시 큰 작업 브랜치로 판단되면 자동 권장
-
-### 4️⃣ AI 실수 · 반복 방지
+### 3️⃣ AI의 반복 실수를 지식으로 축적하는 Learning Loop 설계
 
 - **포착**: `/learnings` 스킬로 `.dev/learnings/YYYY-MM-DD_{topic}.md`에 증상 · 원인 · 결론 구조화
 - **압축**: 핵심 1~2줄로 요약 후 유형별 md 파일에 누적:
@@ -530,6 +524,12 @@ AI는 즉시 구현하려는 경향이 있기에 방향이 틀린 채 작업이 
   - 보안 → `security.md`
   - 배포 → `deploy.md`
 - **자동 활성화**: CLAUDE.md에 매핑 명시 → 다음 세션부터 자동 주입. 이상 증상 발견 시 `known_issues.md` 우선 확인
+
+### 4️⃣ AI 작업을 추적 가능한 형태로 기록하는 로그 파이프라인 설계
+
+- **훅 자동 수집**: `UserPromptSubmit` · `PostToolUse` 시 프롬프트 텍스트 · 파일 수정 · 명령어 실행을 `.dev/session-logs/YYYY-M-DD_{브랜치명}.jsonl`에 실시간 기록
+- **세션 로그**(`/sessionlog`): — JSONL을 선택하면 Notion "AI Agent Logs" DB에 챕터별 정리
+- **브랜치 로그**(`/branchlog`): — `git diff` · `git log` 기반 분석·정리 후 Notion "BranchLog" DB에 기록. `/pr` 실행 시 큰 작업 브랜치로 판단되면 자동 권장
 
 <br>
 
