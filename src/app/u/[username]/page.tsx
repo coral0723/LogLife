@@ -97,7 +97,7 @@ export default async function UserPage(props: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <StarField />
-      <GlobeClient pins={pins} username={target.username} />
+      <GlobeClient key={target.username} pins={pins} username={target.username} />
 
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-44 bg-linear-to-t from-[#060d1f]/70 to-transparent" />
       <UserPageHeader

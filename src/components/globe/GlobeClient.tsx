@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import type { CountryPin } from "@/lib/countryPins";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
@@ -17,6 +17,14 @@ const GlobeView = dynamic(
   { ssr: false }
 );
 
+// 핀들의 지리적 평균 좌표 (없으면 한국)
+function calcInitialPov(pins: CountryPin[]): { lat: number; lng: number } {
+  if (pins.length === 0) return { lat: 36, lng: 128 };
+  const lat = pins.reduce((s, p) => s + p.lat, 0) / pins.length;
+  const lng = pins.reduce((s, p) => s + p.lng, 0) / pins.length;
+  return { lat, lng };
+}
+
 export function GlobeClient({ pins, username }: Props) {
   const [selectedCountryCode, setSelectedCountryCode] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
@@ -25,6 +33,13 @@ export function GlobeClient({ pins, username }: Props) {
   const handlePinClick = useCallback((pin: CountryPin) => {
     setSelectedCountryCode(pin.countryCode);
   }, []);
+
+  const isUserPage = !!username;
+  const initialPov = useMemo(
+    () => (isUserPage ? calcInitialPov(pins) : undefined),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isUserPage]
+  );
 
   return (
     <div
@@ -36,7 +51,13 @@ export function GlobeClient({ pins, username }: Props) {
           <LoadingSpinner />
         </div>
       )}
-      <GlobeView pins={pins} onPinClick={handlePinClick} onReady={handleReady} />
+      <GlobeView
+        pins={pins}
+        onPinClick={handlePinClick}
+        onReady={handleReady}
+        initialPov={initialPov}
+        persistPov={!isUserPage}
+      />
 
       <CountrySlidePanel
         countryCode={selectedCountryCode}

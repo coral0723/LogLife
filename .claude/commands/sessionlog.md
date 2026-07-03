@@ -1,5 +1,5 @@
 ---
-description: 세션 로그(JSONL)를 읽어 Notion "AI Agent Logs" DB에 기록
+description: 세션 로그(JSONL)를 읽어 Notion "SessionLog" DB에 기록
 ---
 
 # /sessionlog
@@ -68,13 +68,13 @@ Files Modified 중 이 목록에 없는 파일 = **Anomaly 후보** (이번 세�
 3. PR 링크 — (없으면 공란)
 ```
 
-### 5. Notion "AI Agent Logs" DB 탐색
+### 5. Notion "SessionLog" DB 탐색
 
-`mcp__claude_ai_Notion__notion-search`로 "AI Agent Logs" DB를 검색한다.
+`mcp__claude_ai_Notion__notion-search`로 "SessionLog" DB를 검색한다.
 
 - DB가 없으면 사용자에게 안내:
   ```
-  ⚠️ Notion에 "AI Agent Logs" 데이터베이스가 없습니다.
+  ⚠️ Notion에 "SessionLog" 데이터베이스가 없습니다.
   ✈️ LogLife 페이지 하위에 아래 속성으로 DB를 먼저 만들어 주세요:
   - Title (제목)
   - Branch (선택)
@@ -87,7 +87,7 @@ Files Modified 중 이 목록에 없는 파일 = **Anomaly 후보** (이번 세�
 
 ### 6. Notion 페이지 생성
 
-`mcp__claude_ai_Notion__notion-create-pages`로 "AI Agent Logs" DB에 신규 페이지 생성.
+`mcp__claude_ai_Notion__notion-create-pages`로 "SessionLog" DB에 신규 페이지 생성.
 
 **Properties:**
 

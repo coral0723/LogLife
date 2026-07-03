@@ -5,12 +5,15 @@ import Globe from "react-globe.gl";
 import * as topojson from "topojson-client";
 
 import type { CountryPin } from "@/lib/countryPins";
+import { useGlobeStore } from "@/store/globeStore";
 import { createPinElement } from "./createPinElement";
 
 interface Props {
   pins: CountryPin[];
   onPinClick: (pin: CountryPin) => void;
   onReady?: () => void;
+  initialPov?: { lat: number; lng: number };
+  persistPov?: boolean;
 }
 
 // 512×256 그라데이션 ocean 텍스처 — 위도별 깊이감 표현
@@ -41,7 +44,7 @@ function createOceanTexture(): string {
   return canvas.toDataURL();
 }
 
-export function GlobeView({ pins, onPinClick, onReady }: Props) {
+export function GlobeView({ pins, onPinClick, onReady, initialPov, persistPov = false }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,9 +63,11 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
     if (node !== null) setIsGlobeMounted(true);
   }, []);
 
+  const setPov = useGlobeStore((s) => s.setPov);
+
   // altitude 1.5 이상: scale=1, 0.3 이하: scale=2, 그 사이: 선형 보간
   const handleZoom = useCallback(
-    ({ altitude }: { lat: number; lng: number; altitude: number }) => {
+    ({ lat, lng, altitude }: { lat: number; lng: number; altitude: number }) => {
       const SCALE_START = 1.5;
       const SCALE_END = 0.3;
       const newScale =
@@ -79,8 +84,13 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
         .forEach((el) => {
           el.style.transform = `scale(${scaleStr})`;
         });
+
+      // 초기 POV 설정 전 onZoom(lat:0,lng:0) 오염 방지, /u/ 페이지에서는 스토어 미기록
+      if (hasSetInitialPov.current && persistPov) {
+        setPov({ lat, lng, altitude });
+      }
     },
-    []
+    [setPov, persistPov]
   );
   const [polygons, setPolygons] = useState<object[]>([]);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -135,7 +145,15 @@ export function GlobeView({ pins, onPinClick, onReady }: Props) {
     controls.minDistance = fitDistance / 3;
 
     if (!hasSetInitialPov.current) {
-      globeRef.current.pointOfView({ lat: 36, lng: 128, altitude }, 0);
+      let lat = 36, lng = 128;
+      if (persistPov) {
+        const saved = useGlobeStore.getState().pov;
+        if (saved) { lat = saved.lat; lng = saved.lng; }
+      } else if (initialPov) {
+        lat = initialPov.lat;
+        lng = initialPov.lng;
+      }
+      globeRef.current.pointOfView({ lat, lng, altitude }, 0);
       hasSetInitialPov.current = true;
     } else {
       // 리사이즈 시 사용자의 lat/lng는 유지하고 altitude만 조정
