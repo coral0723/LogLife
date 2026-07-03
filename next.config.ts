@@ -1,7 +1,9 @@
 import withSerwistInit from "@serwist/next";
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  reactCompiler: true,
+};
 
 export default withSerwistInit({
   swSrc: "src/app/sw.ts",
