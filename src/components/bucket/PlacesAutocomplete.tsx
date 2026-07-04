@@ -18,11 +18,12 @@ import {
 export type { NormalizedPlace };
 
 type Props = {
-  onSelect: (place: NormalizedPlace) => void;
+  onSelect: (place: NormalizedPlace, query: string) => void;
   placeholder?: string;
   languageCode?: string;
   regionCode?: string;
   inputClassName?: string;
+  initialQuery?: string;
 };
 
 const DEBOUNCE_MS = 300;
@@ -33,8 +34,10 @@ export function PlacesAutocomplete({
   languageCode = "ko",
   regionCode,
   inputClassName = "w-full rounded-xl border border-zinc-200 px-3 py-2.5 text-sm text-zinc-800 focus:outline-none",
+  initialQuery,
 }: Props) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery ?? "");
+  const [syncedInitialQuery, setSyncedInitialQuery] = useState(initialQuery);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +45,12 @@ export function PlacesAutocomplete({
   const sessionTokenRef = useRef<string>(crypto.randomUUID());
   const skipNextFetchRef = useRef(false);
   const listboxId = useId();
+
+  // initialQuery prop 변경(선택 복원·초기화)을 내부 query state에 반영 — useEffect 대신 렌더 중 조정으로 깜빡임 방지
+  if (initialQuery !== syncedInitialQuery) {
+    setSyncedInitialQuery(initialQuery);
+    setQuery(initialQuery ?? "");
+  }
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -93,7 +102,7 @@ export function PlacesAutocomplete({
           sessionTokenRef.current,
           languageCode,
         );
-        onSelect(place);
+        onSelect(place, suggestion.text);
         sessionTokenRef.current = crypto.randomUUID();
         skipNextFetchRef.current = true;
         setQuery(suggestion.text);
