@@ -18,7 +18,7 @@ import {
 export type { NormalizedPlace };
 
 type Props = {
-  onSelect: (place: NormalizedPlace, query: string) => void;
+  onSelect: (place: NormalizedPlace | null, query: string) => void;
   placeholder?: string;
   languageCode?: string;
   regionCode?: string;
@@ -154,7 +154,11 @@ export function PlacesAutocomplete({
             : undefined
         }
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => {
+          const val = e.target.value;
+          setQuery(val);
+          onSelect(null, val);
+        }}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         spellCheck={false}
