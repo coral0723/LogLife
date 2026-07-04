@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor, within } from "@testing-library/rea
 
 import { CreateBucketListForm } from "../CreateBucketListForm";
 import { createBucketList } from "@/actions/bucketList/actions";
+import { useCreateBucketFormStore } from "@/store/createBucketFormStore";
 
 const { MOCK_PLACE, mockPush } = vi.hoisted(() => ({
   MOCK_PLACE: {
@@ -46,6 +47,7 @@ function fillRequiredFields(container: HTMLElement, title = "도쿄 여행") {
 describe("CreateBucketListForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useCreateBucketFormStore.getState().reset();
   });
 
   it("필수 항목(제목·위치·마감일)을 입력하기 전에는 제출 버튼이 비활성화된다", () => {

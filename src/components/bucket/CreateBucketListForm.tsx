@@ -2,19 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { RotateCcw } from "lucide-react";
 
-import {
-  PlacesAutocomplete,
-  type NormalizedPlace,
-} from "@/components/bucket/PlacesAutocomplete";
+import { PlacesAutocomplete } from "@/components/bucket/PlacesAutocomplete";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
 import { createBucketList } from "@/actions/bucketList/actions";
 import { useTodayDateString } from "@/lib/date/useTodayDateString";
+import { useCreateBucketFormStore, type Visibility } from "@/store/createBucketFormStore";
 
 import { DotRatingInput } from "./DotRatingInput";
-
-type Visibility = "PRIVATE" | "FRIENDS" | "PUBLIC";
 
 const TITLE_MAX = 20;
 const DESCRIPTION_MAX = 1000;
@@ -25,26 +22,44 @@ type Props = {
 
 export function CreateBucketListForm({ onSuccess }: Props) {
   const router = useRouter();
-  const [place, setPlace] = useState<NormalizedPlace | null>(null);
+  const {
+    title,
+    description,
+    place,
+    placeQuery,
+    deadlineAt,
+    difficulty,
+    excitement,
+    visibility,
+    setTitle,
+    setDescription,
+    setPlace,
+    setPlaceQuery,
+    setDeadlineAt,
+    setDifficulty,
+    setExcitement,
+    setVisibility,
+    reset,
+  } = useCreateBucketFormStore();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [deadlineAt, setDeadlineAt] = useState("");
   const [deadlineFocused, setDeadlineFocused] = useState(false);
-  const [difficulty, setDifficulty] = useState(3);
-  const [excitement, setExcitement] = useState(3);
   const minDate = useTodayDateString();
 
   const canSubmit = title.trim() !== "" && place !== null && deadlineAt !== "";
 
-  const handleSubmit = (formData: FormData) => {
+  const handleReset = () => {
+    if (window.confirm("작성 중인 내용을 모두 초기화할까요?")) {
+      reset();
+    }
+  };
+
+  const handleSubmit = () => {
     if (!place) {
       setError("위치를 선택해주세요.");
       return;
     }
     setError(null);
-    const visibility = formData.get("visibility") as Visibility;
 
     startTransition(async () => {
       try {
@@ -57,6 +72,7 @@ export function CreateBucketListForm({ onSuccess }: Props) {
           excitement,
           ...place,
         });
+        reset();
         if (onSuccess) {
           onSuccess();
         } else {
@@ -105,7 +121,13 @@ export function CreateBucketListForm({ onSuccess }: Props) {
 
         <div className="mb-9">
           <span className="mb-1 block text-sm font-medium text-zinc-700">위치</span>
-          <PlacesAutocomplete onSelect={setPlace} />
+          <PlacesAutocomplete
+            onSelect={(p, query) => {
+              setPlace(p);
+              setPlaceQuery(query);
+            }}
+            initialQuery={placeQuery}
+          />
         </div>
 
         <label className="mb-9 block">
@@ -149,7 +171,8 @@ export function CreateBucketListForm({ onSuccess }: Props) {
           <div className="relative">
             <select
               name="visibility"
-              defaultValue="PUBLIC"
+              value={visibility}
+              onChange={(e) => setVisibility(e.target.value as Visibility)}
               className="w-full cursor-pointer appearance-none rounded-xl border border-zinc-200 bg-white px-3 py-2.5 pr-9 text-sm focus:outline-none"
             >
               <option value="PRIVATE">비공개</option>
@@ -171,15 +194,26 @@ export function CreateBucketListForm({ onSuccess }: Props) {
             {error}
           </p>
         )}
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={isPending || !canSubmit}
-          className="flex w-full items-center justify-center gap-2 py-3 text-sm font-medium transition-colors"
-        >
-          {isPending && <LoadingSpinner size="xs" />}
-          작성하기
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={isPending || !canSubmit}
+            className="flex flex-1 items-center justify-center gap-2 py-3 text-sm font-medium transition-colors"
+          >
+            {isPending && <LoadingSpinner size="xs" />}
+            작성하기
+          </Button>
+          <Button
+            type="button"
+            variant="cancel"
+            onClick={handleReset}
+            aria-label="작성 내용 초기화"
+            className="flex w-12 items-center justify-center"
+          >
+            <RotateCcw size={18} />
+          </Button>
+        </div>
       </div>
     </form>
   );
