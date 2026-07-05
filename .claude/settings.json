@@ -63,6 +63,16 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -File .claude/hooks/cleanup-session-logs.ps1"
+          }
+        ]
+      }
     ]
   },
   "enabledPlugins": {}

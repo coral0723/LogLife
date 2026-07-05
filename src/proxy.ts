@@ -16,9 +16,9 @@ export default auth((req) => {
     return NextResponse.redirect(url);
   }
 
-  if (pathname === "/login" && req.auth) {
+  if ((pathname === "/login" || pathname === "/") && req.auth) {
     const url = req.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/main";
     url.searchParams.delete("callbackUrl");
     return NextResponse.redirect(url);
   }

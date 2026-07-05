@@ -19,8 +19,10 @@ description: 세션 로그(JSONL)를 읽어 Notion "SessionLog" DB에 기록
 ### 1. 세션 로그 파일 선택
 
 ```powershell
-Get-ChildItem .dev/session-logs -Filter "*.jsonl" | Sort-Object LastWriteTime -Descending | Select-Object -First 5
+Get-ChildItem .dev/session-logs -Recurse -Filter "*.jsonl" | Sort-Object LastWriteTime -Descending | Select-Object -First 5
 ```
+
+파일은 `.dev/session-logs/{브랜치}/{날짜}_{session_id}.jsonl` 형태로 브랜치별 폴더에 있다.
 
 - 파일이 1개면 자동 선택
 - 2개 이상이면 목록을 출력하고 사용자에게 어느 파일을 푸시할지 확인
@@ -129,11 +131,16 @@ Anomaly가 있으면 마지막에 `## Anomalies` heading_2 + bulleted_list_item�
 ⚠️ {path} — 브랜치 히스토리에 없는 파일이 이 세션에서 수정됨
 ```
 
-### 7. 완료 보고
+### 7. 원본 로그 삭제
+
+Notion 페이지 생성이 성공했을 때만, 처리한 jsonl 파일을 삭제한다. 실패 시 삭제하지 않는다.
+
+### 8. 완료 보고
 
 ```
 ✅ Notion 기록 완료
 - 페이지: {Notion 페이지 URL}
 - 챕터: N개 / 총 액션: M건
 - Anomalies: {건수 또는 "없음"}
+- 원본 로그 삭제: {파일 경로}
 ```
