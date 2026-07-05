@@ -58,8 +58,8 @@ yarn-error.log*
 .claude/memory/reference/
 
 # session logs (로컬 전용, git 제외)
-.dev/session-logs/*.jsonl
-.dev/session-logs/.session
+.dev/session-logs/*
+!.dev/session-logs/.gitkeep
 .omc/
 
 # local tool artifacts

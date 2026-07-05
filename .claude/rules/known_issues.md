@@ -55,3 +55,14 @@ globs:
 - **대응**: 파일 삭제는 항상 대상 파일 경로만 지정. 상위 폴더 삭제 전 `git ls-tree HEAD .github`로 내용물 확인 필수
 - **복원**: `git checkout HEAD -- .github`
 - **상세**: `.dev/learnings/2026-06-21_github_folder_recursive_delete.md`
+
+---
+
+## PowerShell 훅 stdin 읽기 — 콘솔 코드페이지로 한글 손상 (복구 불가)
+
+- **증상**: `.claude/hooks/*.ps1`에서 `[Console]::In.ReadToEnd()`로 stdin을 읽으면 한글이 `?`로 치환되며 손상 — 단순 표시 문제가 아니라 바이트 자체가 유실되어 복구 불가
+- **원인**: `powershell -NoProfile -File`(PS 5.1)의 `Console.InputEncoding` 기본값이 OS 콘솔 코드페이지(한글 Windows는 cp949) — Claude Code가 보내는 UTF-8 JSON을 cp949로 오디코딩하며 매핑 안 되는 바이트를 `?`로 대체
+- **대응**: stdin은 `New-Object System.IO.StreamReader([Console]::OpenStandardInput(), (New-Object System.Text.UTF8Encoding $false))`로 명시 디코딩. 파일 쓰기도 `Add-Content` 대신 `[System.IO.File]::AppendAllText($path, $text, $utf8NoBom)`으로 명시 (위 BOM 함정 항목과 함께 적용)
+- **추가 함정**: `.ps1` 파일에 한글 리터럴을 직접 하드코딩할 땐 반대로 **파일 자체를 UTF-8 BOM 포함으로 저장**해야 함 — BOM 없으면 PS 5.1이 소스 파싱 시 cp949로 오디코딩해 리터럴이 파싱 단계에서 깨짐 (데이터 파일 BOM 금지 규칙과는 별개)
+- **일반화**: non-ASCII stdin을 받는 신규 PowerShell 훅 작성 시 항상 동일 패턴 적용. 훅 스크립트에 한글 문자열을 하드코딩해야 하면 그 `.ps1` 파일은 BOM 포함으로 저장
+- **상세**: `.dev/learnings/2026-07-05_powershell_hook_stdin_utf8_corruption.md`
