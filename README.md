@@ -527,8 +527,8 @@ AI는 즉시 구현하려는 경향이 있기에 방향이 틀린 채 작업이 
 
 ### 4️⃣ AI 작업을 추적 가능한 형태로 기록하는 로그 파이프라인 설계
 
-- **훅 자동 수집**: `UserPromptSubmit` · `PostToolUse` 시 프롬프트 텍스트 · 파일 수정 · 명령어 실행을 `.dev/session-logs/YYYY-M-DD_{브랜치명}.jsonl`에 실시간 기록
-- **세션 로그**(`/sessionlog`): — JSONL을 선택하면 Notion "AI Agent Logs" DB에 챕터별 정리
+- **훅 자동 수집**: `UserPromptSubmit` · `PostToolUse` 시 프롬프트 텍스트 · 파일 수정 · 명령어 실행을 `.dev/session-logs/{브랜치}/{YYYY-MM-DD}_{세션ID 앞 8자}.jsonl`에 실시간 기록
+- **세션 로그**(`/sessionlog`): — JSONL을 선택하면 Notion "SessionLog" DB에 챕터별 정리
 - **브랜치 로그**(`/branchlog`): — `git diff` · `git log` 기반 분석·정리 후 Notion "BranchLog" DB에 기록. `/pr` 실행 시 큰 작업 브랜치로 판단되면 자동 권장
 
 <br>
