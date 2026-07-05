@@ -12,7 +12,7 @@ Get-ChildItem $root -Recurse -Filter "*.jsonl" -File | Where-Object { $_.LastWri
     $deleted++
 }
 
-Get-ChildItem $root -Directory | Where-Object { (Get-ChildItem $_.FullName -File -ErrorAction SilentlyContinue).Count -eq 0 } | Remove-Item -Force -Recurse
+Get-ChildItem $root -Directory | Where-Object { (Get-ChildItem $_.FullName -File -Recurse -ErrorAction SilentlyContinue).Count -eq 0 } | Remove-Item -Force -Recurse
 
 if ($deleted -gt 0) {
     $msg = "[session-log cleanup] ${retentionDays}일 지난 로그 ${deleted}개 삭제`n"
