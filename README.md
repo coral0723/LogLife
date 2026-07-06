@@ -1,7 +1,7 @@
 # 🌍 LogLife — 버킷리스트를 지구본 위에 기록하는 서비스
 
 <div align="center">
-  <img width="300" height="300" alt="logo" src="https://github.com/user-attachments/assets/59fdc361-2518-48c8-8663-d48d33446d70" />
+  <img width="1920" height="1080" alt="LogLife 표지" src="https://github.com/user-attachments/assets/e30a8063-42bf-44e2-8915-a499d9447f56" />
 </div>
 
 - **배포 URL** : https://loglife-rho.vercel.app/
