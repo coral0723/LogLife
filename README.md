@@ -333,107 +333,106 @@ LogLife/
 ```mermaid
 flowchart TD
 
-subgraph group_grp_app["App shell"]
-  node_n_app_shell["App routes<br/>nextjs router"]
-  node_n_auth_area["Login<br/>auth segment<br/>[page.tsx]"]
-  node_n_after_login["Authed app<br/>protected segment"]
-  node_n_modal_overlay["Modal routes<br/>parallel routes"]
-  node_n_api_routes["API routes<br/>route handlers"]
+subgraph group_app["Next.js App"]
+  node_src_app_root["App shell<br/>nextjs shell<br/>[layout.tsx]"]
+  node_src_app_auth["Auth routes<br/>route group<br/>[page.tsx]"]
+  node_src_app_afterlogin["App routes<br/>route group<br/>[layout.tsx]"]
+  node_src_app_modal["Modal routes<br/>parallel routes<br/>[default.tsx]"]
+  node_src_app_e2e["E2E routes<br/>test routes<br/>[page.tsx]"]
 end
 
-subgraph group_grp_features["Features"]
-  node_n_features["UI features<br/>feature UI"]
-  node_n_dashboard_ui["Dashboard UI<br/>widgets"]
-  node_n_bucket_ui["Bucket UI<br/>bucket flows"]
-  node_n_friends_ui["Friends UI<br/>social widgets"]
-  node_n_profile_ui["Profile UI<br/>settings views"]
-  node_n_user_ui["Public profile UI"]
-  node_n_globe_ui{{"Globe UI<br/>visualization"}}
+subgraph group_ui["UI Components"]
+  node_src_store["Client stores<br/>state stores<br/>[globeStore.ts]"]
+  node_src_components_globe(("Globe view<br/>visualization UI<br/>[GlobeView.tsx]"))
+  node_src_components_bucket["Bucket tools<br/>feature UI"]
+  node_src_components_friends["Friends UI<br/>feature UI<br/>[FriendsView.tsx]"]
+  node_src_components_dashboard["Dashboard UI<br/>feature UI<br/>[DashboardPanel.tsx]"]
+  node_src_components_profile["Profile UI<br/>feature UI"]
+  node_src_components_user["Public profile UI<br/>feature UI"]
+  node_src_components_landing["Landing UI<br/>marketing UI<br/>[HeroContent.tsx]"]
+  node_src_components_shared["Shared UI<br/>base UI<br/>[Button.tsx]"]
 end
 
-subgraph group_grp_domain["Domain"]
-  node_n_actions["Server actions<br/>mutations"]
-  node_n_domain_logic["Domain logic<br/>pure helpers"]
+subgraph group_logic["Domain Logic"]
+  node_src_lib_domain["Domain helpers<br/>pure logic<br/>[bucketStatus.ts]"]
 end
 
-subgraph group_grp_data["Data & integrations"]
-  node_n_prisma[("Prisma data<br/>database client<br/>[prisma.ts]")]
-  node_n_auth_system["Auth system<br/>nextauth session<br/>[route.ts]"]
-  node_n_places_api["Places API<br/>external integration"]
-  node_n_geo_data["Geo data<br/>country assets"]
+subgraph group_data["Data Layer"]
+  node_src_app_api_auth["Auth callback<br/>api route<br/>[route.ts]"]
+  node_src_app_api_data["Read APIs<br/>api routes<br/>[route.ts]"]
+  node_src_actions["Server actions<br/>mutation layer<br/>[actions.ts]"]
+  node_src_auth["NextAuth setup<br/>auth config<br/>[auth.ts]"]
+  node_src_lib_prisma[("Prisma access<br/>db client<br/>[prisma.ts]")]
+  node_prisma_schema["DB schema<br/>[schema.prisma]"]
 end
 
-subgraph group_grp_quality["Quality"]
-  node_n_e2e_routes["E2E routes<br/>test routes"]
-  node_n_offline_support["Offline support<br/>pwa layer<br/>[sw.ts]"]
-  node_n_test_system["Testing stack<br/>vitest/playwright/msw"]
+subgraph group_workflow["Workflow"]
+  node_tests_workflow["Tests<br/>quality stack<br/>[vitest.config.ts]"]
+  node_ops_workflow["Dev workflow<br/>tooling rules<br/>[CLAUDE.md]"]
 end
 
-node_n_app_shell -->|"public auth"| node_n_auth_area
-node_n_app_shell -->|"protected app"| node_n_after_login
-node_n_app_shell -.->|"test routes"| node_n_e2e_routes
-node_n_after_login -->|"overlays"| node_n_modal_overlay
-node_n_after_login -->|"renders"| node_n_features
-node_n_modal_overlay -->|"detail modal"| node_n_bucket_ui
-node_n_modal_overlay -->|"friends modal"| node_n_friends_ui
-node_n_modal_overlay -->|"profile modal"| node_n_profile_ui
-node_n_modal_overlay -->|"user modal"| node_n_user_ui
-node_n_after_login -->|"mutations"| node_n_actions
-node_n_after_login -->|"data fetch"| node_n_api_routes
-node_n_actions -->|"business rules"| node_n_domain_logic
-node_n_api_routes -->|"business rules"| node_n_domain_logic
-node_n_actions -->|"write data"| node_n_prisma
-node_n_api_routes -->|"read/write"| node_n_prisma
-node_n_api_routes -->|"places"| node_n_places_api
-node_n_features -->|"dashboard"| node_n_dashboard_ui
-node_n_features -->|"bucket lists"| node_n_bucket_ui
-node_n_features -->|"friends"| node_n_friends_ui
-node_n_features -->|"profile"| node_n_profile_ui
-node_n_features -->|"public users"| node_n_user_ui
-node_n_features -->|"globe"| node_n_globe_ui
-node_n_dashboard_ui -->|"widgets"| node_n_api_routes
-node_n_friends_ui -->|"social data"| node_n_api_routes
-node_n_bucket_ui -->|"location lookup"| node_n_places_api
-node_n_globe_ui -->|"country data"| node_n_geo_data
-node_n_auth_system -->|"session gate"| node_n_app_shell
-node_n_offline_support -->|"degraded UI"| node_n_features
-node_n_test_system -.->|"component tests"| node_n_features
-node_n_test_system -.->|"route tests"| node_n_api_routes
-node_n_test_system -.->|"action tests"| node_n_actions
-node_n_test_system -.->|"browser flows"| node_n_app_shell
+node_src_app_root -->|"routes to"| node_src_app_auth
+node_src_app_root -->|"hosts"| node_src_app_afterlogin
+node_src_app_afterlogin -->|"overlays"| node_src_app_modal
+node_src_app_afterlogin -->|"renders"| node_src_components_globe
+node_src_app_afterlogin -->|"renders"| node_src_components_dashboard
+node_src_app_afterlogin -->|"renders"| node_src_components_friends
+node_src_app_afterlogin -->|"renders"| node_src_components_profile
+node_src_app_afterlogin -->|"renders"| node_src_components_bucket
+node_src_app_auth -->|"uses"| node_src_auth
+node_src_app_api_auth -->|"calls"| node_src_auth
+node_src_app_api_data -->|"reads/writes"| node_src_lib_prisma
+node_src_actions -->|"mutates"| node_src_lib_prisma
+node_src_lib_prisma -->|"implements"| node_prisma_schema
+node_src_app_api_data -->|"computes"| node_src_lib_domain
+node_src_actions -->|"validates"| node_src_lib_domain
+node_src_components_globe -->|"uses"| node_src_store
+node_src_components_bucket -->|"fetches"| node_src_app_api_data
+node_src_components_friends -->|"fetches"| node_src_app_api_data
+node_src_components_dashboard -->|"fetches"| node_src_app_api_data
+node_src_components_profile -->|"submits"| node_src_actions
+node_src_components_user -->|"fetches"| node_src_app_api_data
+node_src_components_landing -->|"reuses"| node_src_components_globe
+node_tests_workflow -.->|"covers"| node_src_components_shared
+node_tests_workflow -.->|"stabilizes"| node_src_app_e2e
+node_ops_workflow -.->|"guides"| node_src_actions
 
-click node_n_app_shell "https://github.com/coral0723/loglife/tree/main/src/app"
-click node_n_auth_area "https://github.com/coral0723/loglife/blob/main/src/app/(auth)/login/page.tsx"
-click node_n_after_login "https://github.com/coral0723/loglife/tree/main/src/app/(afterLogin)"
-click node_n_modal_overlay "https://github.com/coral0723/loglife/tree/main/src/app/(afterLogin)/@modal"
-click node_n_e2e_routes "https://github.com/coral0723/loglife/tree/main/src/app/(e2e)"
-click node_n_api_routes "https://github.com/coral0723/loglife/tree/main/src/app/api"
-click node_n_actions "https://github.com/coral0723/loglife/tree/main/src/actions"
-click node_n_features "https://github.com/coral0723/loglife/tree/main/src/components"
-click node_n_dashboard_ui "https://github.com/coral0723/loglife/tree/main/src/components/dashboard"
-click node_n_bucket_ui "https://github.com/coral0723/loglife/tree/main/src/components/bucket"
-click node_n_friends_ui "https://github.com/coral0723/loglife/tree/main/src/components/friends"
-click node_n_profile_ui "https://github.com/coral0723/loglife/tree/main/src/components/profile"
-click node_n_user_ui "https://github.com/coral0723/loglife/tree/main/src/components/user"
-click node_n_globe_ui "https://github.com/coral0723/loglife/tree/main/src/components/globe"
-click node_n_domain_logic "https://github.com/coral0723/loglife/tree/main/src/lib"
-click node_n_prisma "https://github.com/coral0723/loglife/blob/main/src/lib/prisma.ts"
-click node_n_auth_system "https://github.com/coral0723/loglife/blob/main/src/app/api/auth/[...nextauth]/route.ts"
-click node_n_places_api "https://github.com/coral0723/loglife/tree/main/src/app/api/places"
-click node_n_geo_data "https://github.com/coral0723/loglife/blob/main/src/lib/countryCentroids.ts"
-click node_n_offline_support "https://github.com/coral0723/loglife/blob/main/src/app/sw.ts"
-click node_n_test_system "https://github.com/coral0723/loglife/tree/main/tests/e2e"
+click node_src_app_root "https://github.com/coral0723/loglife/blob/main/src/app/layout.tsx"
+click node_src_app_auth "https://github.com/coral0723/loglife/blob/main/src/app/(auth)/login/page.tsx"
+click node_src_app_afterlogin "https://github.com/coral0723/loglife/blob/main/src/app/(afterLogin)/layout.tsx"
+click node_src_app_modal "https://github.com/coral0723/loglife/blob/main/src/app/(afterLogin)/@modal/default.tsx"
+click node_src_app_e2e "https://github.com/coral0723/loglife/blob/main/src/app/(e2e)/e2e-login/page.tsx"
+click node_src_app_api_auth "https://github.com/coral0723/loglife/blob/main/src/app/api/auth/[...nextauth]/route.ts"
+click node_src_app_api_data "https://github.com/coral0723/loglife/blob/main/src/app/api/bucketlists/[id]/route.ts"
+click node_src_actions "https://github.com/coral0723/loglife/blob/main/src/actions/user/actions.ts"
+click node_src_auth "https://github.com/coral0723/loglife/blob/main/src/auth.ts"
+click node_src_lib_prisma "https://github.com/coral0723/loglife/blob/main/src/lib/prisma.ts"
+click node_prisma_schema "https://github.com/coral0723/loglife/blob/main/prisma/schema.prisma"
+click node_src_lib_domain "https://github.com/coral0723/loglife/blob/main/src/lib/bucketList/bucketStatus.ts"
+click node_src_store "https://github.com/coral0723/loglife/blob/main/src/store/globeStore.ts"
+click node_src_components_globe "https://github.com/coral0723/loglife/blob/main/src/components/globe/GlobeView.tsx"
+click node_src_components_bucket "https://github.com/coral0723/loglife/blob/main/src/components/bucket/BucketDetailView.tsx"
+click node_src_components_friends "https://github.com/coral0723/loglife/blob/main/src/components/friends/FriendsView.tsx"
+click node_src_components_dashboard "https://github.com/coral0723/loglife/blob/main/src/components/dashboard/DashboardPanel.tsx"
+click node_src_components_profile "https://github.com/coral0723/loglife/blob/main/src/components/profile/ProfileSettingsView.tsx"
+click node_src_components_user "https://github.com/coral0723/loglife/blob/main/src/components/user/PublicProfileView.tsx"
+click node_src_components_landing "https://github.com/coral0723/loglife/blob/main/src/components/landing/HeroContent.tsx"
+click node_src_components_shared "https://github.com/coral0723/loglife/blob/main/src/components/ui/Button.tsx"
+click node_tests_workflow "https://github.com/coral0723/loglife/blob/main/vitest.config.ts"
+click node_ops_workflow "https://github.com/coral0723/loglife/blob/main/CLAUDE.md"
 
+classDef toneNeutral fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a
 classDef toneBlue fill:#dbeafe,stroke:#2563eb,stroke-width:1.5px,color:#172554
 classDef toneAmber fill:#fef3c7,stroke:#d97706,stroke-width:1.5px,color:#78350f
 classDef toneMint fill:#dcfce7,stroke:#16a34a,stroke-width:1.5px,color:#14532d
 classDef toneRose fill:#ffe4e6,stroke:#e11d48,stroke-width:1.5px,color:#881337
 classDef toneIndigo fill:#e0e7ff,stroke:#4f46e5,stroke-width:1.5px,color:#312e81
-class node_n_app_shell,node_n_auth_area,node_n_after_login,node_n_modal_overlay,node_n_api_routes toneBlue
-class node_n_features,node_n_dashboard_ui,node_n_bucket_ui,node_n_friends_ui,node_n_profile_ui,node_n_user_ui,node_n_globe_ui toneAmber
-class node_n_actions,node_n_domain_logic toneMint
-class node_n_prisma,node_n_auth_system,node_n_places_api,node_n_geo_data toneRose
-class node_n_e2e_routes,node_n_offline_support,node_n_test_system toneIndigo
+classDef toneTeal fill:#ccfbf1,stroke:#0f766e,stroke-width:1.5px,color:#134e4a
+class node_src_app_root,node_src_app_auth,node_src_app_afterlogin,node_src_app_modal,node_src_app_e2e toneBlue
+class node_src_store,node_src_components_globe,node_src_components_bucket,node_src_components_friends,node_src_components_dashboard,node_src_components_profile,node_src_components_user,node_src_components_landing,node_src_components_shared toneAmber
+class node_src_lib_domain toneMint
+class node_src_app_api_auth,node_src_app_api_data,node_src_actions,node_src_auth,node_src_lib_prisma,node_prisma_schema toneRose
+class node_tests_workflow,node_ops_workflow toneIndigo
 ```
 <br>
 
