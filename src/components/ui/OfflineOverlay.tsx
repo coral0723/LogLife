@@ -3,13 +3,9 @@
 import { useEffect, useState } from "react";
 
 export default function OfflineOverlay() {
-  const [isOffline, setIsOffline] = useState(() =>
-    typeof navigator === "undefined" ? false : !navigator.onLine
-  );
+  const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
-    if (!navigator.onLine) document.body.style.overflow = "hidden";
-
     const handleOffline = () => {
       setIsOffline(true);
       document.body.style.overflow = "hidden";
