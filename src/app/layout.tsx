@@ -20,6 +20,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://loglife-rho.vercel.app"),
   title: "LogLife",
   description: "버킷리스트를 지구본 위에 기록하세요",
   manifest: "/manifest.json",
