@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#2cc2f7",
+  themeColor: "#060d1f",
   viewportFit: "cover",
 };
 
@@ -44,7 +44,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0a0a0a]">
+      <body className="min-h-full flex flex-col bg-[#060d1f]">
         <RQProviders>{children}</RQProviders>
         <OfflineOverlay />
       </body>
