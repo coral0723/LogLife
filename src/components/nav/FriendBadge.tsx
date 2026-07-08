@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchFriendRequestsCount, friendQueryKeys } from "@/api/friends";
 
 const BADGE_CLASSNAME =
-  "fixed right-4 top-14 z-30 flex h-8 w-8 items-center justify-center rounded-3xl md:rounded-4xl border-2 border-[#A1A1AA] bg-[#F3F4F6] shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:right-8 md:top-8 md:h-10 md:w-10 lg:right-14 lg:top-14";
+  "fixed right-4 top-[calc(env(safe-area-inset-top)+3.5rem)] z-30 flex h-8 w-8 items-center justify-center rounded-3xl md:rounded-4xl border-2 border-[#A1A1AA] bg-[#F3F4F6] shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl md:right-8 md:top-8 md:h-10 md:w-10 lg:right-14 lg:top-14";
 
 export function FriendBadge() {
   const { data: pendingCount } = useQuery({
