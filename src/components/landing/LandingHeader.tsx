@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export function LandingHeader() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-sm bg-[#060d1f]/30">
+    <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-6 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] backdrop-blur-sm bg-[#060d1f]/30">
       <Link href="/" className="flex items-center gap-2">
         <Image src="/logo.png" alt="LogLife" width={28} height={28} />
         <span className="text-sm font-semibold text-white">LogLife</span>
