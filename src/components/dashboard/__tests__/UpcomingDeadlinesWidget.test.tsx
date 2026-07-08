@@ -21,8 +21,11 @@ vi.mock("framer-motion", () => {
   const li = ({
     children,
     className,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     initial: _initial,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     animate: _animate,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     transition: _transition,
     ...rest
   }: React.LiHTMLAttributes<HTMLLIElement> & {

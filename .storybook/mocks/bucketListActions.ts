@@ -10,7 +10,6 @@ export async function toggleAchieved(_id: string) {
   return { achieved: true, achievedAt: null as string | null };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function updateDeadline(_id: string, deadlineAt: Date | null) {
   return { deadlineAt };
 }

@@ -18,6 +18,9 @@ const eslintConfig = defineConfig([
     // 빌드 아티팩트 — 소스 아님
     "storybook-static/**",
     "playwright-report/**",
+    // 생성 파일 — 소스 아님 (Serwist / MSW)
+    "public/sw.js",
+    "public/mockServiceWorker.js",
   ]),
   ...storybook.configs["flat/recommended"]
 ]);
