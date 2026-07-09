@@ -15,10 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#2cc2f7",
+  themeColor: "#060d1f",
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://loglife-rho.vercel.app"),
   title: "LogLife",
   description: "버킷리스트를 지구본 위에 기록하세요",
   manifest: "/manifest.json",
@@ -43,7 +45,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0a0a0a]">
+      <body className="min-h-full flex flex-col bg-[#060d1f]">
         <RQProviders>{children}</RQProviders>
         <OfflineOverlay />
       </body>

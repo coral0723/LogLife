@@ -6,10 +6,6 @@ export default function OfflineOverlay() {
   const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
-    const isCurrentlyOffline = !navigator.onLine;
-    setIsOffline(isCurrentlyOffline);
-    if (isCurrentlyOffline) document.body.style.overflow = "hidden";
-
     const handleOffline = () => {
       setIsOffline(true);
       document.body.style.overflow = "hidden";
@@ -21,6 +17,12 @@ export default function OfflineOverlay() {
 
     window.addEventListener("offline", handleOffline);
     window.addEventListener("online", handleOnline);
+
+    // Safari는 SW 가로채기 직후 navigator.onLine이 순간적으로 false를 오탐 반환하므로,
+    // false일 때만 실제 네트워크 요청으로 한 번 더 확인한다.
+    if (!navigator.onLine) {
+      fetch("/api/connection-test", { cache: "no-store" }).catch(handleOffline);
+    }
 
     return () => {
       window.removeEventListener("offline", handleOffline);

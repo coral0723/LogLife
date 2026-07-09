@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { AvatarStep } from "../AvatarStep";
 
 vi.mock("next/image", () => ({
+  // eslint-disable-next-line @next/next/no-img-element -- next/image 자체를 목킹하는 용도
   default: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
 }));
 

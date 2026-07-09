@@ -9,7 +9,7 @@ import { AVATAR_PATHS } from "@/lib/avatar";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 const BADGE_CLASSNAME =
-  "fixed left-4 top-14 z-30 flex items-end gap-2.5 overflow-hidden rounded-full border border-[rgba(226,232,240,0.7)] bg-white/95 pl-1.5 pr-4 pt-1.5 pb-0 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.06)] backdrop-blur-xl md:left-8 md:top-8 lg:left-14 lg:top-14";
+  "fixed left-4 top-[calc(env(safe-area-inset-top)+3.5rem)] z-30 flex items-end gap-2.5 overflow-hidden rounded-full border border-[rgba(226,232,240,0.7)] bg-white/95 pl-1.5 pr-4 pt-1.5 pb-0 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.06)] backdrop-blur-xl md:left-8 md:top-8 lg:left-14 lg:top-14";
 
 const AVATAR_CONTAINER_CLASSNAME =
   "flex h-7 w-7 flex-shrink-0 items-center justify-center md:h-9 md:w-9 lg:h-10 lg:w-10";

@@ -47,7 +47,7 @@ function FeatureLabel({ step, label }: FeatureLabelProps) {
 export default function Home() {
   return (
     <main className="min-h-dvh text-white">
-      <div className="fixed inset-0 -z-20 bg-[#0a0a0a]" />
+      <div className="fixed inset-0 -z-20 bg-[#060d1f]" />
       <div className="fixed inset-0 -z-10 opacity-50">
         <StarField />
       </div>

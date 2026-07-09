@@ -22,6 +22,7 @@ vi.mock("next/link", () => ({
 }));
 
 vi.mock("@/components/ui/ImageWithFallback", () => ({
+  // eslint-disable-next-line @next/next/no-img-element -- ImageWithFallback을 목킹하는 용도
   ImageWithFallback: ({ alt }: { alt: string }) => <img alt={alt} />,
 }));
 

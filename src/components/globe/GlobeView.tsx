@@ -160,6 +160,8 @@ export function GlobeView({ pins, onPinClick, onReady, initialPov, persistPov = 
       const { lat, lng } = globeRef.current.pointOfView();
       globeRef.current.pointOfView({ lat, lng, altitude }, 0);
     }
+    // initialPov/persistPov는 hasSetInitialPov 최초 1회 분기에서만 참조되고 이후엔 쓰이지 않음 — 리사이즈 시에만 재실행되도록 의도적으로 deps 제외
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [size.width, size.height]);
 
   // react-globe.gl 기본 조명이 어두워 밝기 보정 + 지구본 준비 완료 알림

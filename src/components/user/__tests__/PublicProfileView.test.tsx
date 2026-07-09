@@ -20,6 +20,7 @@ vi.mock("@/components/ui/LoadingSpinner", () => ({
 
 vi.mock("@/components/ui/ImageWithFallback", () => ({
   ImageWithFallback: (props: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element -- ImageWithFallback을 목킹하는 용도
     <img src={props.src} alt={props.alt} />
   ),
 }));
