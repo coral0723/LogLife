@@ -33,13 +33,21 @@ description: E2E 시나리오 제안 → 사용자 승인 → 테스트 작성 �
    - 1개 이상 선택하면 4단계로 진행.
 
 4. **스펙 파일 작성**
-   - `oh-my-claudecode:qa-tester` 에이전트에 선택된 시나리오 목록, 관련 컴포넌트 **파일 경로**, 저장 경로를 전달해 파일 작성을 위임한다. (파일 내용은 에이전트가 직접 Read — 메시지에 포함하지 않는다.)
+   - `oh-my-claudecode:qa-tester` 에이전트에 선택된 시나리오 목록, 관련 컴포넌트 **파일 경로**, 저장 경로, **아래 "로케이터 작성 규칙" 섹션 전문**, `tests/e2e/setup/global.setup.ts` 경로를 전달해 파일 작성을 위임한다. (파일 내용은 에이전트가 직접 Read — 메시지에 포함하지 않는다.)
    - 저장 위치: `tests/e2e/specs/<기능명>.spec.ts`
    - 기존 스펙 파일이 있으면 새 시나리오를 추가(Edit), 없으면 새 파일 생성(Write).
    - global.setup.ts에서 시드된 테스트 데이터(KR·JP 버킷리스트, 테스트 유저)를 활용한다.
    - `tests/e2e/setup/auth.setup.ts`가 저장한 `.auth/user.json`을 storageState로 쓰는 chromium 프로젝트에서 실행됨을 전제로 작성.
 
-5. **Playwright UI 실행**
+5. **작성 스펙 headless 검증** (이 단계 통과 전 UI 모드 인계 금지)
+   - 이번에 작성·수정한 스펙 파일만 headless 실행:
+     `pnpm test:e2e tests/e2e/specs/<파일>.spec.ts --reporter=line` (run_in_background=true, 완료 대기)
+   - 첫 실행은 playwright.config.ts의 webServer가 포트 3001에 Next.js를 기동하므로 수 분 걸릴 수 있음 — timeout 여유 있게.
+   - 실패 시: 에러 메시지에서 원인(로케이터 미발견·텍스트 불일치·타임아웃)을 파악해 스펙 수정 후 재실행. **최대 2회 수정**.
+   - 2회 수정 후에도 실패하면: 남은 실패 테스트명 + 에러 요약 + 시도한 수정 내용을 출력하고 사용자에게 인계 (UI 모드는 실행하되 "미통과 상태" 명시).
+   - 전부 통과하면 "headless 검증 통과 (N개)" 한 줄 출력 후 6단계 진행.
+
+6. **Playwright UI 실행**
    - "테스트 파일 작성 완료. Playwright UI를 실행합니다." 출력.
    - `pnpm test:e2e:ui` 실행 — 브라우저 UI 창이 열리면 스킬 종료.
    - (서버가 없어도 playwright.config.ts의 webServer가 자동으로 포트 3001에 Next.js를 기동함.)
@@ -51,9 +59,17 @@ description: E2E 시나리오 제안 → 사용자 승인 → 테스트 작성 �
 - **인터랙션**: 클릭/입력 → 결과 변화 확인
 - **에러/로딩**: MSW로 제어 가능한 경우에만 포함
 
+## 로케이터 작성 규칙 (qa-tester 위임 메시지에 이 섹션 전문 포함)
+
+- **텍스트 단언은 소스의 문자열 리터럴을 그대로 복사** — 컴포넌트 파일에서 실제 렌더링되는 문자열을 찾아 복사한다. 의역·추측·재구성 금지.
+- **`<Link>`는 `getByRole('link')`** — 버튼이 아니다. `getByRole('button')`으로 찾으면 실패한다. 클릭 후 이동 검증은 `await expect(page).toHaveURL(...)`.
+- **단언할 데이터 값은 시드와 대조** — `tests/e2e/setup/global.setup.ts`의 시드 데이터(KR·JP 버킷리스트, 테스트 유저)에 실제 존재하는 값만 단언. 시드에 없는 데이터를 기대하는 테스트 금지.
+- **조건부 렌더링 주의** — 로딩 상태·빈 상태 분기가 있는 컴포넌트는 어떤 조건에서 해당 텍스트가 보이는지 확인 후 단언.
+- 레퍼런스: `tests/e2e/specs/main.spec.ts` (role 기반 로케이터 + 시드 텍스트 + 타임아웃 상수 패턴)
+
 ## 금지
 
 - 사용자 승인 없이 파일 작성 금지.
 - `tests/e2e/setup/` 폴더(인프라 파일) 수정 금지.
 - Vitest로 E2E 테스트 작성 금지.
-- `pnpm test:e2e` (headless) 자동 실행 금지 — UI 모드(`test:e2e:ui`)만 사용.
+- **전체 스위트** headless 실행 금지 — headless는 이번에 작성·수정한 스펙 파일 경로를 명시한 경우만 허용.
