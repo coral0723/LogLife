@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -Command \"Get-Content '.claude/rules/cli_security.md' -Raw\""
+            "command": "powershell -NoProfile -File .claude/hooks/check-cli-security.ps1"
           }
         ]
       }
