@@ -1,6 +1,6 @@
 # 이번 세션에 파일 수정이 있었으면 test + lint 권고
 $today = Get-Date -Format 'yyyy-MM-dd'
-$sessionLogs = Get-ChildItem ".dev/session-logs" -Filter "${today}_*.jsonl" -ErrorAction SilentlyContinue
+$sessionLogs = Get-ChildItem ".dev/session-logs" -Recurse -Filter "${today}_*.jsonl" -ErrorAction SilentlyContinue
 $hasFileChanges = $false
 
 foreach ($log in $sessionLogs) {
