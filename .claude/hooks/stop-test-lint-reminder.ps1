@@ -1,5 +1,5 @@
 ﻿# 이번 세션에 파일 수정이 있었으면 수정 경로 패턴에 따라 리뷰 스킬 권고
-$OutputEncoding = [System.Text.UTF8Encoding]::new()
+$stdout = New-Object System.IO.StreamWriter([Console]::OpenStandardOutput(), (New-Object System.Text.UTF8Encoding $false))
 $today = Get-Date -Format 'yyyy-MM-dd'
 $sessionLogs = Get-ChildItem ".dev/session-logs" -Recurse -Filter "${today}_*.jsonl" -ErrorAction SilentlyContinue
 $changedPaths = @()
@@ -26,4 +26,5 @@ if ($changedPaths -match '(_components|src[\\/]components|src[\\/]lib)') {
 $messages += "[test reminder] 이번 세션에 파일 수정이 있었습니다. pnpm test && pnpm lint 실행을 권장합니다."
 $messages += "[review reminder] /quality-review 권장"
 
-$messages | ForEach-Object { Write-Output $_ }
+$messages | ForEach-Object { $stdout.WriteLine($_) }
+$stdout.Flush()
