@@ -7,17 +7,17 @@ if (-not $cmd) { exit 0 }
 
 # cli_security.md 5개 카테고리 → 정규식 (설명, 패턴) 쌍
 $rules = @(
-  @('파괴적 삭제: 프로젝트 밖/루트 대상 rm -rf', 'rm\s+-[a-zA-Z]*r[a-zA-Z]*f[a-zA-Z]*\s+(/|~|\.\.|[A-Za-z]:)'),
-  @('파괴적 삭제: Remove-Item -Recurse -Force (git/node_modules 외)', 'Remove-Item\s+(?!.*(node_modules|\.git))(?=.*-Recurse)(?=.*-Force)'),
-  @('미커밋 작업물 전체 삭제', 'git\s+(clean\s+-[a-z]*f|checkout\s+--\s+\.|restore\s+\.)'),
+  @('파괴적 삭제: 프로젝트 밖/루트 대상 rm -rf (따옴표·분리옵션·역순 옵션·롱플래그 포함)', 'rm\b(?=.*(?:^|\s)(-[a-zA-Z]*r|--recursive))(?=.*(?:^|\s)(-[a-zA-Z]*f|--force))\s+.*(?:^|\s)["''`]?(/|~|\.\.|[A-Za-z]:)'),
+  @('파괴적 삭제: Remove-Item 및 별칭(rm/ri/del/erase/rd/rmdir) -Recurse -Force (git/node_modules 외)', '(Remove-Item|\b(rm|ri|del|erase|rd|rmdir)\b)(?!.*(node_modules|\.git))(?=.*(?:^|\s)-[Rr][a-zA-Z]*)(?=.*(?:^|\s)-[Ff][Oo][a-zA-Z]*)'),
+  @('미커밋 작업물 전체 삭제', 'git\s+(clean\b(?=.*(?:^|\s)(-[a-zA-Z]*f|--force))|checkout\s+--\s+["''`]?\.|restore\s+["''`]?\.)'),
   @('DB 파괴', '(DROP\s+TABLE|DELETE\s+FROM.*WHERE\s+1\s*=\s*1|db\s+push\s+--force-reset)'),
-  @('git 기록 파괴: force push', 'git\s+push\s+.*--force'),
-  @('git 기록 파괴: reset/rebase/filter', 'git\s+(reset\s+--hard|rebase\s+-i|filter-branch|filter-repo)'),
-  @('금지 플래그', '--(no-verify|amend|no-gpg-sign)'),
-  @('시크릿 출력: .env 파일', '(cat|type|Get-Content)\s+[^|;]*\.env(?!\.example)'),
-  @('시크릿 외부 전송', '(curl|Invoke-WebRequest|wget)\s+.*(\.env|DATABASE_URL|AUTH_SECRET)'),
-  @('시스템 프로세스 종료 (node/next 제외)', '(taskkill|Stop-Process|kill\s+-9)\s+(?!.*(node|next))'),
-  @('레지스트리/전역 패키지', '(reg\s+add|Set-ItemProperty\s+HKLM|(npm|pnpm)\s+(install|add)\s+-g)')
+  @('git 기록 파괴: force push', 'git\s+push\b.*((?:^|\s)-f\b|--force)'),
+  @('git 기록 파괴: reset/rebase/filter', 'git\s+(reset\s+--hard|rebase\s+(-i\b|--interactive)|filter-branch|filter-repo)'),
+  @('금지 플래그', '(--(no-verify|amend|no-gpg-sign)|git\s+commit\b.*(?:^|\s)-n\b)'),
+  @('시크릿 출력: .env 파일', '(cat|type|Get-Content|gc)\s+[^|;]*\.env(?!\.example)'),
+  @('시크릿 외부 전송', '(curl|Invoke-WebRequest|iwr|wget)\s+.*(\.env|DATABASE_URL|AUTH_SECRET)'),
+  @('시스템 프로세스 종료 (node/next 제외)', '(taskkill|Stop-Process|spps|kill)\s+(?!.*(node|next))'),
+  @('레지스트리/전역 패키지', '(reg\s+add|Set-ItemProperty\s+HKLM|(npm|pnpm)\s+(install|add)\b.*((?:^|\s)-g\b|--global))')
 )
 foreach ($r in $rules) {
   if ($cmd -match $r[1]) {
