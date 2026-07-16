@@ -310,8 +310,6 @@ LogLife/
 │   ├── cost_constraint.md        # 0원 운영 제약 정의
 │   └── templates/                # commit · issue · PR 메시지 양식
 ├── .storybook/                   # Storybook 설정 (addon·webpack·preview)
-├── .agents/
-│   └── skills/                   # UI 스타일 스킬 모음 (design-taste-frontend 등 12종)
 ├── .claude/                      # Claude Code 하네스 설정
 │   ├── rules/                    # 작업 유형별 규칙 파일 (code_style·security·deploy·testing 등 8종)
 │   ├── skills/                   # 로컬 스킬 정의 (/commit·/pr·/handoff·/e2e 등)

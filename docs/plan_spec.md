@@ -40,9 +40,8 @@
 |---|---|---|
 | context7 | `@upstash/context7-mcp` | Next.js 16 / Prisma 7 / React 19 최신 공식 문서 실시간 조회 |
 | playwright | `@playwright/mcp` | 브라우저 자동화 — E2E/시각 확인 |
-| notionApi | `@notionhq/notion-mcp-server` | Notion DB 연동 — branchlog/sessionlog 등 |
 
-> 설정 파일: `.mcp.json` (프로젝트 루트). 추후 Playwright MCP, GitHub MCP 추가 예정.
+> 설정 파일: `.mcp.json` (프로젝트 루트). Notion 연동은 claude.ai 계정 레벨 커넥터(`mcp__claude_ai_Notion__*`)가 담당 — `.mcp.json`에 별도 등록 불필요. 추후 GitHub MCP 추가 예정.
 
 **테스트 파일 배치 규칙** → [`.claude/rules/testing_guide.md`](.claude/rules/testing_guide.md) 참고
 

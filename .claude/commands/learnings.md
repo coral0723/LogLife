@@ -60,6 +60,8 @@ description: 세션에서 배운 점을 .dev/learnings/에 기록하고 .claude/
 | 보안·인증 패턴 | `.claude/rules/security.md` append |
 | 배포·빌드 주의사항 | `.claude/rules/deploy.md` append |
 
+**중복 검사**: append 전 라우팅 표에서 정해진 대상 `.claude/rules/*.md` 파일을 Read해 동일 주제 항목이 이미 있는지 확인한다. 있으면 신규 append 대신 기존 항목의 내용을 갱신한다.
+
 ### 4. 초안 출력
 
 상세 파일 전체 내용과 컴팩트 요약(목적지 포함)을 함께 출력한다.
@@ -76,8 +78,9 @@ description: 세션에서 배운 점을 .dev/learnings/에 기록하고 .claude/
 ### 6-A. Yes 선택 시
 
 1. `Write` 도구로 `.dev/learnings/YYYY-MM-DD_{snake_case_topic}.md` 저장
-2. `Edit` 도구로 해당 `.claude/rules/*.md` 파일 끝에 컴팩트 요약 append
-3. 아래 메시지 출력
+2. `Edit` 도구로 해당 `.claude/rules/*.md` 파일 끝에 컴팩트 요약 append (위 "3. 컴팩트 요약 + 라우팅 결정"의 중복 검사에서 발견 시 기존 항목 갱신)
+3. append(또는 갱신) 후 대상 rules 파일의 줄 수를 확인한다. **100줄 초과 시**: 가장 오래되었거나 이미 해소된 것으로 보이는 항목을 rules 파일에서 제거한다(상세 내용은 `.dev/learnings/`에 이미 보존되어 있으므로 rules에서는 삭제해도 정보 손실 없음). 제거한 항목 목록을 사용자에게 보고한다.
+4. 아래 메시지 출력 (3에서 제거가 발생했으면 제거 목록을 추가로 덧붙인다)
 
 ```
 저장 완료.

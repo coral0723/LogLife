@@ -1,14 +1,11 @@
 {
   "permissions": {
+    "defaultMode": "plan",
     "allow": [
       "Bash(*)",
       "PowerShell(*)",
       "WebFetch(*)",
       "WebSearch(*)",
-      "Read(//mnt/c/Users/user/Documents/LogLife/**)",
-      "Read(//mnt/c/Users/user/Documents/LogLife/prisma/**)",
-      "Read(//tmp/cc-cache/check-harness/**)",
-      "Read(//c/tmp/cc-cache/check-harness/**)",
       "mcp__claude_ai_Notion__notion-search",
       "mcp__claude_ai_Notion__notion-fetch",
       "mcp__claude_ai_Notion__notion-create-pages",
@@ -38,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -Command \"Get-Content '.claude/rules/cli_security.md' -Raw\""
+            "command": "powershell -NoProfile -File .claude/hooks/check-cli-security.ps1"
           }
         ]
       }
